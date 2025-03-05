@@ -1,0 +1,246 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\ProductResource\Pages;
+use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Imports\ProductEditImport;
+use App\Imports\ProductImport;
+use App\Models\Product;
+use Filament\Tables\Actions\Action;
+use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Set;
+use Filament\Notifications\Notification;
+use Filament\Tables\Filters\SelectFilter;
+use Maatwebsite\Excel\Facades\Excel;
+
+class ProductResource extends Resource
+{
+    protected static ?string $model = Product::class;
+    protected static ?string $navigationIcon = 'heroicon-s-cube';
+    protected static ?string $navigationGroup = 'Produk';
+    protected static ?int $navigationSort = 7;
+    protected static ?string $navigationLabel = 'Produk';
+    protected static ?string $pluralLabel = 'Produk';
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\Group::make()
+                    ->schema([
+                        Forms\Components\Section::make('Informasi Dasar')
+                            ->collapsible()
+                            ->schema([
+                                Forms\Components\Select::make('category_id')
+                                    ->label('Kategori')
+                                    ->relationship('category', 'name')
+                                    ->preload()
+                                    ->searchable()
+                                    ->required(),
+                                Forms\Components\Select::make('shp_id')
+                                    ->label('Tenant')
+                                    ->relationship('shop', 'name')
+                                    ->preload()
+                                    ->searchable(),
+                                Forms\Components\TextInput::make('name')
+                                    ->label('Nama Produk')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\RichEditor::make('description')
+                                    ->label('Deskirpsi Produk')
+                                    ->columnSpanFull(),
+                            ]),
+                    ]),
+                Forms\Components\Group::make()
+                    ->schema([
+                        Forms\Components\Section::make('Harga & Stok')
+                            ->collapsible()
+                            ->schema([
+                                Forms\Components\TextInput::make('modal')
+                                    ->numeric()
+                                    ->prefix('Rp'),
+                                Forms\Components\TextInput::make('price')
+                                    ->label('Harga Produk')
+                                    ->numeric()
+                                    ->prefix('Rp'),
+                                Forms\Components\TextInput::make('stock')
+                                    ->label('Stok Produk')
+                                    ->numeric(),
+                                Forms\Components\Toggle::make('is_active')
+                                    ->default(true)
+                                    ->required()
+                                    ->helperText('Jika tidak diaktifkan maka produk tidak akan tampil di halaman depan')
+                                    ->label('Tampilkan produk?'),
+                            ]),
+                    ]),
+                Forms\Components\Section::make('Gambar')
+                    ->collapsible()
+                    ->schema([
+                        Forms\Components\TextInput::make('image')
+                            ->label('Gambar Produk')
+                            ->columnSpanFull(),
+                    ]),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->paginationPageOptions([5, 25, 50, 100, 250])
+            ->defaultPaginationPageOption(5)
+            ->defaultSort('id', direction: 'desc')
+            ->columns([
+                Tables\Columns\ImageColumn::make('image')
+                    ->label('Gambar')
+                    ->circular()
+                    ->stacked()
+                    ->getStateUsing(fn($record) => "https://drive.google.com/thumbnail?id={$record->image}&sz=w1000"),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nama Produk')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('category.name')
+                    ->label('Kategori')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('shop.name')
+                    ->label('Tenant')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('price')
+                    ->money('IDR')
+                    ->searchable()
+                    ->label('Harga')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('modal')
+                    ->money('IDR')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('laba')
+                    ->money('IDR')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('stock')
+                    ->label('Stok')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\ToggleColumn::make('is_active')
+                    ->label('Aktifkan produk?')
+                    ->sortable(),
+            ])
+            ->filters([
+                SelectFilter::make('shop_id')
+                    ->relationship('shop', 'name')
+                    ->label('Tenant')
+                    ->preload()
+                    ->searchable()
+                    ->multiple(),
+                SelectFilter::make('category_id')
+                    ->relationship('category', 'name')
+                    ->label('Kategori')
+                    ->preload()
+                    ->searchable()
+                    ->multiple(),
+                SelectFilter::make('is_active')
+                    ->native(false)
+                    ->options([
+                        '1' => 'Aktif',
+                        '0' => 'Tidak Aktif',
+                    ])
+                    ->label('Status Produk'),
+            ])
+            ->headerActions([
+                Action::make("Template")
+                    ->label('Download Template Excel Produk')
+                    ->color('info')
+                    ->url(route('download-template')),
+                Action::make('importProducts')
+                    ->color('info')
+                    ->label('Import Produk by Template')
+                    ->form([
+                        FileUpload::make('attachment')
+                            ->label('Upload Template Produk')
+                    ])
+                    ->action(function (array $data) {
+                        $file = public_path('storage/' . $data['attachment']);
+
+                        try {
+                            $import = new ProductImport();
+                            Excel::import($import, $file);
+                            $totalRows = $import->getRowCount();
+                            Notification::make()
+                                ->title('Produk diimpor')
+                                ->body("Produk diimpor sebanyak {$totalRows} baris.")
+                                ->success()
+                                ->send();
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->danger()
+                                ->title('Produk gagal diimpor')
+                                ->body($e->getMessage())
+                                ->send();
+                        }
+                    }),
+                Action::make("Download Data Update Masal")
+                    ->label('Download Data Update Masal')
+                    ->url(route('download-data')),
+                Action::make('importProductsMasal')
+                    ->label('Import Update Masal')
+                    ->form([
+                        FileUpload::make('attachment')
+                            ->label('Upload Excel Produk')
+                    ])
+                    ->action(function (array $data) {
+                        $file = public_path('storage/' . $data['attachment']);
+
+                        try {
+                            $import = new ProductEditImport();
+                            Excel::import($import, $file);
+                            $totalRows = $import->getRowCount();
+                            Notification::make()
+                                ->title('Update masal sukses')
+                                ->body("Produk diedit sebanyak {$totalRows} baris.")
+                                ->success()
+                                ->send();
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->danger()
+                                ->title('Update masal gagal')
+                                ->body($e->getMessage())
+                                ->send();
+                        }
+                    }),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make()
+                    ->modalHeading('Ubah Produk'),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListProducts::route('/'),
+            // 'create' => Pages\CreateProduct::route('/create'),
+            // 'edit' => Pages\EditProduct::route('/{record}/edit'),
+        ];
+    }
+}
