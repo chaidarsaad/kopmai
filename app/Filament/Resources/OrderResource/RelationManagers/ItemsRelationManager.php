@@ -29,6 +29,8 @@ class ItemsRelationManager extends RelationManager
                     ->label('Gambar Produk'),
                 Tables\Columns\TextColumn::make('product_name')
                     ->label('Nama Produk'),
+                Tables\Columns\TextColumn::make('product.shop.name')
+                    ->label('Tenant'),
                 Tables\Columns\TextColumn::make('price')
                     ->label('Harga')
                     ->money('IDR'),

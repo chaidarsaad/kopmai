@@ -10,6 +10,7 @@ use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Shop;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -31,6 +32,7 @@ use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\HtmlString;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Auth;
 
 class OrderResource extends Resource
 {
@@ -53,24 +55,32 @@ class OrderResource extends Resource
                             ->collapsible()
                             ->schema([
                                 Forms\Components\TextInput::make('order_number')
-                                    ->label('No. Pesanan')
-                                    ->disabled(),
+                                    ->required()
+                                    ->label('No. Pesanan'),
                                 Forms\Components\TextInput::make('created_at')
                                     ->label('Tanggal Pesan')
-                                    ->formatStateUsing(fn($state) => Carbon::parse($state)->format('d M Y H:i'))
-                                    ->disabled(),
+                                    ->formatStateUsing(fn($state) => Carbon::parse($state)->format('d M Y H:i')),
                                 Forms\Components\TextInput::make('user.email')
                                     ->label('Email')
-                                    ->formatStateUsing(fn($record, $state) => $record->user?->email ?? '-')
-                                    ->disabled(),
+                                    ->default(Auth::user()->email ?? '')
+                                    ->formatStateUsing(fn($record, $state) => $record->user?->email ?? Auth::user()->email ?? '-'),
                                 Forms\Components\TextInput::make('user.name')
+                                    ->readOnly()
                                     ->label('Nama Wali')
-                                    ->formatStateUsing(fn($record, $state) => $record->user?->name ?? '-')
-                                    ->disabled(),
+                                    ->default(Auth::user()->name ?? '')
+                                    ->formatStateUsing(fn($record, $state) => $record->user?->name ?? Auth::user()->name ?? '-'),
+                                Forms\Components\Hidden::make('recipient_name')
+                                    ->label('Nama Wali')
+                                    ->default(fn() => Auth::user()->name) // Ambil nama user yang sedang login
+                                    ->formatStateUsing(fn($record, $state) => $record->user?->name ?? Auth::user()->name ?? '-'),
+                                Forms\Components\Select::make('user_id')
+                                    ->relationship('user', 'name')
+                                    ->default(fn() => Auth::id())
+                                    ->hidden(),
                                 Forms\Components\TextInput::make('phone')
                                     ->label('No HP Wali')
                                     ->tel()
-                                    ->disabled(),
+                                    ->formatStateUsing(fn($record, $state) => $record->user?->phone_number ?? Auth::user()->phone_number ?? '-'),
                             ]),
                     ]),
                 Forms\Components\Group::make()
@@ -79,17 +89,16 @@ class OrderResource extends Resource
                             ->collapsible()
                             ->schema([
                                 Forms\Components\TextInput::make('nama_santri')
-                                    ->label('Nama Santri')
-                                    ->disabled(),
+                                    ->required()
+                                    ->label('Nama Santri'),
                                 Forms\Components\Select::make('classroom_id')
+                                    ->required()
                                     ->relationship('classroom', 'name')
                                     ->preload()
                                     ->native(false)
-                                    ->label('Kelas Santri')
-                                    ->disabled(),
+                                    ->label('Kelas Santri'),
                                 Forms\Components\Textarea::make('notes')
-                                    ->label('Catatan Tambahan')
-                                    ->disabled(),
+                                    ->label('Catatan Tambahan'),
                             ]),
                     ]),
                 Forms\Components\Section::make('Detail Harga')
@@ -99,7 +108,12 @@ class OrderResource extends Resource
                             ->label('Total Harga')
                             ->readOnly()
                             ->numeric()
-                            ->default(0),
+                            ->default(0)
+                            ->live(),
+                        Forms\Components\Hidden::make('subtotal')
+                            ->label('Total Harga')
+                            ->default(0)
+                            ->live(),
                     ]),
                 Forms\Components\Section::make('Status Pesanan')
                     ->collapsible()
@@ -110,8 +124,7 @@ class OrderResource extends Resource
                             ->disk('public')
                             ->directory('payment-proofs')
                             ->openable()
-                            ->downloadable()
-                            ->disabled(),
+                            ->downloadable(),
                         Forms\Components\Select::make('payment_status')
                             ->label('Status Pembayaran')
                             ->options([
@@ -167,7 +180,6 @@ class OrderResource extends Resource
                     ->money('IDR')
                     ->label('Total')
                     ->sortable(),
-
                 Tables\Columns\TextColumn::make('payment_status')
                     ->label('Pembayaran')
                     ->badge()
@@ -282,14 +294,14 @@ class OrderResource extends Resource
 
     public static function canCreate(): bool
     {
-        return false;
+        return true;
     }
 
     public static function getItemsRepeater(): Repeater
     {
         return Repeater::make('orderProducts')
-            ->addable(false)
-            ->deletable(false)
+            ->addable(true)
+            ->deletable(true)
             ->label('Detail Produk')
             ->relationship()
             ->live()
@@ -301,79 +313,67 @@ class OrderResource extends Resource
                     ->native(false)
                     ->searchable()
                     ->label('Produk')
-                    ->disabled()
                     ->required()
                     ->options(Product::query()->pluck('name', 'id'))
-                    ->afterStateHydrated(function (Forms\Set $set, Forms\Get $get, $state) {
-                        $product = Product::with('shop')->find($state);
-                        $set('unit_price', $product->price ?? 0);
-                        $set('stock', $product->stock ?? 0);
-                        $set('shop_id', $product->shop_id ?? null);
-                        $set('image_url', $product->image_url ?? null);
-                        $set('is_ongkir', $product->shop->is_ongkir ?? false);
-                        $set('shipping_cost', $product->shop->ongkir ?? 0);
-                    })
                     ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
                         $product = Product::with('shop')->find($state);
-                        $set('unit_price', $product->price ?? 0);
-                        $set('stock', $product->stock ?? 0);
-                        $set('shop_id', $product->shop_id);
-                        $set('is_ongkir', $product->shop->is_ongkir ?? false);
-                        $set('shipping_cost', $product->shop->ongkir ?? 0);
-                        $quantity = $get('quantity') ?? 1;
-                        $stock = $get('stock');
+                        if ($product) {
+                            $set('price', $product->price ?? 0);
+                            $set('product_name', $product->name ?? '');
+                            $set('shop_id', $product->shop_id ?? null);
+                            $set('is_ongkir', $product->shop->is_ongkir ?? false);
+                            $set('shipping_cost', $product->shop->ongkir ?? 0);
+                        }
                         self::updateTotalPrice($get, $set);
                     })
                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                     ->preload(),
-                Placeholder::make('image_preview')
-                    ->label('Gambar Produk')
-                    ->content(
-                        fn(Forms\Get $get) => $get('image_url')
-                            ? new HtmlString('<img src="' . e($get('image_url')) . '" style="width: 100%; height: auto; object-fit: cover; border-radius: 5px;" />')
-                            : 'Tidak ada gambar'
-                    )
-                    ->columnSpanFull(),
-                Forms\Components\Select::make('shop_id')
-                    ->options(Shop::query()->pluck('name', 'id'))
-                    ->preload()
-                    ->disabled()
-                    ->native(false)
-                    ->label('Toko'),
+                Forms\Components\Hidden::make('product_name')
+                    ->dehydrated()
+                    ->label('Nama Produk'),
                 Forms\Components\TextInput::make('quantity')
                     ->required()
                     ->label('Jumlah')
                     ->numeric()
-                    ->disabled()
                     ->default(1)
                     ->minValue(1)
-                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
-                        self::updateTotalPrice($get, $set);
-                    }),
+                    ->afterStateUpdated(fn($state, Forms\Set $set, Forms\Get $get) => self::updateTotalPrice($get, $set)),
+
                 Forms\Components\TextInput::make('price')
                     ->label('Harga')
                     ->prefix('Rp')
-                    ->disabled()
-                    ->required()
+                    ->readOnly()
                     ->numeric(),
+
                 Forms\Components\TextInput::make('shipping_cost')
                     ->label('Ongkir')
                     ->prefix('Rp')
-                    ->disabled()
                     ->numeric()
-                    ->hidden(fn(Forms\Get $get) => !$get('is_ongkir')),
+                    ->hidden(fn(Forms\Get $get) => !$get('is_ongkir'))
+                    ->afterStateUpdated(fn($state, Forms\Set $set, Forms\Get $get) => self::updateTotalPrice($get, $set)),
             ]);
     }
 
     protected static function updateTotalPrice(Forms\Get $get, Forms\Set $set): void
     {
-        $selectedProducts = collect($get('orderProducts'))->filter(fn($item) => !empty($item['product_id']) && !empty($item['quantity']));
+        $orderItems = $get('orderProducts') ?? [];
 
-        $prices = Product::find($selectedProducts->pluck('product_id'))->pluck('price', 'id');
+        $selectedProducts = collect($get('orderProducts'))
+            ->filter(fn($item) => !empty($item['product_id']) && !empty($item['quantity']));
+        $subtotal = collect($orderItems)->sum(fn($item) => $item['price'] * $item['quantity']);
+
+        $prices = Product::whereIn('id', $selectedProducts->pluck('product_id'))
+            ->pluck('price', 'id');
+
         $total = $selectedProducts->reduce(function ($total, $product) use ($prices) {
-            return $total + ($prices[$product['product_id']] * $product['quantity']);
+            $productPrice = $prices[$product['product_id']] ?? 0;
+            $quantity = $product['quantity'] ?? 1;
+            $shippingCost = !empty($product['is_ongkir']) ? ($product['shipping_cost'] ?? 0) : 0;
+
+            return $total + ($productPrice * $quantity) + $shippingCost;
         }, 0);
 
-        $set('total_price', $total);
+        $set('subtotal', $subtotal);
+        $set('total_amount', $total);
     }
 }

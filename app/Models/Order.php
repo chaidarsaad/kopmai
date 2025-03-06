@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 
 class Order extends Model
 {
@@ -24,8 +25,19 @@ class Order extends Model
         'payment_proof',
         'notes',
     ];
-    
-       public function getRouteKeyName()
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($order) {
+            if (!$order->user_id) {
+                $order->user_id = Auth::id();
+            }
+        });
+    }
+
+    public function getRouteKeyName()
     {
         return 'order_number';
     }
