@@ -3,13 +3,17 @@
 namespace App\Exports;
 
 use App\Models\Order;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class OrdersExport implements FromCollection, WithHeadings, WithCustomStartCell
+class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
 {
     protected $startDate;
     protected $endDate;
@@ -20,23 +24,21 @@ class OrdersExport implements FromCollection, WithHeadings, WithCustomStartCell
         $this->endDate = Carbon::parse($endDate)->endOfDay();
     }
 
-    public function headings(): array
-    {
-        return [
-            "Tanggal",
-            "Tujuan (SANTRI)",
-            "Kelas",
-            "Jumlah",
-            "Nama Barang",
-            "Tenant",
-            "Harga Satuan",
-            "Modal",
-            "Laba",
-        ];
-    }
-    /**
-     * @return \Illuminate\Support\Collection
-     */
+    // public function headings(): array
+    // {
+    //     return [
+    //         "Tanggal",
+    //         "Tujuan (SANTRI)",
+    //         "Kelas",
+    //         "Jumlah",
+    //         "Nama Barang",
+    //         "Tenant",
+    //         "Harga Satuan",
+    //         "Modal",
+    //         "Laba",
+    //     ];
+    // }
+
     public function collection()
     {
         return Order::whereBetween('created_at', [$this->startDate, $this->endDate])
@@ -46,51 +48,123 @@ class OrdersExport implements FromCollection, WithHeadings, WithCustomStartCell
             ->flatMap(function ($order) {
                 $data = [];
 
+                // Tambahkan header untuk setiap order
+                $data[] = [
+                    'created_at'  => 'Tanggal',
+                    'nama_santri' => 'Tujuan (SANTRI)',
+                    'kelas'       => 'Kelas',
+                    'jumlah'      => 'Jumlah',
+                    'nama_barang' => 'Nama Barang',
+                    'tenant'      => 'Tenant',
+                    'harga_satuan' => 'Harga Satuan',
+                    'modal'       => 'Modal',
+                    'laba'        => 'Laba',
+                ];
+
                 foreach ($order->items as $item) {
                     $data[] = [
                         'created_at'  => Carbon::parse($order->created_at)->format('d M Y H:i:s'),
-                        'nama_santri'  => $order->nama_santri,
-                        'kelas'        => $order->classroom ? $order->classroom->name : 'Tidak ada Kelas',
-                        'jumlah'       => $item->quantity,
-                        'nama_barang'  => $item->product ? $item->product->name : 'Produk tidak ditemukan',
-                        'tenant'  => $item->product ? $item->product->shop->name : 'Tenant tidak ditemukan',
+                        'nama_santri' => $order->nama_santri,
+                        'kelas'       => $order->classroom ? $order->classroom->name : 'Tidak ada Kelas',
+                        'jumlah'      => $item->quantity,
+                        'nama_barang' => $item->product ? $item->product->name : 'Produk tidak ditemukan',
+                        'tenant'      => $item->product ? $item->product->shop->name : 'Tenant tidak ditemukan',
                         'harga_satuan' => $item->product ? $item->product->price : 0,
-                        'modal'        => $item->product ? $item->product->modal : 0,
-                        'laba'         => $item->product ? $item->product->laba : 0,
+                        'modal'       => $item->product ? $item->product->modal : 0,
+                        'laba'        => $item->product ? $item->product->laba : 0,
                     ];
                 }
 
                 $data[] = [
                     'created_at'  => '',
-                    'nama_santri'  => '',
-                    'kelas'        => '',
-                    'jumlah'       => '',
-                    'nama_barang'  => 'TOTAL ORDER (Tanpa Ongkir):',
-                    'tenant'       => '',
+                    'nama_santri' => '',
+                    'kelas'       => '',
+                    'jumlah'      => '',
+                    'nama_barang' => 'TOTAL ORDER (Tanpa Ongkir):',
+                    'tenant'      => '',
                     'harga_satuan' => $order->subtotal,
-                    'modal'        => '',
-                    'laba'         => '',
+                    'modal'       => '',
+                    'laba'        => '',
                 ];
 
+                // Baris kosong sebagai pemisah antara order
                 $data[] = [
                     'created_at'  => null,
-                    'nama_santri'  => null,
-                    'kelas'        => null,
-                    'jumlah'       => null,
-                    'nama_barang'  => null,
-                    'tenant'  => null,
+                    'nama_santri' => null,
+                    'kelas'       => null,
+                    'jumlah'      => null,
+                    'nama_barang' => null,
+                    'tenant'      => null,
                     'harga_satuan' => null,
-                    'modal'        => null,
-                    'laba'         => null,
+                    'modal'       => null,
+                    'laba'        => null,
                 ];
 
                 return $data;
             });
     }
 
-
     public function startCell(): string
     {
         return 'A1';
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function (AfterSheet $event) {
+                $sheet = $event->sheet->getDelegate();
+
+                // Atur lebar otomatis untuk semua kolom dari A sampai I
+                foreach (range('A', 'I') as $col) {
+                    $sheet->getColumnDimension($col)->setAutoSize(true);
+                }
+
+                // Dapatkan baris terakhir
+                $lastRow = $event->sheet->getHighestRow();
+
+                // Jika ingin format mata uang Rupiah (Rp)
+                $sheet->getStyle("G2:I{$lastRow}")->getNumberFormat()->setFormatCode('"Rp" #,##0');
+
+                // Iterasi setiap baris untuk menemukan header dan menerapkan warna
+                for ($row = 1; $row <= $lastRow; $row++) {
+                    $cellValue = $sheet->getCell("A{$row}")->getValue();
+                    if ($cellValue === 'Tanggal') {
+                        // Terapkan warna #F8CB9C, bold, dan rata tengah untuk seluruh header
+                        $sheet->getStyle("A{$row}:I{$row}")->applyFromArray([
+                            'font' => ['bold' => true],
+                            'alignment' => ['horizontal' => 'center'], // Rata tengah
+                            'fill' => [
+                                'fillType' => Fill::FILL_SOLID,
+                                'startColor' => ['rgb' => 'F8CB9C'], // Warna #F8CB9C
+                            ],
+                        ]);
+                    }
+                }
+
+                // Temukan baris yang berisi "TOTAL ORDER (Tanpa Ongkir):"
+                for ($row = 2; $row <= $lastRow; $row++) {
+                    $cellValue = $sheet->getCell("E{$row}")->getValue();
+                    if ($cellValue === 'TOTAL ORDER (Tanpa Ongkir):') {
+                        // Terapkan warna hijau hanya pada kolom E dan G di baris ini
+                        foreach (['E', 'G'] as $col) {
+                            $sheet->getStyle("{$col}{$row}")->applyFromArray([
+                                'font' => ['bold' => true],
+                                'alignment' => ['horizontal' => 'center'], // Rata tengah
+                                'fill' => [
+                                    'fillType' => Fill::FILL_SOLID,
+                                    'startColor' => ['rgb' => '00FF00'], // Warna hijau
+                                ],
+                            ]);
+                        }
+                    }
+                }
+
+                // Rata tengah untuk semua data (dari baris 2 sampai baris terakhir)
+                $sheet->getStyle("A2:I{$lastRow}")->applyFromArray([
+                    'alignment' => ['horizontal' => 'center'], // Rata tengah
+                ]);
+            }
+        ];
     }
 }
