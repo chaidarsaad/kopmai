@@ -55,6 +55,7 @@ class OrderResource extends Resource
                             ->collapsible()
                             ->schema([
                                 Forms\Components\TextInput::make('order_number')
+                                    ->unique(ignoreRecord: true)
                                     ->required()
                                     ->label('No. Pesanan'),
                                 Forms\Components\TextInput::make('created_at')
@@ -356,24 +357,19 @@ class OrderResource extends Resource
 
     protected static function updateTotalPrice(Forms\Get $get, Forms\Set $set): void
     {
-        $orderItems = $get('orderProducts') ?? [];
+        $selectedProducts = collect($get('orderProducts'))->filter(fn($item) => !empty($item['product_id']) && !empty($item['quantity']));
+        $products = Product::with('shop')->find($selectedProducts->pluck('product_id'));
 
-        $selectedProducts = collect($get('orderProducts'))
-            ->filter(fn($item) => !empty($item['product_id']) && !empty($item['quantity']));
-        $subtotal = collect($orderItems)->sum(fn($item) => $item['price'] * $item['quantity']);
-
-        $prices = Product::whereIn('id', $selectedProducts->pluck('product_id'))
-            ->pluck('price', 'id');
-
-        $total = $selectedProducts->reduce(function ($total, $product) use ($prices) {
-            $productPrice = $prices[$product['product_id']] ?? 0;
-            $quantity = $product['quantity'] ?? 1;
-            $shippingCost = !empty($product['is_ongkir']) ? ($product['shipping_cost'] ?? 0) : 0;
-
-            return $total + ($productPrice * $quantity) + $shippingCost;
+        $prices = Product::find($selectedProducts->pluck('product_id'))->pluck('price', 'id');
+        $subtotal = $selectedProducts->reduce(function ($subtotal, $product) use ($prices) {
+            return $subtotal + ($prices[$product['product_id']] * $product['quantity']);
         }, 0);
 
+        $shippingCost = $products->unique('shop_id')->sum(fn($product) => $product->shop->ongkir ?? 0);
+
+        $totalAmount = $subtotal + $shippingCost;
+
         $set('subtotal', $subtotal);
-        $set('total_amount', $total);
+        $set('total_amount', $totalAmount);
     }
 }

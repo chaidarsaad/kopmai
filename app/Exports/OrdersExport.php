@@ -48,7 +48,7 @@ class OrdersExport implements FromCollection, WithHeadings, WithCustomStartCell
 
                 foreach ($order->items as $item) {
                     $data[] = [
-                        'created_at'  => $order->created_at,
+                        'created_at'  => Carbon::parse($order->created_at)->format('d M Y H:i:s'),
                         'nama_santri'  => $order->nama_santri,
                         'kelas'        => $order->classroom ? $order->classroom->name : 'Tidak ada Kelas',
                         'jumlah'       => $item->quantity,

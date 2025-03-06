@@ -39,6 +39,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithTitle
             'modal',
             'laba',
             'stock',
+            'is_active',
             'description',
             'image',
         ];
