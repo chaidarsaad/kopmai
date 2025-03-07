@@ -36,7 +36,7 @@ class ProductEditImport implements ToModel, WithMultipleSheets, WithHeadingRow
                 'price' => $row['price'],
                 'modal' => $row['modal'],
                 'laba' => $row['laba'],
-                'is_active' => $row['is_active'],
+                'is_active' => $row['is_active'] ?? 0,
                 'description' => $row['description'] ?? '',
                 'image' => $row['image'],
             ]

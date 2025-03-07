@@ -115,54 +115,46 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
-                // Atur lebar otomatis untuk semua kolom dari A sampai I
                 foreach (range('A', 'I') as $col) {
                     $sheet->getColumnDimension($col)->setAutoSize(true);
                 }
 
-                // Dapatkan baris terakhir
                 $lastRow = $event->sheet->getHighestRow();
 
-                // Jika ingin format mata uang Rupiah (Rp)
                 $sheet->getStyle("G2:I{$lastRow}")->getNumberFormat()->setFormatCode('"Rp" #,##0');
 
-                // Iterasi setiap baris untuk menemukan header dan menerapkan warna
                 for ($row = 1; $row <= $lastRow; $row++) {
                     $cellValue = $sheet->getCell("A{$row}")->getValue();
                     if ($cellValue === 'Tanggal') {
-                        // Terapkan warna #F8CB9C, bold, dan rata tengah untuk seluruh header
                         $sheet->getStyle("A{$row}:I{$row}")->applyFromArray([
                             'font' => ['bold' => true],
-                            'alignment' => ['horizontal' => 'center'], // Rata tengah
+                            'alignment' => ['horizontal' => 'center'],
                             'fill' => [
                                 'fillType' => Fill::FILL_SOLID,
-                                'startColor' => ['rgb' => 'F8CB9C'], // Warna #F8CB9C
+                                'startColor' => ['rgb' => 'F8CB9C'],
                             ],
                         ]);
                     }
                 }
 
-                // Temukan baris yang berisi "TOTAL ORDER (Tanpa Ongkir):"
                 for ($row = 2; $row <= $lastRow; $row++) {
                     $cellValue = $sheet->getCell("E{$row}")->getValue();
                     if ($cellValue === 'TOTAL ORDER (Tanpa Ongkir):') {
-                        // Terapkan warna hijau hanya pada kolom E dan G di baris ini
                         foreach (['E', 'G'] as $col) {
                             $sheet->getStyle("{$col}{$row}")->applyFromArray([
                                 'font' => ['bold' => true],
-                                'alignment' => ['horizontal' => 'center'], // Rata tengah
+                                'alignment' => ['horizontal' => 'center'],
                                 'fill' => [
                                     'fillType' => Fill::FILL_SOLID,
-                                    'startColor' => ['rgb' => '00FF00'], // Warna hijau
+                                    'startColor' => ['rgb' => '00FF00'],
                                 ],
                             ]);
                         }
                     }
                 }
 
-                // Rata tengah untuk semua data (dari baris 2 sampai baris terakhir)
                 $sheet->getStyle("A2:I{$lastRow}")->applyFromArray([
-                    'alignment' => ['horizontal' => 'center'], // Rata tengah
+                    'alignment' => ['horizontal' => 'center'],
                 ]);
             }
         ];

@@ -58,9 +58,9 @@ class StatsOverview extends BaseWidget
 
         return [
             Stat::make('Total Admin', User::where('is_admin', 1)->count())
-            ->description('Jumlah Akun Admin'),
+                ->description('Jumlah Akun Admin'),
             Stat::make('Total Wali', User::where('is_admin', 0)->count())
-            ->description('Jumlah Wali yang daftar'),
+                ->description('Jumlah Wali yang daftar'),
             Stat::make('Total Tenant', Shop::count()),
             Stat::make('Total Produk', Product::count()),
             Stat::make('Total Pesanan', $order_count),
