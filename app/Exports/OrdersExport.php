@@ -50,54 +50,56 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
 
                 // Tambahkan header untuk setiap order
                 $data[] = [
-                    'created_at'  => 'Tanggal',
-                    'nama_santri' => 'Tujuan (SANTRI)',
-                    'kelas'       => 'Kelas',
-                    'jumlah'      => 'Jumlah',
-                    'nama_barang' => 'Nama Barang',
-                    'tenant'      => 'Tenant',
-                    'harga_satuan' => 'Harga Satuan',
-                    'modal'       => 'Modal',
-                    'laba'        => 'Laba',
+                    'created_at'   => 'Tanggal',
+                    'nama_santri'  => 'Tujuan (SANTRI)',
+                    'kelas'        => 'Kelas',
+                    'jumlah'       => 'Jumlah',
+                    'nama_barang'  => 'Nama Barang',
+                    'tenant'       => 'Tenant',
+                    'harga_satuan' => 'Harga Total',
+                    'modal'        => 'Modal',
+                    'laba'         => 'Laba',
                 ];
 
                 foreach ($order->items as $item) {
                     $data[] = [
-                        'created_at'  => Carbon::parse($order->created_at)->format('d M Y H:i:s'),
-                        'nama_santri' => $order->nama_santri,
-                        'kelas'       => $order->classroom ? $order->classroom->name : 'Tidak ada Kelas',
-                        'jumlah'      => $item->quantity,
-                        'nama_barang' => $item->product ? $item->product->name : 'Produk tidak ditemukan',
-                        'tenant'      => $item->product ? $item->product->shop->name : 'Tenant tidak ditemukan',
-                        'harga_satuan' => $item->product ? $item->product->price : 0,
-                        'modal'       => $item->product ? $item->product->modal : 0,
-                        'laba'        => $item->product ? $item->product->laba : 0,
+                        'created_at'   => Carbon::parse($order->created_at)->format('d M Y H:i:s'),
+                        'nama_santri'  => $order->nama_santri,
+                        'kelas'        => $order->classroom ? $order->classroom->name : 'Tidak ada Kelas',
+                        'jumlah'       => $item->quantity,
+                        'nama_barang'  => $item->product ? $item->product->name : 'Produk tidak ditemukan',
+                        'tenant'       => $item->product ? $item->product->shop->name : 'Tenant tidak ditemukan',
+                        'harga_satuan' => $item->product ? ($item->product->price * $item->quantity) : 0,
+                        // 'modal'        => $item->product ? $item->product->modal : 0,
+                        // 'laba'         => $item->product ? $item->product->laba : 0,
+                        'modal'        => 0,
+                        'laba'         => 0,
                     ];
                 }
 
                 $data[] = [
-                    'created_at'  => '',
-                    'nama_santri' => '',
-                    'kelas'       => '',
-                    'jumlah'      => '',
-                    'nama_barang' => 'TOTAL ORDER (Tanpa Ongkir):',
-                    'tenant'      => '',
+                    'created_at'   => '',
+                    'nama_santri'  => '',
+                    'kelas'        => '',
+                    'jumlah'       => '',
+                    'nama_barang'  => 'TOTAL ORDER (Tanpa Ongkir):',
+                    'tenant'       => '',
                     'harga_satuan' => $order->subtotal,
-                    'modal'       => '',
-                    'laba'        => '',
+                    'modal'        => '',
+                    'laba'         => '',
                 ];
 
                 // Baris kosong sebagai pemisah antara order
                 $data[] = [
-                    'created_at'  => null,
-                    'nama_santri' => null,
-                    'kelas'       => null,
-                    'jumlah'      => null,
-                    'nama_barang' => null,
-                    'tenant'      => null,
+                    'created_at'   => null,
+                    'nama_santri'  => null,
+                    'kelas'        => null,
+                    'jumlah'       => null,
+                    'nama_barang'  => null,
+                    'tenant'       => null,
                     'harga_satuan' => null,
-                    'modal'       => null,
-                    'laba'        => null,
+                    'modal'        => null,
+                    'laba'         => null,
                 ];
 
                 return $data;

@@ -37,7 +37,6 @@ class StoreShow extends Component
             $this->selectedCategory = 'all';
         }
         if ($this->store) {
-            // $paketSantri = Category::where('name', 'Paket Santri')->first();
             $this->categories = Category::where('name', '!=', 'Paket Santri')->inRandomOrder()->get();
             $this->shops = Shop::where('is_active', 1)->inRandomOrder()->get();
         }
@@ -76,7 +75,11 @@ class StoreShow extends Component
 
     public function getProducts()
     {
-        $query = Product::query()->where('is_active', 1);
+        $query = Product::query()
+            ->where('is_active', 1)
+            ->whereHas('shop', function ($q) {
+                $q->where('is_active', 1);
+            });
 
         if ($this->selectedFilterType === 'category' && $this->selectedCategory !== 'all') {
             $query->where('category_id', $this->selectedCategory);
@@ -109,7 +112,10 @@ class StoreShow extends Component
 
     public function checkHasMoreProducts(): void
     {
-        $query = Product::where('is_active', 1);
+        $query = Product::where('is_active', 1)
+            ->whereHas('shop', function ($q) {
+                $q->where('is_active', 1);
+            });
 
         if ($this->selectedFilterType === 'category' && $this->selectedCategory !== 'all') {
             $query->where('category_id', $this->selectedCategory);

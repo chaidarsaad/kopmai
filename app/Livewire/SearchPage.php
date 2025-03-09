@@ -86,7 +86,10 @@ class SearchPage extends Component
     public function getProducts()
     {
         $query = Product::where('name', 'like', '%' . $this->search . '%')
-            ->where('is_active', 1);
+            ->where('is_active', 1)
+            ->whereHas('shop', function ($q) {
+                $q->where('is_active', 1);
+            });
 
         if (!empty($this->displayedProductIds)) {
             $query->whereNotIn('id', $this->displayedProductIds);
@@ -105,7 +108,11 @@ class SearchPage extends Component
 
     public function checkHasMoreProducts(): void
     {
-        $query = Product::where('name', 'like', '%' . $this->search . '%')->where('is_active', 1);
+        $query = Product::where('name', 'like', '%' . $this->search . '%')
+            ->where('is_active', 1)
+            ->whereHas('shop', function ($q) {
+                $q->where('is_active', 1);
+            });
 
         if (!empty($this->displayedProductIds)) {
             $query->whereNotIn('id', $this->displayedProductIds);
