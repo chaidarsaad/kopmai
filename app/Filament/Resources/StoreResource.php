@@ -31,6 +31,8 @@ class StoreResource extends Resource
                 Section::make('Informasi Toko')
                     ->collapsible()
                     ->schema([
+                        Forms\Components\Toggle::make('is_open')
+                            ->label('Buka Toko?'),
                         Forms\Components\TextInput::make('name')
                             ->label('Nama Toko')
                             ->required()
@@ -77,6 +79,8 @@ class StoreResource extends Resource
         return $table
             ->paginated(false)
             ->columns([
+                Tables\Columns\ToggleColumn::make('is_open')
+                    ->label('Buka Toko?'),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama Toko'),
                 Tables\Columns\ImageColumn::make('image')

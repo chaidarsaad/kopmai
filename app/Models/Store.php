@@ -23,6 +23,7 @@ class Store extends Model
         'primary_color',
         'secondary_color',
         'shipping_courier',
+        'is_open',
     ];
 
     public function getImageUrlAttribute()
@@ -34,4 +35,9 @@ class Store extends Model
     {
         return $this->banner ? Storage::url($this->banner) : null;
     }
+
+    // casts
+    protected $casts = [
+        'is_open' => 'boolean',
+    ];
 }

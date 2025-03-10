@@ -66,6 +66,9 @@ class StoreShow extends Component
         if (!$this->store) {
             return view('livewire.coming-soon')
                 ->layout('components.layouts.app', ['hideBottomNav' => true]);
+        } elseif ($this->store->is_open == false) {
+            return view('livewire.close-store')
+                ->layout('components.layouts.app', ['hideBottomNav' => true]);
         }
 
         return view('livewire.store-show', [

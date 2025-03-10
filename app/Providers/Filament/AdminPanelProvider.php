@@ -67,9 +67,10 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-building-storefront')
                     ->url('/', shouldOpenInNewTab: true)
             ])
+            ->unsavedChangesAlerts()
             ->databaseNotifications()
             ->databaseNotificationsPolling(5)
-            ->profile()
+            ->profile(isSimple: false)
             ->breadcrumbs(false)
             ->spa()
             ->spaUrlExceptions(fn(): array => [
