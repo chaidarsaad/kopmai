@@ -25,6 +25,7 @@
             }
         }
     </script>
+    @filamentPWA
 </head>
 
 <body class="bg-gray-50">

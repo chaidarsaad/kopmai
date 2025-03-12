@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
+            $table->integer('ongkir')->nullable();
+            $table->boolean('is_ongkir')->default(0);
             $table->timestamps();
         });
     }

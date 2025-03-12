@@ -22,6 +22,7 @@ use App\Filament\Widgets\RevenueChart;
 use App\Filament\Widgets\BestSellingProductTable;
 use App\Livewire\Auth\Login;
 use Filament\Navigation\MenuItem;
+use TomatoPHP\FilamentPWA\FilamentPWAPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -65,7 +66,7 @@ class AdminPanelProvider extends PanelProvider
                 MenuItem::make()
                     ->label('Toko Online')
                     ->icon('heroicon-o-building-storefront')
-                    ->url('/', shouldOpenInNewTab: true)
+                    ->url('/', shouldOpenInNewTab: false)
             ])
             ->unsavedChangesAlerts()
             ->databaseNotifications()
@@ -79,6 +80,9 @@ class AdminPanelProvider extends PanelProvider
                 url(route('download-rekap')),
                 url(route('download-order')),
                 url(route('filament.admin.auth.logout'))
+            ])
+            ->plugins([
+                \TomatoPHP\FilamentPWA\FilamentPWAPlugin::make(),
             ])
         ;
     }
