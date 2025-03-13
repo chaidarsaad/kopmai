@@ -10,7 +10,7 @@
             <button onclick="history.back()" class="hover:bg-gray-50 rounded-full">
                 <i class="bi bi-chevron-left text-xl"></i>
             </button>
-            <input autofocus type="text" wire:model.live="search" placeholder="Cari produk..."
+            <input autofocus type="text"wire:model.live.debounce.1000ms="search" placeholder="Cari produk..."
                 class="ml-2 w-full px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-primary focus:outline-none">
             <!-- Tombol Kanan -->
             <a href="{{ route('shopping-cart') }}" wire:navigate

@@ -85,7 +85,9 @@ class SearchPage extends Component
 
     public function getProducts()
     {
-        $query = Product::where('name', 'like', '%' . $this->search . '%')
+        $searchTerm = strtolower($this->search);
+
+        $query = Product::whereRaw('LOWER(name) LIKE ?', ['%' . $searchTerm . '%'])
             ->where('is_active', 1)
             ->whereHas('shop', function ($q) {
                 $q->where('is_active', 1);
@@ -97,7 +99,10 @@ class SearchPage extends Component
 
         $products = $query->inRandomOrder()->take(6)->get();
 
-        $this->displayedProductIds = array_merge($this->displayedProductIds, $products->pluck('id')->toArray());
+        $this->displayedProductIds = array_merge(
+            $this->displayedProductIds,
+            $products->pluck('id')->toArray()
+        );
     }
 
     public function loadMore(): void
@@ -108,7 +113,9 @@ class SearchPage extends Component
 
     public function checkHasMoreProducts(): void
     {
-        $query = Product::where('name', 'like', '%' . $this->search . '%')
+        $searchTerm = strtolower($this->search);
+
+        $query = Product::whereRaw('LOWER(name) LIKE ?', ['%' . $searchTerm . '%'])
             ->where('is_active', 1)
             ->whereHas('shop', function ($q) {
                 $q->where('is_active', 1);

@@ -24,49 +24,36 @@
     </div>
 
     <!-- Navigation Tabs -->
-    <div class="mt-5 px-4">
+    <div class="mt-4 px-4">
         <select wire:change="setFilterType($event.target.value)"
-            class="w-full px-4 h-10 rounded-full  appearance-none bg-no-repeat bg-[right_1rem_center] pr-10 focus:ring-primary focus:border-primary">
+            class="w-full px-4 h-10 rounded-full border bg-no-repeat bg-[right_1rem_center] pr-10 focus:ring-primary focus:border-primary">
             <option value="category" @selected($selectedFilterType === 'category')>Produk berdasarkan Kategori</option>
             <option value="shop" @selected($selectedFilterType === 'shop')>Produk berdasarkan Tenant / Supplier</option>
         </select>
     </div>
 
     <!-- Filter Options -->
-    <div class="mt-5 px-2.5 overflow-x-auto hide-scrollbar">
-        <div class="flex gap-2.5 pb-2.5 whitespace-nowrap">
-            @if ($selectedFilterType === 'category')
-                {{-- tombol paket santri --}}
+    <div class="mt-4 px-4">
+        @if ($selectedFilterType === 'category')
+            <select wire:model.live="selectedCategory"
+                class="w-full px-4 h-10 rounded-full border {{ $selectedCategory !== 'all' ? 'border-primary' : 'border-gray-200' }} text-gray-600 focus:border-primary focus:ring-primary">
+                <option value="all">Semua Kategori</option>
                 @if ($paketSantri)
-                    <button wire:click="$set('selectedCategory', '{{ $paketSantri->id }}')"
-                        class="px-6 h-10 flex items-center rounded-full transition-colors border {{ $selectedCategory == $paketSantri->id ? 'bg-primary text-white border-primary' : 'text-gray-600 border-gray-200 hover:border-primary hover:text-primary' }}">
-                        {{ $paketSantri->name }}
-                    </button>
+                    <option value="{{ $paketSantri->id }}">{{ $paketSantri->name }}</option>
                 @endif
-
-                <button wire:click="$set('selectedCategory', 'all')"
-                    class="px-6 h-10 flex items-center rounded-full transition-colors border {{ $selectedCategory === 'all' ? 'bg-primary text-white border-primary' : 'text-gray-600 border-gray-200 hover:border-primary hover:text-primary' }}">
-                    Semua Kategori
-                </button>
                 @foreach ($categories as $category)
-                    <button wire:click="$set('selectedCategory', '{{ $category->id }}')"
-                        class="px-6 h-10 flex items-center rounded-full transition-colors border {{ $selectedCategory == $category->id ? 'bg-primary text-white border-primary' : 'text-gray-600 border-gray-200 hover:border-primary hover:text-primary' }}">
-                        {{ $category->name }}
-                    </button>
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
                 @endforeach
-            @elseif ($selectedFilterType === 'shop')
-                <button wire:click="$set('selectedShop', 'all')"
-                    class="px-6 h-10 flex items-center rounded-full transition-colors border {{ $selectedShop === 'all' ? 'bg-primary text-white border-primary' : 'text-gray-600 border-gray-200 hover:border-primary hover:text-primary' }}">
-                    Semua Tenant
-                </button>
+            </select>
+        @elseif ($selectedFilterType === 'shop')
+            <select wire:model.live="selectedShop"
+                class="w-full px-4 h-10 rounded-full border {{ $selectedShop !== 'all' ? 'border-primary' : 'border-gray-200' }} text-gray-600 focus:border-primary focus:ring-primary">
+                <option value="all">Semua Tenant</option>
                 @foreach ($shops as $shop)
-                    <button wire:click="$set('selectedShop', '{{ $shop->id }}')"
-                        class="px-6 h-10 flex items-center rounded-full transition-colors border {{ $selectedShop == $shop->id ? 'bg-primary text-white border-primary' : 'text-gray-600 border-gray-200 hover:border-primary hover:text-primary' }}">
-                        {{ $shop->name }}
-                    </button>
+                    <option value="{{ $shop->id }}">{{ $shop->name }}</option>
                 @endforeach
-            @endif
-        </div>
+            </select>
+        @endif
     </div>
 
     <!-- Form Pencarian -->
