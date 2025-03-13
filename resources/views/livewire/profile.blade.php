@@ -28,7 +28,7 @@
         <!-- Profile Menu -->
         <div class="p-4 space-y-4">
             <!-- Account Settings -->
-              <div class="space-y-2">
+            <div class="space-y-2">
                 <h3 class="text-sm font-medium text-gray-500">Akun</h3>
                 <div class="space-y-1">
                     <a href="{{ route('profile.update') }}" wire:navigate
@@ -42,7 +42,7 @@
 
                 </div>
             </div>
-            
+
             <div class="space-y-2">
                 <div class="space-y-1">
                     <a href="https://wa.me/{{ $whatsapp }}" target="_blank"
@@ -56,6 +56,23 @@
 
                 </div>
             </div>
+
+            @if ($is_admin === 1)
+                <div class="space-y-2">
+                    <h3 class="text-sm font-medium text-gray-500">Admin</h3>
+                    <div class="space-y-1">
+                        <a href="{{ route('filament.admin.pages.dashboard') }}""
+                            class="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100">
+                            <div class="flex items-center gap-3">
+                                <i class="bi bi-person-circle text-primary"></i>
+                                <span>Halaman Admin</span>
+                            </div>
+                            <i class="bi bi-chevron-right text-gray-400"></i>
+                        </a>
+
+                    </div>
+                </div>
+            @endif
 
 
             <!-- Logout Button -->

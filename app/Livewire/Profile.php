@@ -10,6 +10,7 @@ class Profile extends Component
     public $name;
     public $email;
     public $whatsapp;
+    public $is_admin;
 
     public function render()
     {
@@ -22,6 +23,7 @@ class Profile extends Component
         $this->whatsapp = Store::first()->whatsapp;
         $this->name = $user->name;
         $this->email = $user->email;
+        $this->is_admin = $user->is_admin;
     }
 
     public function logout()
