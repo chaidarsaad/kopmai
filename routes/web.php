@@ -24,6 +24,9 @@ use Illuminate\Http\Request;
 
 Route::middleware(['schedule.run'])->group(function () {
     Route::get('/', StoreShow::class)->name('home');
+});
+
+Route::middleware(['schedule.run', 'store.closed'])->group(function () {
     Route::get('/product/{slug}', ProductDetail::class)->name('product.detail');
     Route::get('/search', SearchPage::class)->name('search.page');
     Route::get('/shop/{slug}', ShopDetail::class)->name('shop.detail');
@@ -36,14 +39,18 @@ Route::middleware(['guest', 'schedule.run'])->group(function () {
 });
 
 
+Route::middleware(['auth', 'schedule.run', 'store.closed'])->group(function () {
+    Route::get('/shopping-cart', ShoppingCart::class)->name('shopping-cart');
+
+    Route::get('/payment-confirmation/{orderNumber}', PaymentConfirmationPage::class)->name('payment-confirmation');
+});
+
 Route::middleware(['auth', 'schedule.run'])->group(function () {
     Route::get('/profile', Profile::class)->name('profile');
     Route::get('/update-profile', UpdateProfile::class)->name('profile.update');
-    Route::get('/shopping-cart', ShoppingCart::class)->name('shopping-cart');
-    Route::get('/orders', OrderPage::class)->name('orders');
 
+    Route::get('/orders', OrderPage::class)->name('orders');
     Route::get('/order-detail/{orderNumber}', OrderDetail::class)->name('order-detail');
-    Route::get('/payment-confirmation/{orderNumber}', PaymentConfirmationPage::class)->name('payment-confirmation');
 
     Route::get('/download-template', function () {
         return Excel::download(new TemplateExport, 'template.xlsx');
@@ -67,7 +74,7 @@ Route::middleware(['auth', 'schedule.run'])->group(function () {
     })->name('download-order');
 });
 
-Route::middleware(['auth', 'verified', 'schedule.run'])->group(function () {
+Route::middleware(['auth', 'verified', 'schedule.run', 'store.closed'])->group(function () {
     Route::get('/checkout', Checkout::class)->name('checkout');
 });
 

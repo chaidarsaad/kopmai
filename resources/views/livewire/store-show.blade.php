@@ -23,46 +23,48 @@
         <p class="text-gray-500 text-sm">{{ $store->description }}</p>
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="mt-4 px-4">
-        <select wire:change="setFilterType($event.target.value)"
-            class="w-full px-4 h-10 rounded-full border bg-no-repeat bg-[right_1rem_center] pr-10 focus:ring-primary focus:border-primary">
-            <option value="category" @selected($selectedFilterType === 'category')>Produk berdasarkan Kategori</option>
-            <option value="shop" @selected($selectedFilterType === 'shop')>Produk berdasarkan Tenant / Supplier</option>
-        </select>
-    </div>
-
-    <!-- Filter Options -->
-    <div class="mt-4 px-4">
-        @if ($selectedFilterType === 'category')
-            <select wire:model.live="selectedCategory"
-                class="w-full px-4 h-10 rounded-full border {{ $selectedCategory !== 'all' ? 'border-primary' : 'border-gray-200' }} text-gray-600 focus:border-primary focus:ring-primary">
-                <option value="all">Semua Kategori</option>
-                @if ($paketSantri)
-                    <option value="{{ $paketSantri->id }}">{{ $paketSantri->name }}</option>
-                @endif
-                @foreach ($categories as $category)
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                @endforeach
+    @if ($store->is_open == true)
+        <!-- Navigation Tabs -->
+        <div class="mt-4 px-4">
+            <select wire:change="setFilterType($event.target.value)"
+                class="w-full px-4 h-10 rounded-full border bg-no-repeat bg-[right_1rem_center] pr-10 focus:ring-primary focus:border-primary">
+                <option value="category" @selected($selectedFilterType === 'category')>Produk berdasarkan Kategori</option>
+                <option value="shop" @selected($selectedFilterType === 'shop')>Produk berdasarkan Tenant / Supplier</option>
             </select>
-        @elseif ($selectedFilterType === 'shop')
-            <select wire:model.live="selectedShop"
-                class="w-full px-4 h-10 rounded-full border {{ $selectedShop !== 'all' ? 'border-primary' : 'border-gray-200' }} text-gray-600 focus:border-primary focus:ring-primary">
-                <option value="all">Semua Tenant</option>
-                @foreach ($shops as $shop)
-                    <option value="{{ $shop->id }}">{{ $shop->name }}</option>
-                @endforeach
-            </select>
-        @endif
-    </div>
+        </div>
 
-    <!-- Form Pencarian -->
-    <div class="px-4 mt-4">
-        <a href="{{ route('search.page') }}" wire:navigate
-            class="block h-10 w-full px-4 py-2 border border-gray-300 rounded-full bg-white text-gray-500 text-sm text-left">
-            Cari produk...
-        </a>
-    </div>
+        <!-- Filter Options -->
+        <div class="mt-4 px-4">
+            @if ($selectedFilterType === 'category')
+                <select wire:model.live="selectedCategory"
+                    class="w-full px-4 h-10 rounded-full border {{ $selectedCategory !== 'all' ? 'border-primary' : 'border-gray-200' }} text-gray-600 focus:border-primary focus:ring-primary">
+                    <option value="all">Semua Kategori</option>
+                    @if ($paketSantri)
+                        <option value="{{ $paketSantri->id }}">{{ $paketSantri->name }}</option>
+                    @endif
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    @endforeach
+                </select>
+            @elseif ($selectedFilterType === 'shop')
+                <select wire:model.live="selectedShop"
+                    class="w-full px-4 h-10 rounded-full border {{ $selectedShop !== 'all' ? 'border-primary' : 'border-gray-200' }} text-gray-600 focus:border-primary focus:ring-primary">
+                    <option value="all">Semua Tenant</option>
+                    @foreach ($shops as $shop)
+                        <option value="{{ $shop->id }}">{{ $shop->name }}</option>
+                    @endforeach
+                </select>
+            @endif
+        </div>
+
+        <!-- Form Pencarian -->
+        <div class="px-4 mt-4">
+            <a href="{{ route('search.page') }}" wire:navigate
+                class="block h-10 w-full px-4 py-2 border border-gray-300 rounded-full bg-white text-gray-500 text-sm text-left">
+                Cari produk...
+            </a>
+        </div>
+    @endif
 
     <div class="p-3 mt-4">
         @if ($products->isEmpty())
@@ -72,6 +74,11 @@
                     <i class="bi bi-bag-x text-4xl text-primary"></i>
                 </div>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Produk</h3>
+            </div>
+        @elseif ($store->is_open == false)
+            <div class="flex-col flex items-center justify-center py-12 px-4">
+                <h1 class="text-lg font-bold text-gray-800 mb-4">Maaf Koperasi Tutup!</h1>
+                <p class="text-gray-600 mb-8">Silahkan Kembali Lagi Nanti!</p>
             </div>
         @else
             <div class="grid grid-cols-2 gap-3 items-start">

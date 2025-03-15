@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
             'schedule.run' => \App\Http\Middleware\RunScheduleInBackground::class,
+            'store.closed' => \App\Http\Middleware\IsStoreClosed::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
