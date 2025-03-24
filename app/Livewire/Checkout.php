@@ -202,7 +202,8 @@ class Checkout extends Component
                         ])
                         ->sendToDatabase($admin);
 
-                    return redirect()->route('order-detail', ['orderNumber' => $order->order_number]);
+                    // return redirect()->route('order-detail', ['orderNumber' => $order->order_number]);
+                    $this->redirectRoute('order-detail', ['orderNumber' => $order->order_number], navigate: true);
                 }
             } catch (\Exception $e) {
                 $this->dispatch('showAlert', [

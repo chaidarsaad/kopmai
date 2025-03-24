@@ -89,6 +89,7 @@ class ShoppingCart extends Component
             ]);
         }
 
-        return redirect()->route('checkout');
+        // return redirect()->route('checkout');
+        $this->redirectRoute('checkout', navigate: true);
     }
 }

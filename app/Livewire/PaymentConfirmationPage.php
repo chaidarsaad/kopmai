@@ -54,8 +54,7 @@ class PaymentConfirmationPage extends Component
                 'type' => 'success'
             ]);
 
-            return redirect()->route('orders');
-
+            $this->redirectRoute('order-detail', ['orderNumber' => $this->order->order_number], navigate: true);
         } catch (\Exception $e) {
             $this->dispatch('showAlert', [
                 'message' => $e->getMessage(),
