@@ -21,19 +21,19 @@ class ProductDetail extends Component
     public function updateCartCount()
     {
         $this->cartCount = Cart::where('user_id', auth()->id())->sum('quantity');
-    } 
-    
+    }
+
     public function addToCart($productId)
     {
         if (!auth()->check()) {
-            return redirect()->route('login');
+            $this->redirectRoute('login', navigate: true);
         }
 
         try {
             $cart = Cart::where('user_id', auth()->id())
-                        ->where('product_id', $productId)
-                        ->first();
-            
+                ->where('product_id', $productId)
+                ->first();
+
             if ($cart) {
                 $cart->update([
                     'quantity' => $cart->quantity + 1
@@ -52,9 +52,9 @@ class ProductDetail extends Component
                 'message' => 'Berhasil ditambahkan ke keranjang',
                 'type' => 'success'
             ]);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->dispatch('showAlert', [
-                'message' => 'Gagal menambahkan ke keranjang'. $e->getMessage(),
+                'message' => 'Gagal menambahkan ke keranjang' . $e->getMessage(),
                 'type' => 'error'
             ]);
         }
@@ -77,9 +77,9 @@ class ProductDetail extends Component
     public function render()
     {
         return view('livewire.product-detail', [
-                'images' => $this->product->images ?? [],
-                'currentImage' => $this->product->images[$this->currentImageIndex] ?? null
-            ])
+            'images' => $this->product->images ?? [],
+            'currentImage' => $this->product->images[$this->currentImageIndex] ?? null
+        ])
             ->layout('components.layouts.app', ['hideBottomNav' => true]);
     }
 }

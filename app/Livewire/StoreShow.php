@@ -145,7 +145,7 @@ class StoreShow extends Component
     public function addToCart($productId)
     {
         if (!auth()->check()) {
-            return redirect()->route('login');
+            $this->redirectRoute('login', navigate: true);
         }
 
         try {
