@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Set;
 use Filament\Notifications\Notification;
+use Filament\Support\RawJs;
 use Filament\Tables\Filters\SelectFilter;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -68,6 +69,16 @@ class ProductResource extends Resource
                                     ->prefix('Rp'),
                                 Forms\Components\TextInput::make('price')
                                     ->label('Harga Produk')
+                                    ->mask(
+                                        RawJs::make(<<<'JS'
+                                    $input => {
+                                        let number = $input.replace(/[^\d]/g, '');
+                                        if (number === '') return '0';
+                                        return new Intl.NumberFormat('id-ID').format(Number(number));
+                                    }
+                                JS)
+                                    )
+                                    ->stripCharacters([',', '.'])
                                     ->numeric()
                                     ->prefix('Rp'),
                                 Forms\Components\TextInput::make('stock')
