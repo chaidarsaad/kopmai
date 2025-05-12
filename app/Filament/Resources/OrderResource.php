@@ -33,6 +33,7 @@ use Filament\Tables\Filters\Filter;
 use Illuminate\Support\HtmlString;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class OrderResource extends Resource
 {
@@ -57,7 +58,8 @@ class OrderResource extends Resource
                                 Forms\Components\TextInput::make('order_number')
                                     ->unique(ignoreRecord: true)
                                     ->required()
-                                    ->label('No. Pesanan'),
+                                    ->label('No. Pesanan')
+                                    ->default(fn() => 'ORD-' . strtoupper(uniqid())),
                                 Forms\Components\TextInput::make('created_at')
                                     ->label('Tanggal Pesan')
                                     ->formatStateUsing(fn($state) => Carbon::parse($state)->format('d M Y H:i')),
