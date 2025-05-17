@@ -151,6 +151,7 @@ class ProductResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')
+                    ->required()
                     ->money('IDR')
                     ->searchable()
                     ->label('Harga')
