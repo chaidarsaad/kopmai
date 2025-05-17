@@ -8,11 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -32,7 +33,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     {
         static::updating(function ($user) {
             if (($user->email === 'chaidaar@genzproject.my.id' || $user->id === 1)
-                && $user->isDirty('is_admin') && $user->is_admin == 0) {
+                && $user->isDirty('is_admin') && $user->is_admin == 0
+            ) {
 
                 $user->is_admin = $user->getOriginal('is_admin');
             }
@@ -64,6 +66,12 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return (bool) $this->is_admin;
+        // return (bool) $this->is_admin;
+
+        if ($this->roles->isEmpty()) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -4,9 +4,10 @@ return [
     'shield_resource' => [
         'should_register_navigation' => true,
         'slug' => 'shield/roles',
-        'navigation_sort' => -1,
-        'navigation_badge' => true,
+        'navigation_sort' => 99,
+        'navigation_badge' => false,
         'navigation_group' => true,
+        'sub_navigation_position' => null,
         'is_globally_searchable' => false,
         'show_model_path' => true,
         'is_scoped_to_tenant' => true,
@@ -19,9 +20,9 @@ return [
         'fqcn' => 'App\\Models\\User',
     ],
 
-    'super_admin' => [
+    'pengelola_web' => [
         'enabled' => true,
-        'name' => 'super_admin',
+        'name' => 'pengelola_web',
         'define_via_gate' => false,
         'intercept_gate' => 'before', // after
     ],
@@ -37,14 +38,14 @@ return [
             'view_any',
             'create',
             'update',
-            'restore',
-            'restore_any',
-            'replicate',
-            'reorder',
+            // 'restore',
+            // 'restore_any',
+            // 'replicate',
+            // 'reorder',
             'delete',
             'delete_any',
-            'force_delete',
-            'force_delete_any',
+            // 'force_delete',
+            // 'force_delete_any',
         ],
 
         'page' => 'page',
@@ -72,7 +73,8 @@ return [
         ],
 
         'widgets' => [
-            'AccountWidget', 'FilamentInfoWidget',
+            'AccountWidget',
+            'FilamentInfoWidget',
         ],
 
         'resources' => [],

@@ -22,6 +22,7 @@ use App\Filament\Widgets\RevenueChart;
 use App\Filament\Widgets\BestSellingProductTable;
 use App\Livewire\Auth\Login;
 use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationItem;
 use TomatoPHP\FilamentPWA\FilamentPWAPlugin;
 
 class AdminPanelProvider extends PanelProvider
@@ -83,6 +84,14 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 \TomatoPHP\FilamentPWA\FilamentPWAPlugin::make(),
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+            ])
+            ->navigationItems([
+                NavigationItem::make('Ubah Profil')
+                    ->sort(20)
+                    ->isActiveWhen(fn() => request()->routeIs('filament.admin.auth.profile'))
+                    ->url(fn() => route('filament.admin.auth.profile', absolute: true))
+                    ->icon('heroicon-o-user'),
             ])
         ;
     }

@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserResource extends Resource
 {
@@ -49,6 +50,14 @@ class UserResource extends Resource
                 Forms\Components\Toggle::make('is_admin')
                     ->label('Administrator')
                     ->default(false),
+                Forms\Components\Select::make('roles')
+                    ->label('Peran')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->getOptionLabelFromRecordUsing(fn($record) => Str::headline($record->name))
+                    ->hidden(fn() => !auth()->user()?->hasRole('pengelola_web')),
             ]);
     }
 
@@ -67,6 +76,10 @@ class UserResource extends Resource
                     ->label('No HP'),
                 Tables\Columns\TextColumn::make('email')
                     ->label('Email')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->label('Peran')
+                    ->formatStateUsing(fn($state) => Str::headline($state))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()

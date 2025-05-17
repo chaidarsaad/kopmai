@@ -24,12 +24,12 @@ class ListUsers extends ListRecords
     public function getTabs(): array
     {
         return [
-            'Admin' => Tab::make()
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('is_admin', '1'))
-                ->badge(User::query()->where('is_admin', '1')->count()),
+            'Pengelola Web' => Tab::make()
+                ->modifyQueryUsing(fn(Builder $query) => $query->whereHas('roles', fn($q) => $q->where('name', 'pengelola_web')))
+                ->badge(User::whereHas('roles', fn($q) => $q->where('name', 'pengelola_web'))->count()),
             'Wali' => Tab::make()
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('is_admin', '0'))
-                ->badge(User::query()->where('is_admin', '0')->count()),
+                ->modifyQueryUsing(fn(Builder $query) => $query->whereDoesntHave('roles'))
+                ->badge(User::whereDoesntHave('roles')->count()),
             'Semua' => Tab::make()
                 ->badge(User::count()),
         ];
