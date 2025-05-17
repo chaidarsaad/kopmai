@@ -177,7 +177,7 @@ class OrderResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Tanggal')
-                    ->dateTime('d M Y H:i')
+                    ->dateTime('l, d F Y H:i')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('order_number')
                     ->label('No. Pesanan')
@@ -192,9 +192,29 @@ class OrderResource extends Resource
                     ->label('Kelas Santri')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('total_amount')
-                    ->money('IDR')
                     ->label('Total')
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(function ($state, $record) {
+                        $user = auth()->user();
+
+                        // Jika user adalah owner_tenant, hitung ulang total berdasarkan produknya
+                        if ($user->hasRole('owner_tenant')) {
+                            $tenantShopId = $user->shop_id;
+
+                            // Hitung ulang total dari produk milik tenant saja
+                            $total = $record->orderItems->sum(function ($item) use ($tenantShopId) {
+                                return $item->product?->shop_id === $tenantShopId
+                                    ? $item->quantity * $item->price
+                                    : 0;
+                            });
+
+                            return 'Rp ' . number_format($total, 0, ',', '.');
+                        }
+
+                        // Default: tampilkan total_amount seperti biasa
+                        return 'Rp ' . number_format($state, 0, ',', '.');
+                    }),
+
                 Tables\Columns\TextColumn::make('payment_status')
                     ->label('Pembayaran')
                     ->badge()
