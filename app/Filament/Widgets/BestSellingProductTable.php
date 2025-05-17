@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\OrderItem;
 use App\Models\User;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
@@ -14,7 +15,7 @@ use Illuminate\Support\Carbon;
 
 class BestSellingProductTable extends BaseWidget
 {
-    use InteractsWithPageFilters;
+    use InteractsWithPageFilters, HasWidgetShield;
     protected static ?int $sort = 2;
     protected static ?string $heading = 'Produk Terjual';
 

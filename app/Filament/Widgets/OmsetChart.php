@@ -8,10 +8,12 @@ use Flowframe\Trend\TrendValue;
 use App\Models\Expense;
 use App\Models\Order;
 use App\Models\Transaction;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Carbon\Carbon;
 
 class OmsetChart extends ChartWidget
 {
+    use HasWidgetShield;
     protected static ?string $heading = 'Omset';
     protected static ?int $sort = 4;
     protected static string $color = 'success';

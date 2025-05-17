@@ -3,11 +3,13 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Order;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Carbon;
 
 class RevenueChart extends ChartWidget
 {
+    use HasWidgetShield;
     protected static ?string $heading = 'Grafik Omset Harian';
     protected static ?int $sort = 3;
 

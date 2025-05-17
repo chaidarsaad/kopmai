@@ -14,7 +14,7 @@ use Illuminate\Support\Carbon;
 
 class OrderBiggest extends BaseWidget
 {
-    use InteractsWithPageFilters;
+    use InteractsWithPageFilters, HasWidgetShield;
 
     protected static ?string $heading = 'Sumber Pemasukan';
     protected static ?int $sort = 1;
@@ -41,17 +41,17 @@ class OrderBiggest extends BaseWidget
         }
 
         return $table
-        ->paginationPageOptions([10, 25, 50, 100, 250])
-        ->defaultPaginationPageOption(10)
-        ->query($query)
-        ->columns([
-            Tables\Columns\TextColumn::make('order_number')
-                ->label('No. Pesanan'),
-            Tables\Columns\TextColumn::make('recipient_name')
-                ->label('Nama Wali'),
-            Tables\Columns\TextColumn::make('subtotal')
-                ->label('Jumlah')
-                ->money('IDR'),
-        ]);
+            ->paginationPageOptions([10, 25, 50, 100, 250])
+            ->defaultPaginationPageOption(10)
+            ->query($query)
+            ->columns([
+                Tables\Columns\TextColumn::make('order_number')
+                    ->label('No. Pesanan'),
+                Tables\Columns\TextColumn::make('recipient_name')
+                    ->label('Nama Wali'),
+                Tables\Columns\TextColumn::make('subtotal')
+                    ->label('Jumlah')
+                    ->money('IDR'),
+            ]);
     }
 }
