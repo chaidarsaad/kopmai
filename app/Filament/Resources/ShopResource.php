@@ -128,8 +128,8 @@ class ShopResource extends Resource
     {
         return [
             'index' => Pages\ListShops::route('/'),
-            // 'create' => Pages\CreateShop::route('/create'),
-            // 'edit' => Pages\EditShop::route('/{record}/edit'),
+            'create' => Pages\CreateShop::route('/create'),
+            'edit' => Pages\EditShop::route('/{record}/edit'),
         ];
     }
 }

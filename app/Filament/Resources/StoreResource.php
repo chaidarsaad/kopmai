@@ -110,8 +110,8 @@ class StoreResource extends Resource
     {
         return [
             'index' => Pages\ListStores::route('/'),
-            //    'create' => Pages\CreateStore::route('/create'),
-            //    'edit' => Pages\EditStore::route('/{record}/edit'),
+            'create' => Pages\CreateStore::route('/create'),
+            'edit' => Pages\EditStore::route('/{record}/edit'),
         ];
     }
 
