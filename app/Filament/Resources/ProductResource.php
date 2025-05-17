@@ -46,11 +46,14 @@ class ProductResource extends Resource
                                     ->preload()
                                     ->searchable()
                                     ->required(),
-                                Forms\Components\Select::make('shp_id')
+                                Forms\Components\Select::make('shop_id')
                                     ->label('Tenant')
                                     ->relationship('shop', 'name')
                                     ->preload()
-                                    ->searchable(),
+                                    ->searchable()
+                                    ->disabled(fn() => Auth::user()->hasRole('owner_tenant')) // ⛔ Nonaktifkan jika owner_tenant
+                                    ->default(fn() => Auth::user()->hasRole('owner_tenant') ? Auth::user()->shop_id : null) // ✅ Auto set jika owner_tenant
+                                    ->required(), // tambahkan jika memang wajib
                                 Forms\Components\TextInput::make('name')
                                     ->label('Nama Produk')
                                     ->required()
