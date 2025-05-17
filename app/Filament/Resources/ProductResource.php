@@ -84,6 +84,7 @@ class ProductResource extends Resource
                                     ->numeric()
                                     ->prefix('Rp'),
                                 Forms\Components\TextInput::make('price')
+                                    ->required()
                                     ->label('Harga Produk')
                                     ->mask(
                                         RawJs::make(<<<'JS'
@@ -151,7 +152,6 @@ class ProductResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')
-                    ->required()
                     ->money('IDR')
                     ->searchable()
                     ->label('Harga')
