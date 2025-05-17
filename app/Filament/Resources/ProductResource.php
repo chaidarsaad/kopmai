@@ -20,6 +20,7 @@ use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Support\RawJs;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductResource extends Resource
@@ -114,7 +115,17 @@ class ProductResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $user = Auth::user();
+
         return $table
+            ->modifyQueryUsing(function (Builder $query) use ($user) {
+                if ($user->hasRole('owner_tenant')) {
+                    // Tampilkan hanya produk dari tenant yang dimiliki oleh user
+                    $query->where('shop_id', $user->shop_id);
+                }
+
+                return $query;
+            })
             ->paginationPageOptions([5, 25, 50, 100, 250])
             ->defaultPaginationPageOption(5)
             ->defaultSort('id', direction: 'desc')
@@ -161,7 +172,8 @@ class ProductResource extends Resource
                     ->label('Tenant')
                     ->preload()
                     ->searchable()
-                    ->multiple(),
+                    ->multiple()
+                    ->visible(fn() => !auth()->user()->hasRole('owner_tenant')),
                 SelectFilter::make('category_id')
                     ->relationship('category', 'name')
                     ->label('Kategori')
@@ -177,71 +189,73 @@ class ProductResource extends Resource
                     ->label('Status Produk'),
             ])
             ->headerActions([
-                Action::make("Template")
-                    ->label('Download Template Excel Produk')
-                    ->color('info')
-                    ->url(route('download-template')),
-                Action::make('importProducts')
-                    ->color('info')
-                    ->label('Import Produk by Template')
-                    ->form([
-                        FileUpload::make('attachment')
-                            ->label('Upload Template Produk')
-                    ])
-                    ->action(function (array $data) {
-                        $file = public_path('storage/' . $data['attachment']);
+                // Action::make("Template")
+                //     ->label('Download Template Excel Produk')
+                //     ->color('info')
+                //     ->url(route('download-template')),
+                // Action::make('importProducts')
+                //     ->color('info')
+                //     ->label('Import Produk by Template')
+                //     ->form([
+                //         FileUpload::make('attachment')
+                //             ->label('Upload Template Produk')
+                //     ])
+                //     ->action(function (array $data) {
+                //         $file = public_path('storage/' . $data['attachment']);
 
-                        try {
-                            $import = new ProductImport();
-                            Excel::import($import, $file);
-                            $totalRows = $import->getRowCount();
-                            Notification::make()
-                                ->title('Produk diimpor')
-                                ->body("Produk diimpor sebanyak {$totalRows} baris.")
-                                ->success()
-                                ->send();
-                        } catch (\Exception $e) {
-                            Notification::make()
-                                ->danger()
-                                ->title('Produk gagal diimpor')
-                                ->body($e->getMessage())
-                                ->send();
-                        }
-                    }),
-                Action::make("Download Data Update Masal")
-                    ->label('Download Data Update Masal')
-                    ->url(route('download-data')),
-                Action::make('importProductsMasal')
-                    ->label('Import Update Masal')
-                    ->form([
-                        FileUpload::make('attachment')
-                            ->label('Upload Excel Produk')
-                    ])
-                    ->action(function (array $data) {
-                        $file = public_path('storage/' . $data['attachment']);
+                //         try {
+                //             $import = new ProductImport();
+                //             Excel::import($import, $file);
+                //             $totalRows = $import->getRowCount();
+                //             Notification::make()
+                //                 ->title('Produk diimpor')
+                //                 ->body("Produk diimpor sebanyak {$totalRows} baris.")
+                //                 ->success()
+                //                 ->send();
+                //         } catch (\Exception $e) {
+                //             Notification::make()
+                //                 ->danger()
+                //                 ->title('Produk gagal diimpor')
+                //                 ->body($e->getMessage())
+                //                 ->send();
+                //         }
+                //     }),
+                // Action::make("Download Data Update Masal")
+                //     ->label('Download Data Update Masal')
+                //     ->url(route('download-data')),
+                // Action::make('importProductsMasal')
+                //     ->label('Import Update Masal')
+                //     ->form([
+                //         FileUpload::make('attachment')
+                //             ->label('Upload Excel Produk')
+                //     ])
+                //     ->action(function (array $data) {
+                //         $file = public_path('storage/' . $data['attachment']);
 
-                        try {
-                            $import = new ProductEditImport();
-                            Excel::import($import, $file);
-                            $totalRows = $import->getRowCount();
-                            Notification::make()
-                                ->title('Update masal sukses')
-                                ->body("Produk diedit sebanyak {$totalRows} baris.")
-                                ->success()
-                                ->send();
-                        } catch (\Exception $e) {
-                            Notification::make()
-                                ->danger()
-                                ->title('Update masal gagal')
-                                ->body($e->getMessage())
-                                ->send();
-                        }
-                    }),
+                //         try {
+                //             $import = new ProductEditImport();
+                //             Excel::import($import, $file);
+                //             $totalRows = $import->getRowCount();
+                //             Notification::make()
+                //                 ->title('Update masal sukses')
+                //                 ->body("Produk diedit sebanyak {$totalRows} baris.")
+                //                 ->success()
+                //                 ->send();
+                //         } catch (\Exception $e) {
+                //             Notification::make()
+                //                 ->danger()
+                //                 ->title('Update masal gagal')
+                //                 ->body($e->getMessage())
+                //                 ->send();
+                //         }
+                //     }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->modalHeading('Ubah Produk'),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->modalHeading(fn($record) => 'Hapus Produk: ' . $record->name),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

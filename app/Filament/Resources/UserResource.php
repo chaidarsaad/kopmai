@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -47,9 +48,9 @@ class UserResource extends Resource
                     ->dehydrated(fn(?string $state): bool => filled($state))
                     ->required(fn(string $operation): bool => $operation === 'create')
                     ->minLength(8),
-                Forms\Components\Toggle::make('is_admin')
-                    ->label('Administrator')
-                    ->default(false),
+                // Forms\Components\Toggle::make('is_admin')
+                //     ->label('Administrator')
+                //     ->default(false),
                 Forms\Components\Select::make('roles')
                     ->label('Peran')
                     ->relationship('roles', 'name')
@@ -58,6 +59,12 @@ class UserResource extends Resource
                     ->searchable()
                     ->getOptionLabelFromRecordUsing(fn($record) => Str::headline($record->name))
                     ->hidden(fn() => !auth()->user()?->hasRole('pengelola_web')),
+                Forms\Components\Select::make('shop_id')
+                    ->label('Tenant')
+                    ->relationship('shop', 'name')
+                    ->preload()
+                    ->placeholder('Pilih Tenant')
+                    ->searchable(),
             ]);
     }
 
@@ -101,7 +108,9 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->modalHeading('Ubah Pengguna'),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->modalHeading(fn($record) => 'Hapus Pengguna: ' . $record->name),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

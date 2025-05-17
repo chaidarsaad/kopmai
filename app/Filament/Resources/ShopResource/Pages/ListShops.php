@@ -14,6 +14,7 @@ class ListShops extends ListRecords
     {
         return [
             Actions\CreateAction::make()
+                ->label('Buat Tenant')
                 ->modalHeading('Buat Tenant'),
         ];
     }

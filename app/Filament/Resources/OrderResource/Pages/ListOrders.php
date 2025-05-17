@@ -17,6 +17,7 @@ class ListOrders extends ListRecords
     {
         return [
             Actions\CreateAction::make()
+                ->label('Buat Pesanan')
                 ->modalHeading('Buat Pesanan'),
         ];
     }

@@ -14,6 +14,7 @@ class ListProducts extends ListRecords
     {
         return [
             Actions\CreateAction::make()
+                ->label('Buat Produk')
                 ->modalHeading('Buat Produk'),
         ];
     }

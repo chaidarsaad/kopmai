@@ -66,7 +66,9 @@ class ClassroomResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->modalHeading('Ubah Kelas'),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->modalHeading(fn($record) => 'Hapus Kelas: ' . $record->name),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

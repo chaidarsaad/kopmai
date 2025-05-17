@@ -70,7 +70,9 @@ class PaymentMethodResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->modalHeading('Ubah Metode Pembayaran'),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->modalHeading(fn($record) => 'Hapus Metode Pembayaran: ' . $record->name),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -249,7 +249,9 @@ class OrderResource extends Resource
                 //     ->color('warning')
                 //     ->label('Export')
                 //     ->action(fn($record) => redirect()->route('download-order', ['order_id' => $record->id])),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->modalHeading(fn($record) => 'Hapus Pesanan: ' . $record->order_number),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

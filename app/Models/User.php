@@ -74,4 +74,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 
         return true;
     }
+
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
+    }
 }

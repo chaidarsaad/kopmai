@@ -14,6 +14,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class ShopResource extends Resource
 {
@@ -78,9 +79,22 @@ class ShopResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $user = Auth::user();
+
         return $table
+            ->modifyQueryUsing(function (Builder $query) use ($user) {
+                if ($user->hasRole('owner_tenant')) {
+                    $query->where('id', $user->shop_id);
+                } elseif (!$user->hasRole('pengelola_web')) {
+                    $query->whereDoesntHave('roles', function (Builder $query) {
+                        $query->where('name', 'owner_tenant');
+                    });
+                }
+
+                return $query;
+            })
+            ->paginated(! $user->hasRole('owner_tenant')) // ✅ Di sini: true/false
             ->paginationPageOptions([5, 25, 50, 100, 250])
-            ->defaultPaginationPageOption(5)
             ->defaultSort('id', 'desc')
             ->columns([
                 Tables\Columns\ToggleColumn::make('is_active')
@@ -108,7 +122,9 @@ class ShopResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->modalHeading('Ubah Tenant'),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->modalHeading(fn($record) => 'Hapus Tenant: ' . $record->name),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

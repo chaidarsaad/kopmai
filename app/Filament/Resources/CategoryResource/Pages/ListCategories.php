@@ -14,6 +14,7 @@ class ListCategories extends ListRecords
     {
         return [
             Actions\CreateAction::make()
+                ->label('Buat Kategori')
                 ->modalHeading('Buat Kategori'),
         ];
     }

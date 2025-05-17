@@ -14,6 +14,7 @@ class ListPaymentMethods extends ListRecords
     {
         return [
             Actions\CreateAction::make()
+                ->label('Buat Metode Pembayaran')
                 ->modalHeading('Buat Metode Pembayaran')
         ];
     }
