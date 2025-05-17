@@ -157,6 +157,18 @@ class OrderResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $table = $table->modifyQueryUsing(function (Builder $query) {
+            $user = auth()->user();
+
+            if ($user->hasRole('owner_tenant')) {
+                $query->whereHas('orderItems.product', function ($q) use ($user) {
+                    $q->where('shop_id', $user->shop_id);
+                });
+            }
+
+            return $query;
+        });
+
         return $table
             ->poll('5s')
             ->paginationPageOptions([5, 25, 50, 100, 250])
@@ -276,6 +288,7 @@ class OrderResource extends Resource
                             'end_date' => $data['end_date']
                         ]);
                     })
+                    ->visible(fn() => auth()->user()->hasRole('pengelola_web'))
             ])
         ;
     }
@@ -295,11 +308,6 @@ class OrderResource extends Resource
             'edit' => Pages\EditOrder::route('/{record}/edit'),
             'view' => Pages\ViewOrder::route('/{record}'),
         ];
-    }
-
-    public static function canCreate(): bool
-    {
-        return true;
     }
 
     public static function getItemsRepeater(): Repeater

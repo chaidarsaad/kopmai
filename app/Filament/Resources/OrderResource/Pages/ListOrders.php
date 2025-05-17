@@ -24,6 +24,8 @@ class ListOrders extends ListRecords
 
     public function getTabs(): array
     {
+        $user = auth()->user(); // Ambil user yang sedang login
+
         return [
             'Menunggu Pembayaran' => Tab::make()
                 ->modifyQueryUsing(
@@ -31,13 +33,22 @@ class ListOrders extends ListRecords
                     $query->whereNull('payment_proof')
                         ->where('status', '!=', 'completed')
                         ->where('status', '!=', 'cancelled')
-                        ->where('payment_status', '!=', 'paid') // Tambahkan ini
+                        ->where('payment_status', '!=', 'paid')
                 )
-                ->badge(Order::whereNull('payment_proof')
-                    ->where('status', '!=', 'completed')
-                    ->where('status', '!=', 'cancelled')
-                    ->where('payment_status', '!=', 'paid') // Tambahkan ini
-                    ->count()),
+                ->badge(function () use ($user) {
+                    $query = Order::query();
+                    if ($user->hasRole('owner_tenant')) {
+                        $query->whereHas('orderItems.product', function ($q) use ($user) {
+                            $q->where('shop_id', $user->shop_id); // Filter pesanan berdasarkan produk yang milik tenant
+                        });
+                    }
+
+                    return $query->whereNull('payment_proof')
+                        ->where('status', '!=', 'completed')
+                        ->where('status', '!=', 'cancelled')
+                        ->where('payment_status', '!=', 'paid')
+                        ->count();
+                }),
 
             'Sudah Dibayar (Belum di verifikasi)' => Tab::make()
                 ->modifyQueryUsing(
@@ -46,22 +57,70 @@ class ListOrders extends ListRecords
                         ->where('status', 'pending')
                         ->where('payment_status', '!=', 'paid')
                 )
-                ->badge(Order::whereNotNull('payment_proof')
-                    ->where('status', 'pending')
-                    ->where('payment_status', '!=', 'paid')
-                    ->count()),
+                ->badge(function () use ($user) {
+                    $query = Order::query();
+                    if ($user->hasRole('owner_tenant')) {
+                        $query->whereHas('orderItems.product', function ($q) use ($user) {
+                            $q->where('shop_id', $user->shop_id); // Filter pesanan berdasarkan produk yang milik tenant
+                        });
+                    }
+
+                    return $query->whereNotNull('payment_proof')
+                        ->where('status', 'pending')
+                        ->where('payment_status', '!=', 'paid')
+                        ->count();
+                }),
+
             'Diproses' => Tab::make()
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('status', 'processing'))
-                ->badge(Order::query()->where('status', 'processing')->count()),
+                ->badge(function () use ($user) {
+                    $query = Order::query();
+                    if ($user->hasRole('owner_tenant')) {
+                        $query->whereHas('orderItems.product', function ($q) use ($user) {
+                            $q->where('shop_id', $user->shop_id); // Filter pesanan berdasarkan produk yang milik tenant
+                        });
+                    }
+
+                    return $query->where('status', 'processing')->count();
+                }),
 
             'Selesai' => Tab::make()
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('status', 'completed'))
-                ->badge(Order::query()->where('status', 'completed')->count()),
+                ->badge(function () use ($user) {
+                    $query = Order::query();
+                    if ($user->hasRole('owner_tenant')) {
+                        $query->whereHas('orderItems.product', function ($q) use ($user) {
+                            $q->where('shop_id', $user->shop_id); // Filter pesanan berdasarkan produk yang milik tenant
+                        });
+                    }
+
+                    return $query->where('status', 'completed')->count();
+                }),
+
             'Dibatalkan' => Tab::make()
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('status', 'cancelled'))
-                ->badge(Order::query()->where('status', 'cancelled')->count()),
+                ->badge(function () use ($user) {
+                    $query = Order::query();
+                    if ($user->hasRole('owner_tenant')) {
+                        $query->whereHas('orderItems.product', function ($q) use ($user) {
+                            $q->where('shop_id', $user->shop_id); // Filter pesanan berdasarkan produk yang milik tenant
+                        });
+                    }
+
+                    return $query->where('status', 'cancelled')->count();
+                }),
+
             'Semua' => Tab::make()
-                ->badge(Order::count()),
+                ->badge(function () use ($user) {
+                    $query = Order::query();
+                    if ($user->hasRole('owner_tenant')) {
+                        $query->whereHas('orderItems.product', function ($q) use ($user) {
+                            $q->where('shop_id', $user->shop_id); // Filter pesanan berdasarkan produk yang milik tenant
+                        });
+                    }
+
+                    return $query->count(); // Total count dari semua pesanan
+                }),
         ];
     }
 }
