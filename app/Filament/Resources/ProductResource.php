@@ -136,6 +136,9 @@ class ProductResource extends Resource
             ->defaultPaginationPageOption(5)
             ->defaultSort('id', direction: 'desc')
             ->columns([
+                Tables\Columns\ToggleColumn::make('is_active')
+                    ->label('Aktifkan produk?')
+                    ->sortable(),
                 Tables\Columns\ImageColumn::make('image')
                     ->label('Gambar')
                     ->circular()
@@ -173,9 +176,7 @@ class ProductResource extends Resource
                     ->sortable()
                     ->visible(fn() => auth()->user()->hasRole('pengelola_web')),
 
-                Tables\Columns\ToggleColumn::make('is_active')
-                    ->label('Aktifkan produk?')
-                    ->sortable(),
+
             ])
             ->filters([
                 SelectFilter::make('shop_id')
