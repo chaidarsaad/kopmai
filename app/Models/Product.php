@@ -33,17 +33,23 @@ class Product extends Model
     {
         return 'https://drive.google.com/thumbnail?id=' . $this->image . '&sz=w1000';
     }
+
     protected static function boot()
     {
         parent::boot();
 
         static::saving(function ($product) {
-            // Hitung laba jika price dan modal tersedia
+            // Jika modal kosong, maka laba = price
+            if (!is_null($product->price) && is_null($product->modal)) {
+                $product->laba = $product->price;
+            }
+
+            // Jika price dan modal tersedia, maka laba = price - modal
             if (!is_null($product->price) && !is_null($product->modal)) {
                 $product->laba = $product->price - $product->modal;
             }
 
-            // Set is_active menjadi false jika price atau modal kosong
+            // Set is_active menjadi false jika price kosong
             if (empty($product->price)) {
                 $product->is_active = false;
             }
