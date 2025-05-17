@@ -18,26 +18,35 @@ class OrderBiggest extends BaseWidget
 
     protected static ?string $heading = 'Sumber Pemasukan';
     protected static ?int $sort = 1;
+
     public function table(Table $table): Table
     {
         $startDate = $this->filters['startDate'] ?? null;
         $endDate = $this->filters['endDate'] ?? null;
 
-        if (!empty($this->filters['startDate'])) {
-            $startDate = Carbon::parse($this->filters['startDate']);
+        if (!empty($startDate)) {
+            $startDate = Carbon::parse($startDate);
         }
 
-        if (!empty($this->filters['endDate'])) {
-            $endDate = Carbon::parse($this->filters['endDate'])->endOfDay();
+        if (!empty($endDate)) {
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
 
-        $query = Order::query()->where('payment_status', 'paid')->orderBy('subtotal', 'desc');
-        if ($startDate && $endDate) {
-            $query->whereBetween('created_at', [$startDate, $endDate]);
-        } elseif ($startDate) {
-            $query->where('created_at', '>=', $startDate);
-        } elseif ($endDate) {
-            $query->where('created_at', '<=', $endDate);
+        $user = auth()->user();
+        $isOwnerTenant = $user->hasRole('owner_tenant');
+
+        // Query dasar
+        $query = Order::query()
+            ->where('payment_status', 'paid')
+            ->when($startDate && $endDate, fn($q) => $q->whereBetween('created_at', [$startDate, $endDate]))
+            ->when($startDate && !$endDate, fn($q) => $q->where('created_at', '>=', $startDate))
+            ->when(!$startDate && $endDate, fn($q) => $q->where('created_at', '<=', $endDate));
+
+        if ($isOwnerTenant) {
+            // Untuk owner_tenant, filter order yang punya item dari tenant dia
+            $query->whereHas('orderItems.product', function ($q) use ($user) {
+                $q->where('shop_id', $user->shop_id);
+            });
         }
 
         return $table
@@ -47,11 +56,28 @@ class OrderBiggest extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('order_number')
                     ->label('No. Pesanan'),
+
                 Tables\Columns\TextColumn::make('recipient_name')
                     ->label('Nama Wali'),
+
                 Tables\Columns\TextColumn::make('subtotal')
                     ->label('Jumlah')
-                    ->money('IDR'),
+                    ->formatStateUsing(function ($record) use ($isOwnerTenant, $user) {
+                        if ($isOwnerTenant) {
+                            // Hitung total hanya dari produk tenant yang sedang login
+                            $total = $record->orderItems()
+                                ->whereHas('product', function ($q) use ($user) {
+                                    $q->where('shop_id', $user->shop_id);
+                                })
+                                ->selectRaw('SUM(price * quantity) as total')
+                                ->value('total');
+
+                            return 'Rp ' . number_format($total ?? 0, 2, ',', '.');
+                        }
+
+                        // Untuk admin/pengelola, tetap tampilkan subtotal pesanan
+                        return 'Rp ' . number_format($record->subtotal, 2, ',', '.');
+                    }),
             ]);
     }
 }

@@ -23,6 +23,19 @@ class StatsOverview extends BaseWidget
     {
         $user = Auth::user();
 
+        // Ambil ID toko milik user tenant
+        $shopId = $user->shop_id;
+
+        // Hitung total pendapatan berdasarkan produk yang dimiliki tenant ini
+        $income = OrderItem::whereHas('order', function ($query) {
+            $query->where('payment_status', 'paid');
+        })
+            ->whereHas('product', function ($query) use ($shopId) {
+                $query->where('shop_id', $shopId);
+            })
+            ->select(DB::raw('SUM(price * quantity) as total'))
+            ->value('total') ?? 0;
+
         // Jika role adalah owner_tenant
         if ($user->hasRole('owner_tenant')) {
             $productCount = Product::where('shop_id', $user->shop_id)->count();
@@ -30,6 +43,8 @@ class StatsOverview extends BaseWidget
             return [
                 Stat::make('Total Produk Saya', $productCount)
                     ->description('Jumlah Produk Tenant Anda'),
+                Stat::make('Total Pendapatan Saya', 'Rp ' . number_format($income, 0, ",", "."))
+                    ->description('Pendapatan Tenant Anda'),
             ];
         }
 

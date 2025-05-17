@@ -27,9 +27,12 @@ class BestSellingProductTable extends BaseWidget
         if ($startDate) {
             $startDate = Carbon::parse($startDate)->startOfDay();
         }
+
         if ($endDate) {
             $endDate = Carbon::parse($endDate)->endOfDay();
         }
+
+        $user = auth()->user();
 
         $query = OrderItem::query()
             ->select([
@@ -50,6 +53,11 @@ class BestSellingProductTable extends BaseWidget
                     $query->where('created_at', '<=', $endDate);
                 }
             })
+            ->when($user->hasRole('owner_tenant'), function ($query) use ($user) {
+                $query->whereHas('product', function ($q) use ($user) {
+                    $q->where('shop_id', $user->shop_id);
+                });
+            })
             ->groupBy('product_id', 'product_name')
             ->orderByDesc('total_quantity');
 
@@ -59,6 +67,7 @@ class BestSellingProductTable extends BaseWidget
             ->query($query)
             ->columns([
                 Tables\Columns\TextColumn::make('product_name')
+                    ->limit(30)
                     ->label('Nama Produk'),
                 Tables\Columns\TextColumn::make('total_quantity')
                     ->label('Total Terjual'),
@@ -67,6 +76,7 @@ class BestSellingProductTable extends BaseWidget
                     ->money('IDR'),
             ]);
     }
+
 
     public function getTableRecordKey(Model $record): string
     {
