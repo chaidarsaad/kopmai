@@ -12,6 +12,7 @@ use App\Models\User;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class StatsOverview extends BaseWidget
@@ -20,15 +21,28 @@ class StatsOverview extends BaseWidget
     protected static ?int $sort = 0;
     protected function getStats(): array
     {
+        $user = Auth::user();
+
+        // Jika role adalah owner_tenant
+        if ($user->hasRole('owner_tenant')) {
+            $productCount = Product::where('shop_id', $user->shop_id)->count();
+
+            return [
+                Stat::make('Total Produk Saya', $productCount)
+                    ->description('Jumlah Produk Tenant Anda'),
+            ];
+        }
+
+        // Jika role selain owner_tenant (misalnya admin)
         $startDate = $this->filters['startDate'] ?? null;
         $endDate = $this->filters['endDate'] ?? null;
 
-        if (!empty($this->filters['startDate'])) {
-            $startDate = Carbon::parse($this->filters['startDate']);
+        if (!empty($startDate)) {
+            $startDate = Carbon::parse($startDate);
         }
 
-        if (!empty($this->filters['endDate'])) {
-            $endDate = Carbon::parse($this->filters['endDate'])->endOfDay();
+        if (!empty($endDate)) {
+            $endDate = Carbon::parse($endDate)->endOfDay();
         }
 
         $orderQuery = Order::where('payment_status', 'paid');
@@ -42,6 +56,7 @@ class StatsOverview extends BaseWidget
 
         $expense = OrderItem::whereHas('order', function ($query) use ($startDate, $endDate) {
             $query->where('payment_status', 'paid');
+
             if ($startDate && $endDate) {
                 $query->whereBetween('created_at', [$startDate, $endDate]);
             } elseif ($startDate) {
@@ -55,7 +70,6 @@ class StatsOverview extends BaseWidget
         $order_count = $orderQuery->count();
         $omset = $orderQuery->sum('subtotal');
         $laba = $omset - $expense;
-
 
         return [
             Stat::make('Total Admin', User::where('is_admin', 1)->count())
