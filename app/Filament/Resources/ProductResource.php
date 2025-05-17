@@ -65,10 +65,11 @@ class ProductResource extends Resource
                     ]),
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Harga & Stok')
+                        Forms\Components\Section::make('Harga')
                             ->collapsible()
                             ->schema([
                                 Forms\Components\TextInput::make('modal')
+                                    ->visible(fn() => auth()->user()->hasRole('pengelola_web'))
                                     ->numeric()
                                     ->mask(
                                         RawJs::make(<<<'JS'
@@ -97,6 +98,7 @@ class ProductResource extends Resource
                                     ->numeric()
                                     ->prefix('Rp'),
                                 Forms\Components\TextInput::make('stock')
+                                    ->visible(fn() => auth()->user()->hasRole('pengelola_web'))
                                     ->label('Stok Produk')
                                     ->numeric(),
                                 Forms\Components\Toggle::make('is_active')
@@ -156,15 +158,20 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('modal')
                     ->money('IDR')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->visible(fn() => auth()->user()->hasRole('pengelola_web')),
                 Tables\Columns\TextColumn::make('laba')
                     ->money('IDR')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->visible(fn() => auth()->user()->hasRole('pengelola_web')),
+
                 Tables\Columns\TextColumn::make('stock')
                     ->label('Stok')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->visible(fn() => auth()->user()->hasRole('pengelola_web')),
+
                 Tables\Columns\ToggleColumn::make('is_active')
                     ->label('Aktifkan produk?')
                     ->sortable(),
