@@ -57,11 +57,11 @@
                 </div>
             </div>
 
-            @if ($is_admin === 1)
+            @if ($is_pengelola)
                 <div class="space-y-2">
-                    <h3 class="text-sm font-medium text-gray-500">Admin</h3>
+                    <h3 class="text-sm font-medium text-gray-500">Pengelola</h3>
                     <div class="space-y-1">
-                        <a href="{{ route('filament.pengelola.pages.dashboard') }}""
+                        <a href="{{ route('filament.pengelola.pages.dashboard') }}"
                             class="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100">
                             <div class="flex items-center gap-3">
                                 <i class="bi bi-person-circle text-primary"></i>
@@ -73,7 +73,6 @@
                     </div>
                 </div>
             @endif
-
 
             <!-- Logout Button -->
             <button wire:click="logout"

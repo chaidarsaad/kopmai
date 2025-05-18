@@ -10,12 +10,7 @@ class Profile extends Component
     public $name;
     public $email;
     public $whatsapp;
-    public $is_admin;
-
-    public function render()
-    {
-        return view('livewire.profile');
-    }
+    public $is_pengelola;
 
     public function mount()
     {
@@ -23,8 +18,14 @@ class Profile extends Component
         $this->whatsapp = Store::first()->whatsapp;
         $this->name = $user->name;
         $this->email = $user->email;
-        $this->is_admin = $user->is_admin;
+        $this->is_pengelola = $user->hasAnyRole(['pengelola_web', 'owner_tenant']);
     }
+
+    public function render()
+    {
+        return view('livewire.profile');
+    }
+
 
     public function logout()
     {

@@ -67,7 +67,7 @@ class AdminPanelProvider extends PanelProvider
                 MenuItem::make()
                     ->label('Toko Online')
                     ->icon('heroicon-o-building-storefront')
-                    ->url('/', shouldOpenInNewTab: false)
+                    ->url(fn() => route('home', absolute: false))
             ])
             ->unsavedChangesAlerts()
             ->databaseNotifications()
@@ -77,6 +77,7 @@ class AdminPanelProvider extends PanelProvider
             ->spa()
             ->spaUrlExceptions(fn(): array => [
                 url(route('download-template')),
+                url(route('home')),
                 url(route('download-data')),
                 url(route('download-rekap')),
                 url(route('download-order')),

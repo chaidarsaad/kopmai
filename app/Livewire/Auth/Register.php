@@ -100,7 +100,7 @@ class Register extends Component
             ->actions([
                 Action::make('view')
                     ->label('Lihat')
-                    ->url(route('filament.pengelola.resources.users.index'))
+                    ->url(fn() => route('filament.pengelola.resources.pengguna.index'))
                     ->button()
                     ->markAsRead(),
             ])
