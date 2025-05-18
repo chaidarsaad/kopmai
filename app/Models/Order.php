@@ -26,6 +26,20 @@ class Order extends Model
         'notes',
     ];
 
+    // casts
+    protected $casts = [
+        'payment_gateway_data' => 'array',
+        'payment_proof' => 'array',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'subtotal' => 'integer',
+        'total_amount' => 'integer',
+        'status' => 'string',
+        'payment_status' => 'string',
+        'user_id' => 'integer',
+        'classroom_id' => 'integer',
+    ];
+
     protected static function boot()
     {
         parent::boot();
