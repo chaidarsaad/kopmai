@@ -58,7 +58,7 @@ class UserResource extends Resource
                     ->preload()
                     ->searchable()
                     ->getOptionLabelFromRecordUsing(fn($record) => Str::headline($record->name))
-                    ->hidden(fn() => !auth()->user()?->hasAnyRole(['pengelola_web', 'super_admin'])),
+                    ->hidden(fn() => !auth()->user()?->hasAnyRole(['super_admin'])),
                 Forms\Components\Select::make('shop_id')
                     ->label('Tenant')
                     ->relationship('shop', 'name')
