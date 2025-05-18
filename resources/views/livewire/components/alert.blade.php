@@ -4,9 +4,10 @@
         x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 transform translate-y-0"
         x-transition:leave-end="opacity-0 transform translate-y-2" x-init="@this.on('hideAlert', () => { setTimeout(() => { show = false }, 2000) })"
-        class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none" style="display: none;">
+        class="fixed top-4 inset-x-0 mx-auto max-w-[480px] w-full px-4 z-50 pointer-events-none" style="display: none;">
+
         <div
-            class="px-6 py-3 rounded-lg shadow-lg flex items-center space-x-2
+            class="w-full px-6 py-3 rounded-lg shadow-lg flex items-center space-x-2
             {{ $type === 'success' ? 'bg-green-500 text-white' : '' }}
             {{ $type === 'error' ? 'bg-red-500 text-white' : '' }}
             {{ $type === 'warning' ? 'bg-yellow-500 text-white' : '' }}
