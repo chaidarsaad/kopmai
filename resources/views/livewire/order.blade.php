@@ -25,8 +25,13 @@
                             {{ $statusLabels[$order->status] }}
                         </span>
                     </div>
-                    <div class="text-xs text-gray-500">
-                        {{ $order->created_at->format('d M Y H:i') }}
+                    <div class="flex justify-between text-xs text-gray-500">
+                        <div>
+                            {{ $order->created_at->locale('id')->translatedFormat('l, d F Y H:i') }}
+                        </div>
+                        <div>
+                            Nama Santri: {{ $order->nama_santri }}
+                        </div>
                     </div>
                 </div>
 
