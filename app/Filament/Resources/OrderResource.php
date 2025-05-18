@@ -45,6 +45,7 @@ class OrderResource extends Resource
     protected static ?string $navigationGroup = 'Manajemen Pesanan';
     protected static ?string $navigationLabel = 'Pesanan';
     protected static ?string $pluralLabel = 'Pesanan';
+    protected static ?string $slug = 'pesanan';
 
     public static function form(Form $form): Form
     {

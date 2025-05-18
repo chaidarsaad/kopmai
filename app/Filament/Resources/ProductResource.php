@@ -31,6 +31,8 @@ class ProductResource extends Resource
     protected static ?int $navigationSort = 7;
     protected static ?string $navigationLabel = 'Produk';
     protected static ?string $pluralLabel = 'Produk';
+    protected static ?string $slug = 'produk';
+
     public static function form(Form $form): Form
     {
         return $form

@@ -25,6 +25,7 @@ class ShopResource extends Resource
     protected static ?int $navigationSort = 6;
     protected static ?string $navigationLabel = 'Tenant';
     protected static ?string $pluralLabel = 'Tenant';
+    protected static ?string $slug = 'tenant';
     public static function form(Form $form): Form
     {
         return $form

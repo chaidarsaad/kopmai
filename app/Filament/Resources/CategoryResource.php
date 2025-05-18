@@ -29,6 +29,8 @@ class CategoryResource extends Resource
 
     protected static ?string $pluralLabel = 'Kategori';
 
+    protected static ?string $slug = 'kategori';
+
     public static function form(Form $form): Form
     {
         return $form

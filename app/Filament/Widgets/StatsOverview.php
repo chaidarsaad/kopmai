@@ -87,10 +87,13 @@ class StatsOverview extends BaseWidget
         $laba = $omset - $expense;
 
         return [
-            Stat::make('Total Admin', User::where('is_admin', 1)->count())
-                ->description('Jumlah Akun Admin'),
-            Stat::make('Total Wali', User::where('is_admin', 0)->count())
-                ->description('Jumlah Wali yang daftar'),
+            Stat::make('Total Pengelola', User::whereHas('roles', function ($q) {
+                $q->where('name', 'pengelola_web');
+            })->count())
+                ->description('Jumlah Pengelola Web'),
+
+            Stat::make('Total Wali', User::whereDoesntHave('roles')->count())
+                ->description('Jumlah Wali'),
             Stat::make('Total Tenant', Shop::count()),
             Stat::make('Total Produk', Product::count()),
             Stat::make('Total Pesanan', $order_count),

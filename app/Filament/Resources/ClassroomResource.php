@@ -25,6 +25,7 @@ class ClassroomResource extends Resource
 
     protected static ?string $navigationLabel = 'Kelas';
     protected static ?string $pluralLabel = 'Kelas';
+    protected static ?string $slug = 'kelas';
 
     public static function getWidgets(): array
     {

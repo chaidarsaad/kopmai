@@ -24,6 +24,8 @@ class StoreResource extends Resource
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationLabel = 'Toko';
     protected static ?string $pluralLabel = 'Toko';
+    protected static ?string $slug = 'toko';
+
     public static function form(Form $form): Form
     {
         return $form
