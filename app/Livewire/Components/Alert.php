@@ -12,11 +12,16 @@ class Alert extends Component
 
     protected $listeners = ['showAlert'];
 
-    public function moun()
+    public function mount()
     {
-        $this->message = '';
-        $this->type = 'success';
-        $this->show = false;
+        if (session()->has('alert_message')) {
+            $this->message = session('alert_message');
+            $this->type = session('alert_type', 'info');
+            $this->show = true;
+
+            // Delay hide langsung dari Livewire
+            $this->dispatch('hideAlert')->self();
+        }
     }
 
     public function showAlert($params)

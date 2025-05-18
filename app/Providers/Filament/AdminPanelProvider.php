@@ -20,6 +20,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Widgets\RevenueChart;
 use App\Filament\Widgets\BestSellingProductTable;
+use App\Http\Middleware\RedirectIfNotFilamentAdmin;
 use App\Livewire\Auth\Login;
 use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationItem;
@@ -61,7 +62,8 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                Authenticate::class,
+                // Authenticate::class,
+                RedirectIfNotFilamentAdmin::class,
             ])
             ->userMenuItems([
                 MenuItem::make()
