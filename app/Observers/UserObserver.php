@@ -23,7 +23,7 @@ class UserObserver
             ->actions([
                 Action::make('view')
                     ->label('Lihat')
-                    ->url(route('filament.admin.resources.users.index'))
+                    ->url(route('filament.pengelola.resources.users.index'))
                     ->button()
                     ->markAsRead(),
             ])

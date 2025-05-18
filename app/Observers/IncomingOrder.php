@@ -26,7 +26,7 @@ class IncomingOrder
         //     'reply_markup' => json_encode([
         //         'inline_keyboard' => [
         //             [
-        //                 ['text' => 'Lihat Pesanan', 'url' => route('filament.admin.resources.orders.index')],
+        //                 ['text' => 'Lihat Pesanan', 'url' => route('filament.pengelola.resources.orders.index')],
         //             ],
         //         ]
         //     ]),
@@ -38,7 +38,7 @@ class IncomingOrder
             ->actions([
                 Action::make('view')
                     ->label('Lihat')
-                    ->url(route('filament.admin.resources.orders.index'))
+                    ->url(route('filament.pengelola.resources.orders.index'))
                     ->button()
                     ->markAsRead(),
             ])

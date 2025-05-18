@@ -32,8 +32,8 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->sidebarCollapsibleOnDesktop()
             ->default()
-            ->id('admin')
-            ->path('admin')
+            ->id('pengelola')
+            ->path('pengelola')
             // ->login(Login::class)
             ->login(CostumLogin::class)
             ->colors([
@@ -80,7 +80,7 @@ class AdminPanelProvider extends PanelProvider
                 url(route('download-data')),
                 url(route('download-rekap')),
                 url(route('download-order')),
-                url(route('filament.admin.auth.logout'))
+                url(route('filament.pengelola.auth.logout'))
             ])
             ->plugins([
                 \TomatoPHP\FilamentPWA\FilamentPWAPlugin::make(),
@@ -89,8 +89,8 @@ class AdminPanelProvider extends PanelProvider
             ->navigationItems([
                 NavigationItem::make('Ubah Profil')
                     ->sort(20)
-                    ->isActiveWhen(fn() => request()->routeIs('filament.admin.auth.profile'))
-                    ->url(fn() => route('filament.admin.auth.profile', absolute: true))
+                    ->isActiveWhen(fn() => request()->routeIs('filament.pengelola.auth.profile'))
+                    ->url(fn() => route('filament.pengelola.auth.profile', absolute: true))
                     ->icon('heroicon-o-user'),
             ])
         ;
