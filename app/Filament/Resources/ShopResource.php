@@ -21,7 +21,7 @@ class ShopResource extends Resource
     protected static ?string $model = Shop::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
-    protected static ?string $navigationGroup = 'Produk';
+    protected static ?string $navigationGroup = 'Manajemen Produk';
     protected static ?int $navigationSort = 6;
     protected static ?string $navigationLabel = 'Tenant';
     protected static ?string $pluralLabel = 'Tenant';
