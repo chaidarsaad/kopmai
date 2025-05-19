@@ -122,8 +122,18 @@ class OrderResource extends Resource
                                 JS)
                             )
                             ->stripCharacters([',', '.'])
+                            ->mask(
+                                RawJs::make(<<<'JS'
+                                    $input => {
+                                        let number = $input.replace(/[^\d]/g, '');
+                                        if (number === '') return '0';
+                                        return new Intl.NumberFormat('id-ID').format(Number(number));
+                                    }
+                                JS)
+                            )
+                            ->stripCharacters([',', '.'])
                             ->numeric()
-                            ->prefix('Rp')
+                            ->prefix('Rp')->prefix('Rp')
                             ->default(0)
                             ->live(),
                         Forms\Components\Hidden::make('subtotal')
