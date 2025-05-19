@@ -196,7 +196,7 @@ class Checkout extends Component
                         ->actions([
                             Action::make('view')
                                 ->label('Lihat')
-                                ->url(route('filament.pengelola.resources.orders.index'))
+                                ->url(fn() => route('filament.pengelola.resources.pesanan.index'))
                                 ->button()
                                 ->markAsRead(),
                         ])
