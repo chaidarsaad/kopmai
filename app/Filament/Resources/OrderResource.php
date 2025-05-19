@@ -26,6 +26,7 @@ use Filament\Notifications\Notification;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\ViewField;
+use Filament\Support\RawJs;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ExportBulkAction;
 use Filament\Tables\Filters\Indicator;
@@ -111,7 +112,18 @@ class OrderResource extends Resource
                         Forms\Components\TextInput::make('total_amount')
                             ->label('Total Harga')
                             ->readOnly()
+                            ->mask(
+                                RawJs::make(<<<'JS'
+                                    $input => {
+                                        let number = $input.replace(/[^\d]/g, '');
+                                        if (number === '') return '0';
+                                        return new Intl.NumberFormat('id-ID').format(Number(number));
+                                    }
+                                JS)
+                            )
+                            ->stripCharacters([',', '.'])
                             ->numeric()
+                            ->prefix('Rp')
                             ->default(0)
                             ->live(),
                         Forms\Components\Hidden::make('subtotal')

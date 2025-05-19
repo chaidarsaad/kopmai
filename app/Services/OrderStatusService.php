@@ -46,7 +46,7 @@ class OrderStatusService
                 'color' => 'orange',
                 'title' => 'Menunggu Pembayaran',
                 'message' => $paymentDeadline ?
-                    'Selesaikan pembayaran sebelum ' . $paymentDeadline->format('d M Y H:i') :
+                    'Selesaikan pembayaran sebelum ' . $paymentDeadline->locale('id')->translatedFormat('l, d F Y') :
                     'Selesaikan pembayaran'
             ],
             self::STATUS_PROCESSING => [
@@ -61,7 +61,7 @@ class OrderStatusService
                 'color' => 'green',
                 'title' => 'Pesanan Selesai',
                 'message' => $completedAt ?
-                    'Pesanan telah diterima pada ' . Carbon::parse($completedAt)->format('d M Y H:i') :
+                    'Pesanan telah diterima pada ' . Carbon::parse($completedAt)->locale('id')->translatedFormat('l, d F Y') :
                     'Pesanan telah selesai'
             ],
             self::STATUS_CANCELLED => [
