@@ -9,8 +9,8 @@
             <!-- Tombol Kiri -->
             <button type="submit"
                 onclick="event.preventDefault();
-             const backUrl = localStorage.getItem('previous_url') || '{{ route('home') }}';
-             localStorage.removeItem('previous_url');
+             const backUrl = sessionStorage.getItem('previous_url') || '{{ route('home') }}';
+             sessionStorage.removeItem('previous_url');
              window.Livewire.navigate(backUrl);"
                 wire:navigate class="hover:bg-gray-50 rounded-full">
                 <i class="bi bi-chevron-left text-xl"></i>
