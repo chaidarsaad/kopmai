@@ -28,13 +28,12 @@
     <!-- Main Content -->
     <div class="pt-16 md:pt-4 md:pb-40">
         <!-- Product Images Slider -->
-        <div class="relative bg-gray-100 h-[400px]">
-            {{-- @if ($currentImage) --}}
-            <img src="{{ $product->image_url ?? asset('image/no-pictures.png') }}" class="w-full h-full object-cover">
-            {{-- @endif --}}
-
-
+        <div class="relative bg-gray-100">
+            <img src="{{ $product->image_url ?? asset('image/no-pictures.png') }}"
+                class="w-full object-contain max-h-[500px] mx-auto">
         </div>
+
+
 
         <!-- Product Info -->
         <div class="p-4 border-b border-gray-100">
