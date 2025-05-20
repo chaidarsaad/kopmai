@@ -3,10 +3,10 @@
 @endsection
 
 <!-- Main Container -->
-<div class="max-w-[480px] mx-auto bg-white min-h-screen relative shadow-lg pb-[70px]">
+<div class="mx-auto max-w-screen-lg min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
     <!-- Header -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white z-50">
-        <div class="relative flex items-center justify-between h-16 px-4 border-b border-gray-100">
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-lg bg-white z-50">
+        <div class="relative flex items-center justify-between h-16 px-4">
             <button onclick="history.back()" class="hover:bg-gray-50 rounded-full">
                 <i class="bi bi-chevron-left text-xl"></i>
             </button>
@@ -23,9 +23,9 @@
         </div>
     </div>
 
-    <div class="p-3 mt-16">
+    <!-- Produk Section -->
+    <div class="mt-20 md:mt-6 px-4">
         @if ($products->isEmpty())
-            <!-- Empty State -->
             <div class="flex flex-col items-center justify-center py-12 px-4">
                 <div class="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                     <i class="bi bi-bag-x text-4xl text-primary"></i>
@@ -33,75 +33,47 @@
                 <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Produk</h3>
             </div>
         @else
-            <div class="grid grid-cols-2 gap-3 items-start">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
                 @foreach ($products as $item)
                     <div
-                        class="bg-white rounded-2xl overflow-hidden shadow-sm hover:-translate-y-1 transition-transform duration-300 flex flex-col h-auto">
-
+                        class="bg-white rounded-2xl overflow-hidden shadow hover:shadow-md transition-transform duration-300 flex flex-col h-full">
                         <a wire:navigate href="{{ route('product.detail', ['slug' => $item->slug]) }}">
-                            <div class="relative">
-
+                            <div class="relative w-full h-[180px] md:h-[250px]">
                                 <img src="{{ $item->image_url ?? asset('image/no-pictures.png') }}"
-                                    alt="{{ $item->name }}" class="w-full h-[180px] object-cover">
-                            </div>
-                            <div class="p-3">
-                                <h6 class="text-lg font-medium text-gray-700 line-clamp-2">{{ $item->name }}</h6>
-                                @if (isset($item->shop_id) && $item->shop_id !== '')
-                                    <p class="text-md text-gray-700 mt-1">{{ $item->shop->name }}</p>
-                                @endif
-                                <div class="mt-2 flex items-center gap-1">
-                                    <span class="text-md text-gray-500">Rp</span>
-                                    <span
-                                        class="text-primary font-semibold">{{ number_format($item->price, 0, ',', '.') }}</span>
-                                </div>
+                                    alt="{{ $item->name }}" class="w-full h-full object-cover">
                             </div>
                         </a>
-                        <!-- Tombol Tambah ke Keranjang -->
-                        <div class="p-3">
+                        <div class="p-3 flex flex-col flex-grow">
+                            <a wire:navigate href="{{ route('product.detail', ['slug' => $item->slug]) }}">
+                                <h6 class="text-base font-medium text-gray-700 line-clamp-2">{{ $item->name }}</h6>
+                            </a>
+                            @if (!empty($item->shop_id))
+                                <p class="text-sm text-gray-700 mt-1">{{ $item->shop->name }}</p>
+                            @endif
+                            <div class="mt-2 flex items-center gap-1">
+                                <span class="text-sm text-gray-500">Rp</span>
+                                <span
+                                    class="text-primary font-semibold">{{ number_format($item->price, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="flex-grow"></div> <!-- Memastikan ruang di bawah isi produk -->
                             <button wire:click="addToCart({{ $item->id }})"
-                                class="w-full flex items-center justify-center bg-primary text-white rounded-lg py-2 font-semibold hover:bg-primary/90 transition">
+                                class="w-full bg-primary text-white rounded-lg py-2 font-semibold hover:bg-primary/90 transition">
                                 + Keranjang
                             </button>
                         </div>
                     </div>
                 @endforeach
-
             </div>
+
             @if ($hasMoreProducts)
-                <div x-intersect.full="$wire.loadMore()">
-                    <div wire:target="loadMore" class="mt-3">
-                        <div class="grid grid-cols-2 gap-3 auto-rows-auto">
-                            <div
-                                class="animate-pulse bg-white rounded-2xl overflow-hidden shadow-sm hover:-translate-y-1 transition-transform duration-300">
-                                <div class="relative w-full h-[180px] bg-gray-200"></div>
-
-                                <div class="p-3">
-                                    <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-                                    <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                                    <div class="flex items-center gap-1 mt-2">
-                                        <div class="h-4 bg-gray-200 rounded w-6"></div>
-                                        <div class="h-5 bg-gray-200 rounded w-16"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                class="animate-pulse bg-white rounded-2xl overflow-hidden shadow-sm hover:-translate-y-1 transition-transform duration-300">
-                                <div class="relative w-full h-[180px] bg-gray-200"></div>
-
-                                <div class="p-3">
-                                    <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-                                    <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                                    <div class="flex items-center gap-1 mt-2">
-                                        <div class="h-4 bg-gray-200 rounded w-6"></div>
-                                        <div class="h-5 bg-gray-200 rounded w-16"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div x-intersect.full="$wire.loadMore()"
+                    class="mt-4 flex justify-center items-center space-x-2 pb-4 md:pb-0">
+                    <!-- Spinner -->
+                    <div class="w-6 h-6 border-4 border-t-primary border-gray-200 rounded-full animate-spin"></div>
+                    <!-- Loading text -->
+                    <div class="text-sm text-gray-500">Memuat lebih banyak produk...</div>
                 </div>
             @endif
-
         @endif
     </div>
 </div>

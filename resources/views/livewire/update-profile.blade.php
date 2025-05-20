@@ -2,10 +2,10 @@
     Ubah Profil
 @endsection
 
-<div class="max-w-[480px] mx-auto bg-white min-h-screen relative shadow-lg pb-[140px]">
+<div class="mx-auto max-w-screen-lg min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
     <!-- Header -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white z-50">
-        <div class="relative flex items-center justify-between h-16 px-4 border-b border-gray-100">
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-lg bg-white z-50">
+        <div class="relative flex items-center justify-between h-16 px-4">
             <a wire:navigate href="{{ route('profile') }}" class="hover:bg-gray-50 rounded-full">
                 <i class="bi bi-chevron-left text-xl"></i>
             </a>
@@ -20,11 +20,11 @@
     </div>
 
     <!-- Main Content -->
-    <div class="pt-20 pb-12 px-4 space-y-8">
+    <div class="pt-20 md:pt-8 pb-12 px-4 space-y-8">
         <form wire:submit.prevent="updateProfile">
             <div class="bg-white rounded-xl border border-gray-100 p-4 space-y-4">
                 <!-- Nama -->
-               <div>
+                <div>
                     <label class="text-sm text-gray-600 mb-1.5 block">Nama</label>
                     <input oninput="this.value = this.value.toLowerCase()" type="text" wire:model="name"
                         class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary"
@@ -92,7 +92,7 @@
             </div>
 
             <div
-                class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-gray-100 p-4 z-50">
+                class="fixed bottom-0 left-1/2 -translate-x-1/2 md:max-w-screen-lg w-full max-w-[480px] bg-white p-4 z-50">
                 <button type="submit"
                     class="w-full h-12 flex items-center justify-center rounded-full bg-primary text-white font-medium hover:bg-primary/90 transition-colors">
                     Simpan

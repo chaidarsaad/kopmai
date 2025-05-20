@@ -2,8 +2,8 @@
     Daftar
 @endsection
 
-<div class="max-w-[480px] mx-auto bg-white min-h-screen flex items-center justify-center shadow-lg">
-    <div class="p-6 w-full">
+<div class="mx-auto bg-white min-h-screen flex items-center justify-center">
+    <div class="p-6 w-full max-w-md mx-auto">
         <!-- Logo & Welcome Text -->
         <div class="text-center mb-8">
             <div class="mx-auto flex items-center justify-center mb-2">

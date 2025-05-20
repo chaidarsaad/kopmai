@@ -1,14 +1,6 @@
  <!-- Bottom Navigation -->
- <nav x-data="{ lastScrollTop: 0, hide: false }" x-init="window.addEventListener('scroll', () => {
-     let st = window.pageYOffset || document.documentElement.scrollTop;
-     hide = st > lastScrollTop && st > 50; // sembunyi jika scroll ke bawah dan lebih dari 50px
-     if (st < lastScrollTop) hide = false; // muncul saat scroll ke atas
-     lastScrollTop = st <= 0 ? 0 : st;
- })" x-show="!hide" x-transition:leave="transition ease-in duration-200"
-     x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-full"
-     x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-full"
-     x-transition:enter-end="opacity-100 translate-y-0"
-     class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-gray-200 h-[70px] z-50">
+ <nav
+     class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-gray-200 h-[70px] z-50 md:hidden">
 
      <div class="grid grid-cols-4 h-full">
          <a wire:navigate href="{{ route('home') }}" wire:click="setActiveMenu('home')"

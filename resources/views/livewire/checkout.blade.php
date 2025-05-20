@@ -2,10 +2,10 @@
     Bayar
 @endsection
 
-<div class="max-w-[480px] mx-auto bg-white min-h-screen relative shadow-lg pb-[140px]">
+<div class="mx-auto max-w-screen-lg min-h-screen bg-white pb-[140px] md:px-10 md:pb-10 pt-0 md:pt-[0px]">
     <!-- Header -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white z-50">
-        <div class="relative flex items-center justify-between h-16 px-4 border-b border-gray-100">
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-lg bg-white z-50">
+        <div class="relative flex items-center justify-between h-16 px-4">
             <button onclick="history.back()" class="hover:bg-gray-50 rounded-full">
                 <i class="bi bi-chevron-left text-xl"></i>
             </button>
@@ -14,7 +14,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="pt-20 pb-12 px-4 space-y-8">
+    <div class="pt-20 pb-12 md:pb-40 px-4 space-y-8">
         <!-- Section 1: Order Summary -->
         <div>
             <div class="flex items-center gap-2 mb-4">
@@ -136,8 +136,7 @@
     </div>
 
     <!-- Fixed Bottom Section -->
-    <div
-        class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-gray-100 p-4 z-50">
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-screen-lg bg-white p-4 z-50">
         <div class="flex justify-between items-start mb-4">
             <div>
                 <p class="text-sm text-gray-600">Total Pembayaran:</p>

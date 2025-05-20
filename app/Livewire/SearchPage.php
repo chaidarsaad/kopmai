@@ -10,7 +10,7 @@ use Livewire\WithPagination;
 class SearchPage extends Component
 {
     use WithPagination;
-    public int $on_page = 6;
+    public int $on_page = 8;
     public bool $hasMoreProducts = true;
     public array $displayedProductIds = [];
     public $cartCount;
@@ -71,7 +71,7 @@ class SearchPage extends Component
     public function resetProducts()
     {
         $this->displayedProductIds = [];
-        $this->on_page = 6;
+        $this->on_page = 8;
         $this->getProducts();
         $this->checkHasMoreProducts();
     }
@@ -97,7 +97,7 @@ class SearchPage extends Component
             $query->whereNotIn('id', $this->displayedProductIds);
         }
 
-        $products = $query->inRandomOrder()->take(6)->get();
+        $products = $query->inRandomOrder()->take(8)->get();
 
         $this->displayedProductIds = array_merge(
             $this->displayedProductIds,

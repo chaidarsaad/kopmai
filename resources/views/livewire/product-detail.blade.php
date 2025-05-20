@@ -2,10 +2,10 @@
     Detail Produk
 @endsection
 
-<div class="max-w-[480px] mx-auto bg-white min-h-screen relative shadow-lg pb-[70px]">
+<div class="mx-auto max-w-screen-lg min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
     <!-- Header with Back Button -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white z-50">
-        <div class="relative flex items-center justify-between h-16 px-4 border-b border-gray-100">
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-lg bg-white z-50">
+        <div class="relative flex items-center justify-between h-16 px-4">
             <!-- Tombol Kiri -->
             <button onclick="history.back()" class="hover:bg-gray-50 rounded-full">
                 <i class="bi bi-chevron-left text-xl"></i>
@@ -26,7 +26,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="pt-16">
+    <div class="pt-16 md:pt-4 md:pb-40">
         <!-- Product Images Slider -->
         <div class="relative bg-gray-100 h-[400px]">
             {{-- @if ($currentImage) --}}
@@ -78,8 +78,7 @@
 
 
     <!-- Bottom Navigation for Add to Cart & Buy -->
-    <div
-        class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-gray-100 p-4 z-50">
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 md:max-w-screen-lg w-full max-w-[480px] bg-white p-4 z-50">
         <div class="flex gap-3">
 
             <button wire:click="addToCart({{ $product->id }})"

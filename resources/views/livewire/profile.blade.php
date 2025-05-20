@@ -2,16 +2,8 @@
     Profil
 @endsection
 
-<div class="max-w-[480px] mx-auto bg-white min-h-screen relative shadow-lg">
-    <!-- Header -->
-    {{-- <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white z-50">
-        <div class="flex items-center h-16 px-4 border-b border-gray-100">
-            <button onclick="history.back()" class="hover:bg-gray-50 rounded-full">
-                <i class="bi bi-arrow-left text-xl"></i>
-            </button>
-            <h1 class="ml-2 text-lg font-medium">Profil Saya</h1>
-        </div>
-    </div> --}}
+<div class="mx-auto max-w-screen-lg min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
+
 
     <!-- Profile Content -->
     <div class="">

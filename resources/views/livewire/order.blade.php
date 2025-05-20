@@ -2,16 +2,16 @@
     Pesanan
 @endsection
 
-<div class="max-w-[480px] mx-auto bg-white min-h-screen relative shadow-lg pb-20">
+<div class="mx-auto max-w-screen-lg min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
     <!-- Header -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white z-50">
+    <div class="md:hidden fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white z-50">
         <div class="relative flex items-center justify-between h-16 px-4 border-b border-gray-100">
             <h1 class="absolute left-1/2 -translate-x-1/2 text-lg font-medium">Pesanan Saya</h1>
         </div>
     </div>
 
     <!-- Main Content -->
-    <div class="pt-20 px-4 space-y-4">
+    <div class="pt-24 md:pt-8 pb-8 px-4 space-y-4">
         <!-- Order Card 1 -->
         @forelse($orders as $order)
             <div class="border border-gray-200 rounded-2xl overflow-hidden">
@@ -91,6 +91,4 @@
 
         @endforelse
     </div>
-
-
 </div>

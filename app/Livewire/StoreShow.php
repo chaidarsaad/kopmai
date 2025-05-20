@@ -11,7 +11,7 @@ use App\Models\Shop;
 
 class StoreShow extends Component
 {
-    public int $on_page = 6;
+    public int $on_page = 8;
     public bool $hasMoreProducts = true;
     public array $displayedProductIds = [];
 
@@ -97,7 +97,7 @@ class StoreShow extends Component
             $query->whereNotIn('id', $this->displayedProductIds);
         }
 
-        $products = $query->inRandomOrder()->take(6)->get();
+        $products = $query->inRandomOrder()->take(8)->get();
 
         $this->displayedProductIds = array_merge($this->displayedProductIds, $products->pluck('id')->toArray());
     }

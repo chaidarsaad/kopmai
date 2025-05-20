@@ -387,9 +387,20 @@ class OrderResource extends Resource
 
                 Forms\Components\TextInput::make('price')
                     ->label('Harga')
-                    ->prefix('Rp')
                     ->readOnly()
-                    ->numeric(),
+                    ->numeric()
+                    ->mask(
+                        RawJs::make(<<<'JS'
+                                    $input => {
+                                        let number = $input.replace(/[^\d]/g, '');
+                                        if (number === '') return '0';
+                                        return new Intl.NumberFormat('id-ID').format(Number(number));
+                                    }
+                                JS)
+                    )
+                    ->stripCharacters([',', '.'])
+                    ->numeric()
+                    ->prefix('Rp'),
 
                 Forms\Components\TextInput::make('shipping_cost')
                     ->label('Ongkir')

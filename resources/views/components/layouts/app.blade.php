@@ -28,7 +28,11 @@
     @filamentPWA
 </head>
 
-<body class="bg-gray-50">
+<body class="bg-white">
+
+    @if (!isset($hideBottomNav))
+        @livewire('components.top-navigation')
+    @endif
 
     {{ $slot }}
     @if (!isset($hideBottomNav))

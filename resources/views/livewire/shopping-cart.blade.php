@@ -2,16 +2,17 @@
     Keranjang Belanja
 @endsection
 
-<div class="max-w-[480px] mx-auto bg-white min-h-screen relative shadow-lg pb-32">
+<div class="mx-auto max-w-screen-lg min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
     <!-- Header -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white z-50">
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white z-50 md:hidden">
         <div class="relative flex items-center justify-between h-16 px-4 border-b border-gray-100">
             <h1 class="absolute left-1/2 -translate-x-1/2 text-lg font-medium">Keranjang Saya</h1>
         </div>
     </div>
 
+
     <!-- Main Content -->
-    <div class="pt-16 px-4 pb-24">
+    <div class="pt-16 md:pt-0 px-4 pb-40">
         <!-- Store Section -->
         <div class="pt-4">
             <!-- Cart Items -->
@@ -80,7 +81,7 @@
     @if ($carts->isNotEmpty())
         <!-- Bottom Section - Price Summary & Checkout -->
         <div
-            class="fixed bottom-[70px] left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-gray-100 p-4 z-50">
+            class="fixed bottom-[70px] md:bottom-0 md:max-w-screen-lg left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white p-4 z-50">
             <!-- Price Summary -->
             <div class="flex justify-between items-start mb-4">
                 <div>
