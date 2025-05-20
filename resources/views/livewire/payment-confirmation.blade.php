@@ -2,9 +2,9 @@
     Konfirmasi Pembayaran
 @endsection
 
-<div class="mx-auto max-w-screen-lg min-h-screen bg-white pb-24">
+<div class="mx-auto max-w-screen-xl min-h-screen bg-white pb-24">
     <!-- Header -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-lg bg-white z-50">
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-xl bg-white z-50">
         <div class="relative flex items-center justify-between h-16 px-4">
             <button onclick="history.back()" class="hover:bg-gray-50 rounded-full">
                 <i class="bi bi-chevron-left text-xl"></i>
@@ -84,7 +84,7 @@
     </div>
 
     <!-- Bottom Button -->
-    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-screen-lg bg-white p-4 z-50">
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-screen-xl bg-white p-4 z-50">
         <button wire:click="submit"
             class="w-full bg-primary text-white py-3 rounded-xl font-medium hover:bg-primary/90 transition-colors">
             Kirim Konfirmasi

@@ -2,9 +2,9 @@
     Detail Produk
 @endsection
 
-<div class="mx-auto max-w-screen-lg min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
+<div class="mx-auto max-w-screen-xl min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
     <!-- Header with Back Button -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-lg bg-white z-50">
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-xl bg-white z-50">
         <div class="relative flex items-center justify-between h-16 px-4">
             <!-- Tombol Kiri -->
             <button onclick="history.back()" class="hover:bg-gray-50 rounded-full">
@@ -77,13 +77,20 @@
 
 
     <!-- Bottom Navigation for Add to Cart & Buy -->
-    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 md:max-w-screen-lg w-full max-w-[480px] bg-white p-4 z-50">
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 md:max-w-screen-xl w-full max-w-[480px] bg-white p-4 z-50">
         <div class="flex gap-3">
+            <a href="{{ route('home') }}" wire:navigate
+                class="flex items-center gap-1 px-3 h-12 rounded-full border border-gray-300 hover:bg-gray-100 text-gray-600">
+                <i class="bi bi-house-door text-xl"></i>
+                <span class="text-sm font-medium">Beranda</span>
+            </a>
+
 
             <button wire:click="addToCart({{ $product->id }})"
                 class="flex-1 h-12 flex items-center justify-center rounded-full bg-primary text-white font-medium hover:bg-primary/90 transition-colors">
                 Tambah ke Keranjang
             </button>
         </div>
+
     </div>
 </div>

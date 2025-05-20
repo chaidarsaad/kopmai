@@ -3,7 +3,7 @@
 @endsection
 
 <!-- Main Container -->
-<div class="mx-auto max-w-screen-lg min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
+<div class="mx-auto max-w-screen-xl min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
     <!-- Banner -->
     <div
         class="h-[160px] md:h-fit md:mt-1 relative overflow-hidden bg-gradient-to-br from-primary to-secondary md:rounded-2xl">

@@ -2,9 +2,9 @@
     Detail Pesanan
 @endsection
 
-<div class="mx-auto max-w-screen-lg min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
+<div class="mx-auto max-w-screen-xl min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
     <!-- Header -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-lg bg-white z-50">
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-xl bg-white z-50">
         <div class="relative flex items-center justify-between h-16 px-4">
             <a href="{{ route('orders') }}" wire:navigate class="hover:bg-gray-50 rounded-full">
                 <i class="bi bi-chevron-left text-xl"></i>
@@ -164,7 +164,7 @@
 
     @if ($order->status === 'pending' && $order->payment_gateway_transaction_id == null && $order->payment_proof == null)
         <!-- Bottom Button -->
-        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-screen-lg bg-white  p-4 z-50">
+        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-screen-xl bg-white  p-4 z-50">
             <a href="{{ route('payment-confirmation', ['orderNumber' => $order->order_number]) }}" wire:navigate
                 class="block w-full bg-primary text-white py-3 rounded-xl font-medium hover:bg-primary/90 transition-colors text-center">
                 Konfirmasi Pembayaran

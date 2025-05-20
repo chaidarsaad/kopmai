@@ -3,9 +3,9 @@
 @endsection
 
 <!-- Main Container -->
-<div class="mx-auto max-w-screen-lg min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
+<div class="mx-auto max-w-screen-xl min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
     <!-- Header -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-lg bg-white z-50">
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-xl bg-white z-50">
         <div class="relative flex items-center justify-between h-16 px-4">
             <form wire:submit.prevent="resetProducts" class="flex items-center w-full gap-2">
                 <button onclick="history.back()" type="button" class="hover:bg-gray-50 rounded-full">

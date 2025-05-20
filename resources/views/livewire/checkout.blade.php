@@ -2,9 +2,9 @@
     Bayar
 @endsection
 
-<div class="mx-auto max-w-screen-lg min-h-screen bg-white pb-[140px] md:px-10 md:pb-10 pt-0 md:pt-[0px]">
+<div class="mx-auto max-w-screen-xl min-h-screen bg-white pb-[140px] md:px-10 md:pb-10 pt-0 md:pt-[0px]">
     <!-- Header -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-lg bg-white z-50">
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-xl bg-white z-50">
         <div class="relative flex items-center justify-between h-16 px-4">
             <button onclick="history.back()" class="hover:bg-gray-50 rounded-full">
                 <i class="bi bi-chevron-left text-xl"></i>
@@ -136,7 +136,7 @@
     </div>
 
     <!-- Fixed Bottom Section -->
-    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-screen-lg bg-white p-4 z-50">
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-screen-xl bg-white p-4 z-50">
         <div class="flex justify-between items-start mb-4">
             <div>
                 <p class="text-sm text-gray-600">Total Pembayaran:</p>
