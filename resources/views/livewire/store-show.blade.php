@@ -82,7 +82,6 @@
                                     alt="{{ $item->name }}"
                                     class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-110">
                             </div>
-
                         </a>
                         <div class="p-3 flex flex-col flex-grow">
                             <a wire:navigate href="{{ route('product.detail', ['slug' => $item->slug]) }}">
