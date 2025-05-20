@@ -50,6 +50,7 @@ class OrderBiggest extends BaseWidget
         }
 
         return $table
+            ->defaultSort('total_amount', 'desc')
             ->paginationPageOptions([10, 25, 50, 100, 250])
             ->defaultPaginationPageOption(10)
             ->query($query)
