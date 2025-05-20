@@ -77,10 +77,12 @@
                     <div
                         class="bg-white rounded-2xl overflow-hidden shadow hover:shadow-md transition-transform duration-300 flex flex-col h-full">
                         <a wire:navigate href="{{ route('product.detail', ['slug' => $item->slug]) }}">
-                            <div class="relative w-full h-[180px] md:h-[250px]">
+                            <div class="relative w-full h-[180px] md:h-[250px] overflow-hidden group">
                                 <img src="{{ $item->image_url ?? asset('image/no-pictures.png') }}"
-                                    alt="{{ $item->name }}" class="w-full h-full object-cover">
+                                    alt="{{ $item->name }}"
+                                    class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-110">
                             </div>
+
                         </a>
                         <div class="p-3 flex flex-col flex-grow">
                             <a wire:navigate href="{{ route('product.detail', ['slug' => $item->slug]) }}">
