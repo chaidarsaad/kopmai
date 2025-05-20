@@ -7,19 +7,27 @@
     <!-- Header -->
     <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-lg bg-white z-50">
         <div class="relative flex items-center justify-between h-16 px-4">
-            <button onclick="history.back()" class="hover:bg-gray-50 rounded-full">
-                <i class="bi bi-chevron-left text-xl"></i>
-            </button>
-            <input autofocus type="text"wire:model.live.debounce.1000ms="search" placeholder="Cari produk..."
-                class="ml-2 w-full px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-primary focus:outline-none">
-            <!-- Tombol Kanan -->
-            <a href="{{ route('shopping-cart') }}" wire:navigate
-                class="relative hover:bg-gray-50 rounded-full cursor-pointer p-2">
-                <i class="bi bi-bag text-2xl"></i>
-                <span class="absolute top-0 left-5 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                    {{ $cartCount }}
-                </span>
-            </a>
+            <form wire:submit.prevent="resetProducts" class="flex items-center w-full gap-2">
+                <button onclick="history.back()" type="button" class="hover:bg-gray-50 rounded-full">
+                    <i class="bi bi-chevron-left text-xl"></i>
+                </button>
+
+                <input type="text" wire:model.defer="search" placeholder="Cari produk..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-primary focus:outline-none">
+
+                <button type="submit" class="hidden"></button> <!-- optional: biar form bisa submit pakai Enter -->
+
+                <!-- Tombol Kanan -->
+                <a href="{{ route('shopping-cart') }}" wire:navigate
+                    class="relative hover:bg-gray-50 rounded-full cursor-pointer p-2">
+                    <i class="bi bi-bag text-2xl"></i>
+                    <span
+                        class="absolute top-0 left-5 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                        {{ $cartCount }}
+                    </span>
+                </a>
+            </form>
+
         </div>
     </div>
 
