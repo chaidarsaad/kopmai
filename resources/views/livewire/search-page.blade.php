@@ -8,9 +8,9 @@
     <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-xl bg-white z-50">
         <div class="relative flex items-center justify-between h-16 px-4">
             <form wire:submit.prevent="resetProducts" class="flex items-center w-full gap-2">
-                <button onclick="history.back()" type="button" class="hover:bg-gray-50 rounded-full">
+                <a href="{{ route('home') }}" wire:navigate class="hover:bg-gray-50 rounded-full">
                     <i class="bi bi-chevron-left text-xl"></i>
-                </button>
+                </a>
 
                 <input type="text" wire:model.defer="search" placeholder="Cari produk..."
                     class="w-full px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-primary focus:outline-none">
@@ -45,7 +45,8 @@
                 @foreach ($products as $item)
                     <div
                         class="bg-white rounded-2xl overflow-hidden shadow hover:shadow-md transition-transform duration-300 flex flex-col h-full">
-                        <a wire:navigate href="{{ route('product.detail', ['slug' => $item->slug]) }}">
+                        <a wire:navigate href="{{ route('product.detail', ['slug' => $item->slug]) }}"
+                            onclick="localStorage.setItem('previous_url', window.location.href)">
                             <div class="relative w-full h-[180px] md:h-[250px] overflow-hidden group">
                                 <img src="{{ $item->image_url ?? asset('image/no-pictures.png') }}"
                                     alt="{{ $item->name }}"
@@ -53,7 +54,8 @@
                             </div>
                         </a>
                         <div class="p-3 flex flex-col flex-grow">
-                            <a wire:navigate href="{{ route('product.detail', ['slug' => $item->slug]) }}">
+                            <a wire:navigate href="{{ route('product.detail', ['slug' => $item->slug]) }}"
+                                onclick="localStorage.setItem('previous_url', window.location.href)">
                                 <h6 class="text-base font-medium text-gray-700 line-clamp-2">{{ $item->name }}</h6>
                             </a>
                             @if (!empty($item->shop_id))

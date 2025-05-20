@@ -7,9 +7,15 @@
     <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-xl bg-white z-50">
         <div class="relative flex items-center justify-between h-16 px-4">
             <!-- Tombol Kiri -->
-            <button onclick="history.back()" class="hover:bg-gray-50 rounded-full">
+            <button type="submit"
+                onclick="event.preventDefault();
+             const backUrl = localStorage.getItem('previous_url') || '{{ route('home') }}';
+             localStorage.removeItem('previous_url');
+             window.Livewire.navigate(backUrl);"
+                wire:navigate class="hover:bg-gray-50 rounded-full">
                 <i class="bi bi-chevron-left text-xl"></i>
             </button>
+
 
             <!-- Judul (Di Tengah) -->
             <h1 class="text-lg font-medium">Detail Produk</h1>
