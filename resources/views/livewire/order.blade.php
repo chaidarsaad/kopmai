@@ -14,7 +14,7 @@
     <div class="pt-24 md:pt-8 pb-8 px-4 space-y-4">
         <!-- Order Card 1 -->
         @forelse($orders as $order)
-            <div class="border border-gray-200 rounded-2xl overflow-hidden">
+            <div x-data="{ open: false }" class="border border-gray-200 rounded-2xl overflow-hidden">
                 <!-- Order Header -->
                 <div class="p-4 border-b border-gray-100 bg-gray-50">
                     <div class="flex items-center justify-between mb-2">
@@ -35,24 +35,35 @@
                     </div>
                 </div>
 
-                @foreach ($order->items as $item)
-                    <!-- Order Items -->
-                    <div class="p-4">
-                        <div class="flex gap-3">
-                            <img src="{{ $item->product->image_url ?? asset('image/no-pictures.png') }}"
-                                alt="{{ $item->product->name }}" class="w-20 h-20 object-cover rounded-lg">
-                            <div>
-                                <h3 class="text-sm font-medium">{{ $item->product->name }}</h3>
-                                <div class="mt-2">
-                                    <span class="text-sm text-gray-600">{{ $item->quantity }} x </span>
-                                    <span class="text-sm font-medium">Rp
-                                        {{ number_format($item->price, 0, ',', '.') }}</span>
+                <!-- Accordion Toggle Button -->
+                <div class="px-4 pt-4">
+                    <button @click="open = !open"
+                        class="text-sm text-primary font-semibold hover:underline focus:outline-none">
+                        <span x-text="open ? 'Sembunyikan produk' : 'Klik untuk lihat produk dipesan'"></span>
+                    </button>
+                </div>
+
+                <!-- Order Items Accordion -->
+                <div x-show="open" x-collapse>
+                    @foreach ($order->items as $item)
+                        <div class="p-4">
+                            <div class="flex gap-3">
+                                <img src="{{ $item->product->image_url ?? asset('image/no-pictures.png') }}"
+                                    alt="{{ $item->product->name }}" class="w-20 h-20 object-cover rounded-lg">
+                                <div>
+                                    <h3 class="text-sm font-medium">{{ $item->product->name }}</h3>
+                                    <div class="mt-2">
+                                        <span class="text-sm text-gray-600">{{ $item->quantity }} x </span>
+                                        <span class="text-sm font-medium">Rp
+                                            {{ number_format($item->price, 0, ',', '.') }}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
 
+                <!-- Order Footer -->
                 <div class="px-4 py-3 border-t border-gray-100">
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-600">Total Belanja</span>
@@ -61,16 +72,15 @@
                     </div>
                 </div>
 
-
                 <!-- Order Actions -->
                 <div class="p-4 border-t border-gray-100 flex justify-end gap-3">
-
                     <a wire:navigate href="{{ route('order-detail', ['orderNumber' => $order->order_number]) }}"
                         class="px-4 py-2 text-sm bg-primary text-white rounded-full hover:bg-primary/90">
                         Lihat Detail
                     </a>
                 </div>
             </div>
+
         @empty
             <div class="flex flex-col items-center justify-center min-h-[60vh]">
                 <!-- Icon pesanan kosong -->

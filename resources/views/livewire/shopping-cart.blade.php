@@ -22,7 +22,8 @@
                     <div class="flex gap-3 pb-4 border-b border-gray-100">
 
                         <!-- Product Image -->
-                        <a href="{{ route('product.detail', $cart->product->slug) }}" wire:navigate>
+                        <a href="{{ route('product.detail', $cart->product->slug) }}" wire:navigate
+                            onclick="sessionStorage.setItem('previous_url', window.location.href)">
                             <div class="flex-shrink-0">
                                 <img src="{{ $cart->product->image_url ?? asset('image/no-pictures.png') }}"
                                     alt="{{ $cart->product->name }}" class="w-20 h-20 object-cover rounded-lg">
@@ -31,12 +32,14 @@
 
                         <!-- Product Details -->
                         <div class="flex-1">
-                            <a href="{{ route('product.detail', $cart->product->slug) }}" wire:navigate>
+                            <a href="{{ route('product.detail', $cart->product->slug) }}" wire:navigate
+                                onclick="sessionStorage.setItem('previous_url', window.location.href)">
                                 <h3 class="text-sm font-medium line-clamp-2">{{ $cart->product->name }}</h3>
                             </a>
 
                             <div class="flex items-center justify-between mt-2">
-                                <a href="{{ route('product.detail', $cart->product->slug) }}" wire:navigate>
+                                <a href="{{ route('product.detail', $cart->product->slug) }}" wire:navigate
+                                    onclick="sessionStorage.setItem('previous_url', window.location.href)">
                                     <span class="text-primary font-semibold">Rp
                                         {{ number_format($cart->product->price, 0, ',', '.') }}</span>
                                 </a>

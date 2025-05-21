@@ -29,6 +29,7 @@
         @endauth
 
         <a href="{{ route('shopping-cart') }}" wire:navigate
+            onclick="sessionStorage.setItem('previous_url', window.location.href)"
             class="text-gray-600 hover:text-primary {{ $activeMenu === 'shopping-cart' ? 'text-primary font-semibold' : '' }}">
             <i class="bi bi-bag"></i>
         </a>
