@@ -8,7 +8,8 @@
     <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-xl bg-white z-50">
         <div class="relative flex items-center justify-between h-16 px-4">
             <form wire:submit.prevent="resetProducts" class="flex items-center w-full gap-2">
-                <a href="{{ route('home') }}" wire:navigate class="hover:bg-gray-50 rounded-full">
+                <a href="{{ route('home') }}" wire:navigate onclick="sessionStorage.removeItem('search_keyword')"
+                    class="hover:bg-gray-50 rounded-full">
                     <i class="bi bi-chevron-left text-xl"></i>
                 </a>
 
@@ -88,3 +89,30 @@
         @endif
     </div>
 </div>
+
+@push('scripts')
+    <script>
+        function restoreSearchKeyword() {
+            const savedSearch = sessionStorage.getItem('search_keyword');
+            const searchInput = document.querySelector('input[wire\\:model\\.defer="search"]');
+
+            if (savedSearch && searchInput) {
+                searchInput.value = savedSearch;
+                @this.set('search', savedSearch);
+                @this.call('resetProducts');
+            }
+
+            // Simpan keyword saat diketik
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    sessionStorage.setItem('search_keyword', this.value);
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', restoreSearchKeyword);
+
+        // Tambahan penting: pastikan script dijalankan kembali setelah Livewire navigate
+        window.addEventListener('livewire:navigated', restoreSearchKeyword);
+    </script>
+@endpush
