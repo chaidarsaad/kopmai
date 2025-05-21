@@ -63,7 +63,7 @@
     @endif
 
     <!-- Produk Section -->
-    <div class="mt-6 px-4">
+    <div class="mt-6 px-4 mb-4">
         @if ($products->isEmpty())
             <div class="flex flex-col items-center justify-center py-12 px-4">
                 <div class="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-4">
