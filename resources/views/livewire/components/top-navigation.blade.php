@@ -1,9 +1,12 @@
 <nav
     class="mx-auto px-[55px] max-w-screen-xl hidden md:flex fixed top-0 left-0 right-0 z-50 items-center justify-between py-4 bg-white">
 
-    <div class="flex items-center gap-2 text-lg font-bold text-gray-800">
+    {{-- <div class="flex items-center gap-2 text-lg font-bold text-gray-800">
         <img src="{{ Storage::url($about->image) }}" alt="{{ $about->name }}" class="h-10 w-10 object-contain">
         {{ $about->name }}
+    </div> --}}
+    <div class="flex items-center gap-2">
+        <img src="{{ asset('assets/images/kp.png') }}" alt="Logo" class="h-10 w-full object-contain">
     </div>
 
     <div class="flex gap-6">
