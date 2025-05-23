@@ -22,7 +22,7 @@ use App\Models\Order;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 
-Route::middleware([])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/', StoreShow::class)->name('home');
 });
 

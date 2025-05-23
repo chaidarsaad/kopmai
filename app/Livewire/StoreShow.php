@@ -171,10 +171,10 @@ class StoreShow extends Component
                 'type' => 'success'
             ]);
         } catch (\Exception $e) {
-            $this->dispatch('showAlert', [
-                'message' => 'Gagal menambahkan ke keranjang' . $e->getMessage(),
-                'type' => 'error'
-            ]);
+            // $this->dispatch('showAlert', [
+            //     'message' => 'Gagal menambahkan ke keranjang' . $e->getMessage(),
+            //     'type' => 'error'
+            // ]);
         }
     }
 }
