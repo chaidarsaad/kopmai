@@ -11,6 +11,24 @@
     <link rel="apple-touch-icon" href="{{ $store->imageUrl ?? asset('image/store.png') }}">
     <meta name="msapplication-TileImage" content="{{ $store->imageUrl ?? asset('image/store.png') }}">
     <meta name="theme-color" content= "{{ $store->primary_color ?? '#ff6666' }}">
+    <script>
+        // Simpan console.warn asli
+        const originalWarn = console.warn;
+
+        // Ganti console.warn untuk sementara
+        console.warn = function(message, ...args) {
+            if (
+                typeof message === "string" &&
+                message.includes(
+                    "cdn.tailwindcss.com should not be used in production"
+                )
+            ) {
+                return; // abaikan pesan ini
+            }
+            originalWarn.apply(console, [message, ...args]);
+        };
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -30,9 +48,7 @@
 
 <body class="bg-white">
 
-    @if (!isset($hideBottomNav))
-        @livewire('components.top-navigation')
-    @endif
+    @livewire('components.top-navigation')
 
     {{ $slot }}
     @if (!isset($hideBottomNav))

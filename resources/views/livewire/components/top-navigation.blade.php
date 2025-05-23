@@ -6,13 +6,17 @@
         {{ $about->name }}
     </div> --}}
     <div class="flex items-center gap-2">
-        <img src="{{ asset('assets/images/kp.png') }}" alt="Logo" class="h-10 w-full object-contain">
+        <img src="{{ asset('image/navkopmai.png') }}" alt="Logo" class="h-10 w-full object-contain">
     </div>
 
-    <div class="flex gap-6">
+    <div class="flex gap-6 text-lg">
         <a href="{{ route('home') }}" wire:navigate
             class="text-gray-600 hover:text-primary {{ $activeMenu === 'home' ? 'text-primary font-semibold' : '' }}">Beranda</a>
         @auth
+            <a href="{{ route('shopping-cart') }}" wire:navigate
+                onclick="sessionStorage.setItem('previous_url', window.location.href)"
+                class="text-gray-600 hover:text-primary {{ $activeMenu === 'shopping-cart' ? 'text-primary font-semibold' : '' }}">
+                Keranjang</a>
             <a href="{{ route('orders') }}" wire:navigate
                 class="text-gray-600 hover:text-primary {{ $activeMenu === 'orders' ? 'text-primary font-semibold' : '' }}">Pesanan</a>
         @endauth
@@ -28,10 +32,5 @@
             </a>
         @endauth
 
-        <a href="{{ route('shopping-cart') }}" wire:navigate
-            onclick="sessionStorage.setItem('previous_url', window.location.href)"
-            class="text-gray-600 hover:text-primary {{ $activeMenu === 'shopping-cart' ? 'text-primary font-semibold' : '' }}">
-            <i class="bi bi-bag"></i>
-        </a>
     </div>
 </nav>

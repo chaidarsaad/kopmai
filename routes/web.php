@@ -22,30 +22,30 @@ use App\Models\Order;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 
-Route::middleware(['schedule.run'])->group(function () {
+Route::middleware([])->group(function () {
     Route::get('/', StoreShow::class)->name('home');
 });
 
-Route::middleware(['schedule.run', 'store.closed'])->group(function () {
+Route::middleware(['store.closed'])->group(function () {
     Route::get('/product/{slug}', ProductDetail::class)->name('product.detail');
     Route::get('/search', SearchPage::class)->name('search.page');
     Route::get('/shop/{slug}', ShopDetail::class)->name('shop.detail');
 });
 
 
-Route::middleware(['guest', 'schedule.run'])->group(function () {
+Route::middleware(['guest',])->group(function () {
     Route::get('login', Login::class)->name('login');
     Route::get('register', Register::class)->name('register');
 });
 
 
-Route::middleware(['auth', 'schedule.run', 'store.closed'])->group(function () {
+Route::middleware(['auth', 'store.closed'])->group(function () {
     Route::get('/shopping-cart', ShoppingCart::class)->name('shopping-cart');
 
     Route::get('/payment-confirmation/{orderNumber}', PaymentConfirmationPage::class)->name('payment-confirmation');
 });
 
-Route::middleware(['auth', 'schedule.run'])->group(function () {
+Route::middleware(['auth',])->group(function () {
     Route::get('/profile', Profile::class)->name('profile');
     Route::get('/update-profile', UpdateProfile::class)->name('profile.update');
 
@@ -74,7 +74,7 @@ Route::middleware(['auth', 'schedule.run'])->group(function () {
     })->name('download-order');
 });
 
-Route::middleware(['auth', 'verified', 'schedule.run', 'store.closed'])->group(function () {
+Route::middleware(['auth', 'verified', 'store.closed'])->group(function () {
     Route::get('/checkout', Checkout::class)->name('checkout');
 });
 
