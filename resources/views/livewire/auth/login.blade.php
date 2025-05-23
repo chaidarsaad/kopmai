@@ -66,6 +66,11 @@
                 Belum punya akun?
                 <a wire:navigate href="{{ route('register') }}" class="text-primary hover:underline">Daftar sekarang</a>
             </p>
+            <p class="text-center text-sm text-gray-600 mt-2">
+                <a href="{{ route('home') }}" wire:navigate class="text-primary hover:underline">← Kembali ke
+                    Beranda</a>
+            </p>
+
         </form>
     </div>
 </div>

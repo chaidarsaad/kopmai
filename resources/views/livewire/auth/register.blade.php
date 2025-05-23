@@ -80,6 +80,10 @@
                 <a wire:navigate wire:navigate href="{{ route('login') }}" class="text-primary hover:underline">Masuk
                     sekarang</a>
             </p>
+            <p class="text-center text-sm text-gray-600 mt-2">
+                <a href="{{ route('home') }}" wire:navigate class="text-primary hover:underline">← Kembali ke
+                    Beranda</a>
+            </p>
         </form>
     </div>
 </div>
