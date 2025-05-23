@@ -32,6 +32,7 @@ class SearchPage extends Component
     {
         if (!auth()->check()) {
             $this->redirectRoute('login', navigate: true);
+            return;
         }
 
         try {
