@@ -48,7 +48,9 @@
 
 <body class="bg-white">
 
-    @livewire('components.top-navigation')
+    @if (!isset($hideTopNav))
+        @livewire('components.top-navigation')
+    @endif
 
     {{ $slot }}
     @if (!isset($hideBottomNav))

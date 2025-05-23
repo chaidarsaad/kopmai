@@ -120,7 +120,6 @@ class Register extends Component
     {
         return view('livewire.auth.register', [
             'store' => Store::first()
-        ])
-            ->layout('components.layouts.app', ['hideBottomNav' => true]);;
+        ])->layout('components.layouts.app', ['hideBottomNav' => true, 'hideTopNav' => true]);
     }
 }

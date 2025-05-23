@@ -69,6 +69,6 @@ class Login extends Component
     {
         return view('livewire.auth.login', [
             'store' => Store::first()
-        ])->layout('components.layouts.app', ['hideBottomNav' => true]);
+        ])->layout('components.layouts.app', ['hideBottomNav' => true, 'hideTopNav' => true]);
     }
 }
