@@ -105,9 +105,15 @@
             <!-- Budget -->
             <div>
                 <label class="text-sm text-gray-600 mb-1.5 block">Budget (Rp)</label>
-                <input type="number" wire:model="createRequestData.budget" min="0"
+
+                <!-- Input untuk tampilan (diformat) -->
+                <input type="text" id="budgetInput"
                     class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary"
                     placeholder="Contoh: 100000">
+
+                <!-- Hidden input untuk Livewire (nilai asli tanpa titik) -->
+                <input type="hidden" wire:model="createRequestData.budget" id="budgetHidden">
+
                 @error('createRequestData.budget')
                     <span class="text-red-500 text-sm">{{ $message }}</span>
                 @enderror
@@ -143,3 +149,24 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputFormatted = document.getElementById('budgetInput');
+            const inputHidden = document.getElementById('budgetHidden');
+
+            inputFormatted.addEventListener('input', function() {
+                // Ambil hanya angka
+                let rawValue = inputFormatted.value.replace(/[^\d]/g, '');
+
+                // Format tampilan
+                inputFormatted.value = new Intl.NumberFormat('id-ID').format(rawValue);
+
+                // Simpan nilai asli ke Livewire
+                inputHidden.value = rawValue;
+                inputHidden.dispatchEvent(new Event('input')); // trigger Livewire update
+            });
+        });
+    </script>
+@endpush
