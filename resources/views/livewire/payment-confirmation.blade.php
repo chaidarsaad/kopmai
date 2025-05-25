@@ -94,7 +94,8 @@
 
             <!-- Saat loading -->
             <span x-show="loading" wire:loading wire:target="submit" class="inline-flex items-center gap-2">
-                <span>Proses...</span>
+                <div class="w-4 h-4 border-4 border-t-primary border-gray-200 rounded-full animate-spin">
+                </div>
             </span>
         </button>
     </div>

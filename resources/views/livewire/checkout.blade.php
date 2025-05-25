@@ -152,13 +152,15 @@
             class="w-full h-12 flex items-center justify-center gap-2 rounded-full bg-primary text-white font-medium hover:bg-primary/90 transition-colors"
             x-data="{ loading: false }" x-init="Livewire.hook('message.sent', () => loading = true);
             Livewire.hook('message.processed', () => loading = false)">
-            <i class="bi bi-bag-check"></i>
 
-            <span x-show="!loading" wire:loading.remove wire:target="createOrder">Buat Pesanan</span>
+            <span x-show="!loading" wire:loading.remove wire:target="createOrder">
+                <i class="bi bi-bag-check"></i>
+                Buat Pesanan</span>
 
             <!-- Saat loading -->
             <span x-show="loading" wire:loading wire:target="createOrder" class="inline-flex items-center gap-2">
-                <span>Proses...</span>
+                <div class="w-6 h-6 border-4 border-t-primary border-gray-200 rounded-full animate-spin">
+                </div>
             </span>
         </button>
     </div>
