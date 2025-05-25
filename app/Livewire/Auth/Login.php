@@ -52,9 +52,9 @@ class Login extends Component
             // }
 
             // return redirect()->intended(route('home'));
-            if ($user->roles->isNotEmpty()) {
-                return redirect()->route('filament.pengelola.pages.dashboard');
-            }
+            // if ($user->roles->isNotEmpty()) {
+            //     return redirect()->route('filament.pengelola.pages.dashboard');
+            // }
 
             return redirect()->intended(route('home'));
         }

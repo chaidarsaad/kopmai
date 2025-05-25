@@ -98,7 +98,8 @@
                                     class="text-primary font-semibold">{{ number_format($item->price, 0, ',', '.') }}</span>
                             </div>
                             <div class="flex-grow"></div> <!-- Memastikan ruang di bawah isi produk -->
-                            <button wire:click="addToCart({{ $item->id }})"
+                            <button wire:click="addToCart({{ $item->id }})" wire:loading.attr="disabled"
+                                wire:target="addToCart({{ $item->id }})"
                                 class="w-full bg-primary text-white rounded-lg py-2 font-semibold hover:bg-primary/90 transition"
                                 x-data="{ loading: false }" x-init="Livewire.hook('message.sent', () => loading = true);
                                 Livewire.hook('message.processed', () => loading = false)">

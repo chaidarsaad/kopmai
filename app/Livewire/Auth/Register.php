@@ -106,7 +106,8 @@ class Register extends Component
             ])
             ->sendToDatabase($admins);
 
-        return redirect()->intended($isFirstUser ? '/admin' : route('home'));
+        // return redirect()->intended($isFirstUser ? '/admin' : route('home'));
+        return redirect()->intended(route('home'));
     }
 
 
