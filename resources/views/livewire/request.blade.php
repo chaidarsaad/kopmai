@@ -72,6 +72,10 @@
                         <p><strong>Tujuan:</strong> {{ $request->tujuan }}</p>
                         <p><strong>Sumber Dana:</strong> {{ $request->sumber_dana }}</p>
                         <p><strong>Budget:</strong> Rp {{ number_format($request->budget, 2, ',', '.') }}</p>
+
+                        @if (!empty($request->alasan))
+                            <p class="text-red-500"><strong>Alasan Penolakan:</strong> {{ $request->alasan }}</p>
+                        @endif
                     </div>
                 </div>
             </div>

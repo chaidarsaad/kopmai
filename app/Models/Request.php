@@ -19,6 +19,7 @@ class Request extends Model
         'budget',
         'deadline',
         'status',
+        'alasan',
     ];
 
     protected static function booted()

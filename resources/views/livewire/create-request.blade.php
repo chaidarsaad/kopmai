@@ -73,8 +73,9 @@
             <!-- Jumlah Barang -->
             <div>
                 <label class="text-sm text-gray-600 mb-1.5 block">Jumlah Barang</label>
-                <input type="number" wire:model="createRequestData.jumlah_barang" min="1"
-                    class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary">
+                <input type="text" wire:model="createRequestData.jumlah_barang"
+                    class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary"
+                    placeholder="Contoh: 1 Dus, 1 Lusin">
                 @error('createRequestData.jumlah_barang')
                     <span class="text-red-500 text-sm">{{ $message }}</span>
                 @enderror

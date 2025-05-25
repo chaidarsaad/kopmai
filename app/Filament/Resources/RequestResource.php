@@ -51,7 +51,13 @@ class RequestResource extends Resource
                                 'Pengajuan Ditolak' => 'Pengajuan Ditolak',
                             ])
                             ->default('Menunggu Verifikasi')
-                            ->required(),
+                            ->required()
+                            ->live(),
+                        Forms\Components\Textarea::make('alasan')
+                            ->label('Alasan Penolakan')
+                            ->hidden(fn($get) => $get('status') !== 'Pengajuan Ditolak')
+                            ->required(fn($get) => $get('status') === 'Pengajuan Ditolak')
+                            ->maxLength(1000),
                         Forms\Components\Select::make('user_id')
                             ->label('Akun Pemohon')
                             ->relationship('user', 'name')
@@ -88,8 +94,8 @@ class RequestResource extends Resource
                             ->required()
                             ->maxLength(255),
                         Forms\Components\TextInput::make('jumlah_barang')
-                            ->required()
-                            ->numeric(),
+                            ->placeholder('1 Dus/1 Paket/1 Unit')
+                            ->required(),
                         Forms\Components\TextInput::make('sumber_dana')
                             ->required()
                             ->maxLength(255),
@@ -137,8 +143,7 @@ class RequestResource extends Resource
                 Tables\Columns\TextColumn::make('nama_barang')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('jumlah_barang')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('sumber_dana')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('budget')
