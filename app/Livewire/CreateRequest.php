@@ -31,7 +31,7 @@ class CreateRequest extends Component
         'createRequestData.jumlah_barang' => 'required|integer|min:1',
         'createRequestData.tujuan' => 'required|string|max:500',
         'createRequestData.sumber_dana' => 'required|string|max:255',
-        'createRequestData.budget' => 'required|numeric|min:0',
+        'createRequestData.budget' => 'required|numeric|min:1',
         'createRequestData.deadline' => 'required|date|after_or_equal:createRequestData.tanggal_permohonan',
     ];
 
