@@ -156,22 +156,16 @@
             const inputFormatted = document.getElementById('budgetInput');
             const inputHidden = document.getElementById('budgetHidden');
 
-            function formatBudget(value) {
-                const rawValue = value.replace(/[^\d]/g, '');
-                return new Intl.NumberFormat('id-ID').format(rawValue);
-            }
-
             inputFormatted.addEventListener('input', function() {
-                const rawValue = inputFormatted.value.replace(/[^\d]/g, '');
-                inputFormatted.value = formatBudget(inputFormatted.value);
-                inputHidden.value = rawValue;
-                inputHidden.dispatchEvent(new Event('input'));
-            });
+                // Ambil hanya angka
+                let rawValue = inputFormatted.value.replace(/[^\d]/g, '');
 
-            // Tambahan: format ulang saat Livewire update selesai (misalnya setelah validasi)
-            Livewire.hook('message.processed', () => {
-                const currentValue = inputHidden.value || '';
-                inputFormatted.value = formatBudget(currentValue);
+                // Format tampilan
+                inputFormatted.value = new Intl.NumberFormat('id-ID').format(rawValue);
+
+                // Simpan nilai asli ke Livewire
+                inputHidden.value = rawValue;
+                inputHidden.dispatchEvent(new Event('input')); // trigger Livewire update
             });
         });
     </script>
