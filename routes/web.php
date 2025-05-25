@@ -16,6 +16,8 @@ use App\Livewire\PaymentConfirmationPage;
 use App\Livewire\Profile;
 use App\Livewire\SearchPage;
 use App\Exports\TemplateExport;
+use App\Livewire\CreateRequest;
+use App\Livewire\Request as AppRequest;
 use App\Livewire\ShopDetail;
 use App\Livewire\UpdateProfile;
 use App\Models\Order;
@@ -48,6 +50,9 @@ Route::middleware(['auth', 'store.closed'])->group(function () {
 Route::middleware(['auth',])->group(function () {
     Route::get('/profile', Profile::class)->name('profile');
     Route::get('/update-profile', UpdateProfile::class)->name('profile.update');
+
+    Route::get('/permohonan', AppRequest::class)->name('permohonan');
+    Route::get('/buat-permohonan', CreateRequest::class)->name('buat.permohonan');
 
     Route::get('/orders', OrderPage::class)->name('orders');
     Route::get('/order-detail/{orderNumber}', OrderDetail::class)->name('order-detail');

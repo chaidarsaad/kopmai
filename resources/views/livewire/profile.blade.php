@@ -37,6 +37,20 @@
 
             <div class="space-y-2">
                 <div class="space-y-1">
+                    <a href="{{ route('permohonan') }}" wire:navigate
+                        class="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100">
+                        <div class="flex items-center gap-3">
+                            <i class="bi bi-box-seam text-primary"></i>
+                            <span>Permohonan Saya</span>
+                        </div>
+                        <i class="bi bi-chevron-right text-gray-400"></i>
+                    </a>
+
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <div class="space-y-1">
                     <a href="https://wa.me/{{ $whatsapp }}" target="_blank"
                         class="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100">
                         <div class="flex items-center gap-3">

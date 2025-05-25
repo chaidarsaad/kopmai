@@ -16,6 +16,7 @@ class ShoppingCart extends Component
     {
         $this->carts = Cart::where('user_id', auth()->id())
             ->with('product')
+            ->orderBy('created_at', 'desc')
             ->get();
         $this->calculateTotal();
     }

@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Product;
 use App\Models\Cart;
+use Illuminate\Support\Facades\Auth;
 
 class ProductDetail extends Component
 {
@@ -20,7 +21,7 @@ class ProductDetail extends Component
 
     public function updateCartCount()
     {
-        $this->cartCount = Cart::where('user_id', auth()->id())->sum('quantity');
+        $this->cartCount = Cart::where('user_id', Auth::user()->id)->sum('quantity');
     }
 
     public function addToCart($productId)
