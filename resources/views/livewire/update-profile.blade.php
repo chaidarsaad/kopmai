@@ -93,10 +93,17 @@
 
             <div
                 class="fixed bottom-0 left-1/2 -translate-x-1/2 md:max-w-screen-xl w-full max-w-[480px] bg-white p-4 z-50">
-                <button type="submit"
-                    class="w-full h-12 flex items-center justify-center rounded-full bg-primary text-white font-medium hover:bg-primary/90 transition-colors">
-                    Simpan
+                <button type="submit" wire:loading.attr="disabled" wire:target="updateProfile"
+                    class="w-full h-12 flex items-center justify-center rounded-full bg-primary text-white font-medium hover:bg-primary/90 transition-colors"
+                    x-data="{ loading: false }" x-init="Livewire.hook('message.sent', () => loading = true);
+                    Livewire.hook('message.processed', () => loading = false)">
+                    <span x-show="!loading" wire:loading.remove wire:target="updateProfile">Simpan</span>
+                    <span x-show="loading" wire:loading wire:target="updateProfile"
+                        class="inline-flex items-center gap-2">
+                        <div class="w-4 h-4 border-4 border-t-primary border-gray-200 rounded-full animate-spin"></div>
+                    </span>
                 </button>
+
             </div>
         </form>
     </div>

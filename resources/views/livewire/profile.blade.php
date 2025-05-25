@@ -59,7 +59,6 @@
                         </div>
                         <i class="bi bi-chevron-right text-gray-400"></i>
                     </a>
-
                 </div>
             </div>
 
