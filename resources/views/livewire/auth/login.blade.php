@@ -57,9 +57,14 @@
                     <a href="#" class="text-sm text-primary hover:underline">Lupa password?</a>
                 </div> -->
 
-            <button type="submit"
-                class="w-full bg-primary text-white py-3 rounded-xl font-medium hover:bg-primary/90 transition-colors">
-                Masuk
+            <button type="submit" wire:loading.attr="disabled" wire:target="login"
+                class="w-full bg-primary text-white py-3 rounded-xl font-medium hover:bg-primary/90 transition-colors"
+                x-data="{ loading: false }" x-init="Livewire.hook('message.sent', () => loading = true);
+                Livewire.hook('message.processed', () => loading = false)">
+                <span x-show="!loading" wire:loading.remove wire:target="login">Masuk</span>
+                <span x-show="loading" wire:loading wire:target="login" class="inline-flex items-center gap-2">
+                    <div class="w-4 h-4 border-4 border-t-primary border-gray-200 rounded-full animate-spin"></div>
+                </span>
             </button>
 
             <p class="text-center text-sm text-gray-600">

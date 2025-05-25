@@ -70,9 +70,16 @@
                 @enderror
             </div>
 
-            <button wire:loading.attr="disabled" type="submit"
-                class="w-full bg-primary text-white py-3 rounded-xl font-medium hover:bg-primary/90 transition-colors">
-                Daftar
+            <button wire:loading.attr="disabled" type="submit" wire:target="register"
+                class="w-full bg-primary text-white py-3 rounded-xl font-medium hover:bg-primary/90 transition-colors"
+                x-data="{ loading: false }" x-init="Livewire.hook('message.sent', () => loading = true);
+                Livewire.hook('message.processed', () => loading = false)">
+
+                <span x-show="!loading" wire:loading.remove wire:target="register">Daftar</span>
+                <span x-show="loading" wire:loading wire:target="register" class="inline-flex items-center gap-2">
+                    <div class="w-4 h-4 border-4 border-t-primary border-gray-200 rounded-full animate-spin"></div>
+                </span>
+
             </button>
 
             <p class="text-center text-sm text-gray-600">

@@ -81,10 +81,18 @@
             @endif
 
             <!-- Logout Button -->
-            <button wire:click="logout"
-                class="w-full mt-6 p-4 text-red-500 flex items-center justify-center gap-2 bg-red-50 rounded-xl hover:bg-red-100">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Keluar</span>
+            <button wire:click="logout" wire:loading.attr="disabled" wire:target="logout"
+                class="w-full mt-6 p-4 text-red-500 flex items-center justify-center gap-2 bg-red-50 rounded-xl hover:bg-red-100"
+                x-data="{ loading: false }" x-init="Livewire.hook('message.sent', () => loading = true);
+                Livewire.hook('message.processed', () => loading = false)">
+
+                <span x-show="!loading" wire:loading.remove wire:target="logout"> <i class="bi bi-box-arrow-right"></i>
+                    Keluar</span>
+
+                <span x-show="loading" wire:loading wire:target="logout" class="inline-flex items-center gap-2">
+                    <div class="w-6 h-6 border-4 border-t-primary border-gray-200 rounded-full animate-spin">
+                    </div>
+                </span>
             </button>
         </div>
     </div>

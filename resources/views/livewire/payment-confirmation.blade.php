@@ -85,9 +85,17 @@
 
     <!-- Bottom Button -->
     <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-screen-xl bg-white p-4 z-50">
-        <button wire:click="submit"
-            class="w-full bg-primary text-white py-3 rounded-xl font-medium hover:bg-primary/90 transition-colors">
-            Kirim Konfirmasi
+        <button wire:click="submit" wire:loading.attr="disabled" wire:target="submit"
+            class="w-full bg-primary text-white py-3 rounded-xl font-medium hover:bg-primary/90 transition-colors"
+            x-data="{ loading: false }" x-init="Livewire.hook('message.sent', () => loading = true);
+            Livewire.hook('message.processed', () => loading = false)">
+
+            <span x-show="!loading" wire:loading.remove wire:target="submit">Kirim Konfirmasi</span>
+
+            <!-- Saat loading -->
+            <span x-show="loading" wire:loading wire:target="submit" class="inline-flex items-center gap-2">
+                <span>Proses...</span>
+            </span>
         </button>
     </div>
 </div>
