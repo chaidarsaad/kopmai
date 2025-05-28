@@ -2,15 +2,14 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Cart;
+use Livewire\Component;
 
 class ShoppingCart extends Component
 {
     public $carts = [];
     public $total = 0;
     public $totalItems = 0;
-
 
     public function loadCarts()
     {
@@ -40,7 +39,7 @@ class ShoppingCart extends Component
     public function render()
     {
         return view('livewire.shopping-cart')
-            ->layout('components.layouts.app');;
+            ->layout('components.layouts.app');
     }
 
     public function incrementQuantity($cartId)
@@ -90,7 +89,6 @@ class ShoppingCart extends Component
             ]);
         }
 
-        // return redirect()->route('checkout');
         $this->redirectRoute('checkout', navigate: true);
     }
 }
