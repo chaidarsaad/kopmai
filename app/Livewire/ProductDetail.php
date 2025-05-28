@@ -16,7 +16,10 @@ class ProductDetail extends Component
     public function mount($slug)
     {
         $this->product = Product::where('slug', $slug)->firstOrFail();
-        $this->updateCartCount();
+
+        if (Auth::check()) {
+            $this->updateCartCount();
+        }
     }
 
     public function updateCartCount()
