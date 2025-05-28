@@ -21,8 +21,13 @@ class ProductDetail extends Component
 
     public function updateCartCount()
     {
-        $this->cartCount = Cart::where('user_id', Auth::user()->id)->sum('quantity');
+        if (Auth::check()) {
+            $this->cartCount = Cart::where('user_id', Auth::id())->sum('quantity');
+        } else {
+            $this->cartCount = 0;
+        }
     }
+
 
     public function addToCart($productId)
     {
