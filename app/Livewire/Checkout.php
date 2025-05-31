@@ -187,8 +187,8 @@ class Checkout extends Component
                     ]);
                 } else {
                     $admin = User::where('is_admin', 1)->get();
-                    $title = 'Ada pesanan baru dari wali santri: ' . $order->user->name;
-                    $body = 'Untuk santri: ' . $order->nama_santri;
+                    $title = "Ada pesanan baru dari wali santri: {$order->user->name}";
+                    $body = "Untuk santri: {$order->nama_santri}";
 
                     Notification::make()
                         ->title($title)
