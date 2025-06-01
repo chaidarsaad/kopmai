@@ -186,7 +186,7 @@ class Checkout extends Component
                         'order_id' => $order->order_number
                     ]);
                 } else {
-                    $admin = User::where('is_admin', 1)->get();
+                    $admin = User::role(['owner_tenant', 'pengelola_web'])->get();
                     $title = "Ada pesanan baru dari wali santri: {$order->user->name}";
                     $body = "Untuk santri: {$order->nama_santri}";
 

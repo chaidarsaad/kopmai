@@ -32,7 +32,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     protected static function booted()
     {
         static::updating(function ($user) {
-            if (($user->email === 'chaidaar@genzproject.my.id' || $user->id === 1)
+            if (
+                ($user->email === 'chaidaar@genzproject.my.id' || $user->id === 1)
                 && $user->isDirty('is_admin') && $user->is_admin == 0
             ) {
 

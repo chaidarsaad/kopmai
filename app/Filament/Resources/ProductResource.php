@@ -268,7 +268,7 @@ class ProductResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->modalHeading('Ubah Produk'),
                 Tables\Actions\DeleteAction::make()
-                    ->modalHeading(fn($record) => 'Hapus Produk: ' . $record->name),
+                    ->modalHeading(fn($record) => "Hapus Produk: {$record->name}"),
 
             ])
             ->bulkActions([

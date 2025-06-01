@@ -45,7 +45,7 @@ class Login extends Component
         if (Auth::attempt(['name' => $name, 'password' => $password])) {
             session()->regenerate();
 
-            $user = Auth::user();
+            // $user = Auth::user();
 
             // if ($user->is_admin) {
             //     return redirect()->route('filament.pengelola.pages.dashboard');
