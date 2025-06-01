@@ -43,7 +43,7 @@ class StatsOverview extends BaseWidget
             return [
                 Stat::make('Total Produk Saya', $productCount)
                     ->description('Jumlah Produk Tenant Anda'),
-                Stat::make('Total Pendapatan Saya', 'Rp ' . number_format($income, 0, ",", "."))
+                Stat::make('Total Pendapatan Saya', 'Rp ' . number_format($income, 2, ",", "."))
                     ->description('Pendapatan Tenant Anda'),
             ];
         }
