@@ -49,9 +49,6 @@ class UserResource extends Resource
                     ->dehydrated(fn(?string $state): bool => filled($state))
                     ->required(fn(string $operation): bool => $operation === 'create')
                     ->minLength(8),
-                // Forms\Components\Toggle::make('is_admin')
-                //     ->label('Administrator')
-                //     ->default(false),
                 Forms\Components\Select::make('roles')
                     ->label('Peran')
                     ->relationship('roles', 'name')
