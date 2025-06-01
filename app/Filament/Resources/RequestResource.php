@@ -147,7 +147,7 @@ class RequestResource extends Resource
                 Tables\Columns\TextColumn::make('sumber_dana')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('budget')
-                    ->numeric()
+                    ->money('IDR')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status'),
                 Tables\Columns\TextColumn::make('created_at')
