@@ -221,11 +221,11 @@ class OrderResource extends Resource
                                     : 0;
                             });
 
-                            return 'Rp ' . number_format($total, 0, ',', '.');
+                            return 'Rp ' . number_format($total, 2, ',', '.');
                         }
 
                         // Default: tampilkan total_amount seperti biasa
-                        return 'Rp ' . number_format($state, 0, ',', '.');
+                        return 'Rp ' . number_format($state, 2, ',', '.');
                     }),
 
                 Tables\Columns\TextColumn::make('payment_status')
