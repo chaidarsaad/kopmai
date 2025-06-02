@@ -65,7 +65,7 @@
                             <div class="mt-2 flex items-center gap-1">
                                 <span class="text-sm text-gray-500">Rp</span>
                                 <span
-                                    class="text-primary font-semibold">{{ number_format($item->price, 0, ',', '.') }}</span>
+                                    class="text-primary font-semibold">{{ number_format($item->price, 2, ',', '.') }}</span>
                             </div>
                             <div class="flex-grow"></div> <!-- Memastikan ruang di bawah isi produk -->
                             <button wire:click="addToCart({{ $item->id }})" wire:loading.attr="disabled"

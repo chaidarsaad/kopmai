@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Auth\CostumLogin;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -62,7 +63,7 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                // Authenticate::class,
+                    // Authenticate::class,
                 RedirectIfNotFilamentAdmin::class,
             ])
             ->userMenuItems([
@@ -86,8 +87,8 @@ class AdminPanelProvider extends PanelProvider
                 url(route('filament.pengelola.auth.logout'))
             ])
             ->plugins([
-                \TomatoPHP\FilamentPWA\FilamentPWAPlugin::make(),
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                FilamentPWAPlugin::make(),
+                FilamentShieldPlugin::make(),
             ])
             ->navigationItems([
                 NavigationItem::make('Ubah Profil')
