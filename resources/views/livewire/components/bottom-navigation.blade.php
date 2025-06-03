@@ -1,6 +1,6 @@
  <!-- Bottom Navigation -->
  <nav
-     class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-gray-200 h-[70px] z-50 md:hidden">
+     class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-full bg-white border-t border-gray-200 h-[70px] z-50 md:hidden">
 
      <div class="grid grid-cols-4 h-full">
          <a wire:navigate href="{{ route('home') }}" wire:click="setActiveMenu('home')"
