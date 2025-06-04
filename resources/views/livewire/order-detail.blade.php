@@ -139,6 +139,7 @@
                     <div class="text-sm text-blue-700">
                         <p class="font-medium mb-1">Penting:</p>
                         <ul class="list-disc list-inside space-y-1">
+                            <li>TOLONG CANTUMKAN NAMA SANTRI PADA BERITA ACARA PENGIRIMAN UANGNYA</li>
                             <li>Transfer sesuai dengan nominal yang tertera</li>
                             <li>Simpan bukti pembayaran</li>
                             <li>Upload bukti pembayaran setelah transfer</li>
