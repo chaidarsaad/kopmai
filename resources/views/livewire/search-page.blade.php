@@ -70,20 +70,10 @@
                             <div class="flex-grow"></div> <!-- Memastikan ruang di bawah isi produk -->
                             <button wire:click="addToCart({{ $item->id }})" wire:loading.attr="disabled"
                                 wire:target="addToCart({{ $item->id }})"
-                                class="w-full bg-primary text-white rounded-lg py-2 font-semibold hover:bg-primary/90 transition"
-                                x-data="{ loading: false }" x-init="Livewire.hook('message.sent', () => loading = true);
-                                Livewire.hook('message.processed', () => loading = false)">
-                                <span x-show="!loading" wire:loading.remove
-                                    wire:target="addToCart({{ $item->id }})">+
-                                    Keranjang</span>
-
-                                <span x-show="loading" wire:loading wire:target="addToCart({{ $item->id }})"
-                                    class="inline-flex items-center gap-2">
-                                    <div
-                                        class="w-4 h-4 border-4 border-t-primary border-gray-200 rounded-full animate-spin">
-                                    </div>
-                                </span>
+                                class="w-full bg-primary text-white rounded-lg py-2 font-semibold hover:bg-primary/90 transition">
+                                + Keranjang
                             </button>
+
                         </div>
                     </div>
                 @endforeach
