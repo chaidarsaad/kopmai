@@ -40,6 +40,14 @@ class UserResource extends Resource
                     ->email()
                     ->required()
                     ->maxLength(255),
+                // phone_number
+                Forms\Components\TextInput::make('phone_number')
+                    ->label('No HP')
+                    ->tel()
+                    ->required()
+                    ->maxLength(20)
+                    ->dehydrated(fn(?string $state): bool => filled($state))
+                    ->placeholder('Masukkan nomor telepon'),
                 Forms\Components\TextInput::make('password')
                     ->label(__('Password'))
                     ->password()
