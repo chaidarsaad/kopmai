@@ -22,6 +22,9 @@ class ShoppingCart extends Component
                     $query->where('is_active', 1);
                 }
             ])
+            ->whereHas('product.shop', function ($q) {
+                $q->where('is_active', 1);
+            })
             ->orderBy('created_at', 'desc')
             ->get();
 
