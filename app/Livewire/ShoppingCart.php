@@ -14,11 +14,20 @@ class ShoppingCart extends Component
     public function loadCarts()
     {
         $this->carts = Cart::where('user_id', auth()->id())
-            ->with('product')
+            ->whereHas('product', function ($query) {
+                $query->where('is_active', 1);
+            })
+            ->with([
+                'product' => function ($query) {
+                    $query->where('is_active', 1);
+                }
+            ])
             ->orderBy('created_at', 'desc')
             ->get();
+
         $this->calculateTotal();
     }
+
 
     public function calculateTotal()
     {
