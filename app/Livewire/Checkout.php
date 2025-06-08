@@ -82,8 +82,17 @@ class Checkout extends Component
     public function loadCarts()
     {
         $this->carts = Cart::where('user_id', auth()->id())
-            ->with('product')
-            ->get();
+            ->whereHas('product', function ($query) {
+                $query->where('is_active', 1);
+            })
+            ->with([
+                'product' => function ($query) {
+                    $query->where('is_active', 1);
+                }
+            ])
+            ->whereHas('product.shop', function ($q) {
+                $q->where('is_active', 1);
+            })->get();
 
         $this->calculateTotal();
     }
