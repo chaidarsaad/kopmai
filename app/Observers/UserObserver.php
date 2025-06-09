@@ -14,20 +14,20 @@ class UserObserver
      */
     public function created(User $user): void
     {
-        $admin = User::where('is_admin', 1)->get();
-        $title = 'Ada pengguna baru dengan nama: ' . $user->name;
-        $body = 'email: ' . $user->email;
-        Notification::make()
-            ->title($title)
-            ->body($body)
-            ->actions([
-                Action::make('view')
-                    ->label('Lihat')
-                    ->url(fn() => route('filament.pengelola.resources.pengguna.index'))
-                    ->button()
-                    ->markAsRead(),
-            ])
-            ->sendToDatabase($admin);
+        // $admin = User::where('is_admin', 1)->get();
+        // $title = 'Ada pengguna baru dengan nama: ' . $user->name;
+        // $body = 'email: ' . $user->email;
+        // Notification::make()
+        //     ->title($title)
+        //     ->body($body)
+        //     ->actions([
+        //         Action::make('view')
+        //             ->label('Lihat')
+        //             ->url(fn() => route('filament.pengelola.resources.pengguna.index'))
+        //             ->button()
+        //             ->markAsRead(),
+        //     ])
+        //     ->sendToDatabase($admin);
 
         // $telegram = new Telegram(env('TELEGRAM_BOT_TOKEN'));
         // $telegram->sendMessage([
