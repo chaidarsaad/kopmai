@@ -25,7 +25,19 @@ class ProductDetail extends Component
     public function updateCartCount()
     {
         if (Auth::check()) {
-            $this->cartCount = Cart::where('user_id', Auth::id())->sum('quantity');
+            $this->cartCount = Cart::where('user_id', Auth::id())
+                ->whereHas('product', function ($query) {
+                    $query->where('is_active', 1);
+                })
+                ->with([
+                    'product' => function ($query) {
+                        $query->where('is_active', 1);
+                    }
+                ])
+                ->whereHas('product.shop', function ($q) {
+                    $q->where('is_active', 1);
+                })
+                ->sum('quantity');
         } else {
             $this->cartCount = 0;
         }
