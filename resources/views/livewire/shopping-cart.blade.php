@@ -89,7 +89,7 @@
             <div class="flex justify-between items-start mb-4">
                 <div>
                     <p class="text-sm text-gray-600">Total Pembayaran:</p>
-                    <p class="text-lg font-semibold text-primary">Rp {{ number_format($total) }}</p>
+                    <p class="text-lg font-semibold text-primary">Rp {{ number_format($total, 2, ',', '.') }}</p>
                 </div>
                 <div class="text-right">
                     <p class="text-xs text-gray-500">{{ $totalItems }} Produk</p>
