@@ -63,13 +63,13 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
 
                 foreach ($order->items as $item) {
                     $data[] = [
-                        'created_at' => Carbon::parse($order->created_at)->format('l, D F Y H:i:s'),
+                        'created_at' => Carbon::parse($order->created_at)->translatedFormat('l, d F Y H:i:s'),
                         'nama_santri' => $order->nama_santri,
                         'kelas' => $order->classroom ? $order->classroom->name : 'Tidak ada Kelas',
                         'jumlah' => $item->quantity,
                         'nama_barang' => $item->product ? $item->product->name : 'Produk tidak ditemukan',
                         'tenant' => $item->product ? $item->product->shop->name : 'Tenant tidak ditemukan',
-                        'harga_satuan' => $item->product ? 'Rp ' . number_format(($item->product->price * $item->quantity), 2, ',', '.') : 'Rp0,00',                        // 'modal'        => $item->product ? $item->product->modal : 0,
+                        'harga_satuan' => $item->product ? 'Rp ' . number_format(($item->product->price * $item->quantity), 2, ',', '.') : 'Rp 0,00',                        // 'modal'        => $item->product ? $item->product->modal : 0,
                         // 'laba'         => $item->product ? $item->product->laba : 0,
                         'modal' => 0,
                         'laba' => 0,
