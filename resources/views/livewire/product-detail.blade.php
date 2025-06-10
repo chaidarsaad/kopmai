@@ -65,7 +65,7 @@
                     <div class="mt-1 flex items-center gap-2">
                         <i class="bi bi-tag text-primary"></i>
                         <span class="text-2xl font-bold text-primary">
-                            Rp {{ number_format($product->price, 0, ',', '.') }}
+                            Rp {{ number_format($product->price, 2, ',', '.') }}
                         </span>
                     </div>
                 </div>

@@ -49,7 +49,7 @@
                                 <div class="mt-2">
                                     <span class="text-sm text-gray-600">{{ $item->quantity }} x </span>
                                     <span
-                                        class="text-sm font-medium">Rp{{ number_format($item->price, 0, ',', '.') }}</span>
+                                        class="text-sm font-medium">Rp{{ number_format($item->price, 2, ',', '.') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-600">Total Belanja</span>
                         <span class="text-primary font-semibold">
-                            Rp{{ number_format($order->total_amount, 0, ',', '.') }}
+                            Rp{{ number_format($order->total_amount, 2, ',', '.') }}
                         </span>
                     </div>
                 </div>

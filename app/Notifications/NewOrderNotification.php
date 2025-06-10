@@ -37,16 +37,16 @@ class NewOrderNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->subject('New Order #' . $this->order->order_number)
-                    ->greeting('Hello Admin !')
-                    ->line('Ada pesanan baru dari '.$this->order->recipient_name)
-                    ->line('Detail Pesanan :')
-                    ->line('- Order Number : '. $this->order->order_number)
-                    ->line('- Total Rp '. number_format($this->order->total_amount, 0, ',', '.'))
-                    ->line('- Items:')
-                    ->lines($this->order->items->map(function($item) {
-                        return " {$item->product_name} ({$item->quantity}x)";
-                    }));
+            ->subject('New Order #' . $this->order->order_number)
+            ->greeting('Hello Admin !')
+            ->line('Ada pesanan baru dari ' . $this->order->recipient_name)
+            ->line('Detail Pesanan :')
+            ->line('- Order Number : ' . $this->order->order_number)
+            ->line('- Total Rp ' . number_format($this->order->total_amount, 2, ',', '.'))
+            ->line('- Items:')
+            ->lines($this->order->items->map(function ($item) {
+                return " {$item->product_name} ({$item->quantity}x)";
+            }));
     }
 
     /**

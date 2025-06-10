@@ -32,7 +32,7 @@
             <div class="text-sm text-gray-500 mb-3">{{ $order->created_at->format('d M Y H:i') }}</div>
             <div class="flex justify-between items-center font-medium">
                 <span>Total Pembayaran</span>
-                <span class="text-primary">Rp{{ number_format($order->total_amount, 0, ',', '.') }}</span>
+                <span class="text-primary">Rp{{ number_format($order->total_amount, 2, ',', '.') }}</span>
             </div>
         </div>
 

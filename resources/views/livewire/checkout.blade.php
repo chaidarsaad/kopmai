@@ -30,9 +30,9 @@
                             <div class="flex-1">
                                 <h3 class="text-sm font-medium line-clamp-2">{{ $cart->product->name }}</h3>
                                 <div class="text-sm text-gray-500 mt-1">{{ $cart->quantity }} x Rp
-                                    {{ number_format($cart->product->price) }}</div>
+                                    {{ number_format($cart->product->price, 2, ',', '.') }}</div>
                                 <div class="text-primary font-medium">Rp
-                                    {{ number_format($cart->product->price * $cart->quantity) }}</div>
+                                    {{ number_format($cart->product->price * $cart->quantity, 2, ',', '.') }}</div>
                             </div>
                         </div>
                     @endforeach
@@ -43,7 +43,7 @@
                                 <div class="flex justify-between">
                                     <span>Tenant {{ $shop['name'] }}</span>
                                     <span class="text-primary">Rp
-                                        {{ number_format($shop['ongkir'], 0, ',', '.') }}</span>
+                                        {{ number_format($shop['ongkir'], 2, ',', '.') }}</span>
                                 </div>
                             @endforeach
                         </div>
@@ -54,7 +54,7 @@
                             <div class="flex justify-between font-medium">
                                 <span>Total</span>
                                 <span class="text-primary">Rp
-                                    {{ number_format($total + $shippingCost, 0, ',', '.') }}</span>
+                                    {{ number_format($total + $shippingCost, 2, ',', '.') }}</span>
                             </div>
                         </div>
                     </div>
@@ -141,7 +141,7 @@
             <div>
                 <p class="text-sm text-gray-600">Total Pembayaran:</p>
                 <p class="text-lg font-semibold text-primary">Rp
-                    {{ number_format($total + $shippingCost, 0, ',', '.') }}</p>
+                    {{ number_format($total + $shippingCost, 2, ',', '.') }}</p>
             </div>
             <div class="text-right">
                 <p class="text-xs text-gray-500">{{ count($carts) }} Produk</p>

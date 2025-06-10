@@ -45,7 +45,7 @@
                             <h4 class="font-medium">{{ $item->product_name }}</h4>
                             <div class="mt-1">
                                 <span class="text-sm">{{ $item->quantity }} x </span>
-                                <span class="font-medium">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
+                                <span class="font-medium">Rp {{ number_format($item->price, 2, ',', '.') }}</span>
                             </div>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                         @foreach ($shopsWithShipping as $shop)
                             <div class="flex justify-between">
                                 <span>Tenant {{ $shop['name'] }}</span>
-                                <span class="text-primary">Rp {{ number_format($shop['ongkir'], 0, ',', '.') }}</span>
+                                <span class="text-primary">Rp {{ number_format($shop['ongkir'], 2, ',', '.') }}</span>
                             </div>
                         @endforeach
                     </div>
@@ -67,7 +67,7 @@
                     <div class="flex justify-between font-medium">
                         <span>Total</span>
                         <span class="text-primary">
-                            Rp {{ number_format($order->total_amount, 0, ',', '.') }}
+                            Rp {{ number_format($order->total_amount, 2, ',', '.') }}
                         </span>
                     </div>
                 </div>
