@@ -41,7 +41,7 @@
                                 <a href="{{ route('product.detail', $cart->product->slug) }}" wire:navigate
                                     onclick="sessionStorage.setItem('previous_url', window.location.href)">
                                     <span class="text-primary font-semibold">Rp
-                                        {{ number_format($cart->product->price, 0, ',', '.') }}</span>
+                                        {{ number_format($cart->product->price, 2, ',', '.') }}</span>
                                 </a>
 
                                 <div class="flex items-center border border-gray-200 rounded-lg">
