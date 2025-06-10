@@ -19,6 +19,8 @@ class ProductDetail extends Component
 
         if (Auth::check()) {
             $this->updateCartCount();
+        } else {
+            $this->cartCount = 0;
         }
     }
 

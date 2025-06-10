@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Cart;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -18,23 +19,32 @@ class SearchPage extends Component
 
     public function updateCartCount()
     {
-        $this->cartCount = Cart::where('user_id', auth()->id())->sum('quantity');
+        if (Auth::check()) {
+            $this->cartCount = Cart::where('user_id', Auth::id())
+                ->whereHas('product', function ($query) {
+                    $query->where('is_active', 1);
+                })
+                ->with([
+                    'product' => function ($query) {
+                        $query->where('is_active', 1);
+                    }
+                ])
+                ->whereHas('product.shop', function ($q) {
+                    $q->where('is_active', 1);
+                })
+                ->sum('quantity');
+        } else {
+            $this->cartCount = 0;
+        }
     }
 
     public function mount()
     {
-        $this->cartCount = Cart::where('user_id', auth()->id())
-            ->whereHas('product', function ($query) {
-                $query->where('is_active', 1);
-            })
-            ->with([
-                'product' => function ($query) {
-                    $query->where('is_active', 1);
-                }
-            ])
-            ->whereHas('product.shop', function ($q) {
-                $q->where('is_active', 1);
-            })->sum('quantity');
+        if (Auth::check()) {
+            $this->updateCartCount();
+        } else {
+            $this->cartCount = 0;
+        }
         $this->getProducts();
         $this->checkHasMoreProducts();
     }
