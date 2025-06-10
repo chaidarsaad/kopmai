@@ -23,7 +23,18 @@ class SearchPage extends Component
 
     public function mount()
     {
-        $this->cartCount = Cart::where('user_id', auth()->id())->sum('quantity');
+        $this->cartCount = Cart::where('user_id', auth()->id())
+            ->whereHas('product', function ($query) {
+                $query->where('is_active', 1);
+            })
+            ->with([
+                'product' => function ($query) {
+                    $query->where('is_active', 1);
+                }
+            ])
+            ->whereHas('product.shop', function ($q) {
+                $q->where('is_active', 1);
+            })->sum('quantity');
         $this->getProducts();
         $this->checkHasMoreProducts();
     }
