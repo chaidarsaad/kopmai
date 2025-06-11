@@ -6,12 +6,13 @@
 <div class="mx-auto max-w-screen-xl min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
     <!-- Banner -->
     <div
-        class="h-[160px] md:h-fit md:mt-1 relative overflow-hidden bg-gradient-to-br from-primary to-secondary md:rounded-2xl">
+        class="relative min-h-[160px] md:min-h-[220px] overflow-hidden bg-gradient-to-br from-primary to-secondary md:rounded-2xl">
         @if ($store->bannerUrl)
             <img src="{{ $store->bannerUrl }}" alt="Banner" class="w-full h-full object-cover">
         @endif
         <div class="absolute inset-0 opacity-50 pattern-dots"></div>
     </div>
+
 
     <!-- Profile Section -->
     <div class="relative -mt-12 md:-mt-16 px-5 md:px-0">
