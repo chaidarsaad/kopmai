@@ -79,12 +79,11 @@
                         class="bg-white rounded-2xl overflow-hidden shadow hover:shadow-md transition-transform duration-300 flex flex-col h-full">
                         <a wire:navigate href="{{ route('product.detail', ['slug' => $item->slug]) }}"
                             onclick="sessionStorage.setItem('previous_url', window.location.href)">
-                            <div class="relative w-full aspect-[4/3] overflow-hidden group bg-white">
+                            <div
+                                class="relative w-full h-[200px] bg-gray-100 flex items-center justify-center overflow-hidden">
                                 <img src="{{ $item->image_url ?? asset('image/no-pictures.png') }}"
-                                    alt="{{ $item->name }}"
-                                    class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                                    alt="{{ $item->name }}" class="max-h-full max-w-full object-contain">
                             </div>
-
                         </a>
                         <div class="p-3 flex flex-col flex-grow">
                             <a wire:navigate href="{{ route('product.detail', ['slug' => $item->slug]) }}"
