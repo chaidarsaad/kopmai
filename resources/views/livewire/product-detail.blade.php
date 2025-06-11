@@ -34,10 +34,11 @@
     <!-- Main Content -->
     <div class="pt-16 md:pt-4 md:pb-40">
         <!-- Product Images Slider -->
-        <div class="relative aspect-[4/3] bg-gray-100">
+        <div class="w-full bg-gray-100 flex justify-center items-center" style="min-height: 300px;">
             <img src="{{ $product->image_url ?? asset('image/no-pictures.png') }}" alt="{{ $product->name }}"
-                class="absolute inset-0 w-full h-full object-cover rounded-lg">
+                class="w-full max-w-md object-contain">
         </div>
+
 
 
 
