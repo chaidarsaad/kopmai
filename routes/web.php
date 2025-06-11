@@ -3,6 +3,7 @@
 use App\Exports\DataExport;
 use App\Exports\OrdersExport;
 use App\Exports\SingleOrderExport;
+use App\Livewire\PrivacyPolicy;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\StoreShow;
 use App\Livewire\ProductDetail;
@@ -26,6 +27,7 @@ use Illuminate\Http\Request;
 
 Route::middleware([])->group(function () {
     Route::get('/', StoreShow::class)->name('home');
+    Route::get('/privacy-policy', PrivacyPolicy::class)->name('privacy.policy');
 });
 
 Route::middleware(['store.closed'])->group(function () {
