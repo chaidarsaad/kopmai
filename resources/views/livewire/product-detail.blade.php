@@ -34,14 +34,10 @@
     <!-- Main Content -->
     <div class="pt-16 md:pt-4 md:pb-40">
         <!-- Product Images Slider -->
-        <div class="w-full bg-gray-100 flex justify-center items-center" style="min-height: 300px;">
-            <img src="{{ $product->image_url ?? asset('image/no-pictures.png') }}" alt="{{ $product->name }}"
-                class="w-full max-w-md object-contain">
+        <div class="relative bg-gray-100">
+            <img src="{{ $product->image_url ?? asset('image/no-pictures.png') }}"
+                class="w-full object-contain max-h-[500px] mx-auto">
         </div>
-
-
-
-
 
         <!-- Product Info -->
         <div class="p-4 border-b border-gray-100">
