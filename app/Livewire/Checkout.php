@@ -199,17 +199,17 @@ class Checkout extends Component
                     $title = "Ada pesanan baru dari wali santri: {$order->user->name}";
                     $body = "Untuk santri: {$order->nama_santri}";
 
-                    Notification::make()
-                        ->title($title)
-                        ->body($body)
-                        ->actions([
-                            Action::make('view')
-                                ->label('Lihat')
-                                ->url(fn() => route('filament.pengelola.resources.pesanan.index'))
-                                ->button()
-                                ->markAsRead(),
-                        ])
-                        ->sendToDatabase($admin);
+                    // Notification::make()
+                    //     ->title($title)
+                    //     ->body($body)
+                    //     ->actions([
+                    //         Action::make('view')
+                    //             ->label('Lihat')
+                    //             ->url(fn() => route('filament.pengelola.resources.pesanan.index'))
+                    //             ->button()
+                    //             ->markAsRead(),
+                    //     ])
+                    //     ->sendToDatabase($admin);
 
                     // return redirect()->route('order-detail', ['orderNumber' => $order->order_number]);
                     $this->redirectRoute('order-detail', ['orderNumber' => $order->order_number], navigate: true);
