@@ -2,9 +2,9 @@
     Pesanan
 @endsection
 
-<div class="max-w-[480px] mx-auto bg-white min-h-screen relative shadow-lg pb-20">
+<div class="max-w-full mx-auto bg-white min-h-screen relative shadow-lg pb-20">
     <!-- Header -->
-    {{-- <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white z-50">
+    {{-- <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-full bg-white z-50">
         <div class="flex items-center h-16 px-4 border-b border-gray-100">
             <h1 class="text-lg font-medium">Pesanan Saya</h1>
         </div>

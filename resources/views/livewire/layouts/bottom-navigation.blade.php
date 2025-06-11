@@ -1,6 +1,4 @@
-<!-- resources/views/livewire/layouts/bottom-navigation.blade.php -->
-<nav
-    class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-gray-200 h-[70px] z-50">
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-full bg-white border-t border-gray-200 h-[70px] z-50">
     <div class="grid grid-cols-4 h-full">
         <a wire:navigate href="{{ route('home') }}" wire:click="setActiveMenu('home')"
             class="flex flex-col items-center justify-center {{ $activeMenu === 'home' ? 'text-primary' : 'text-gray-500 hover:text-primary' }} transition-colors">

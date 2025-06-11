@@ -4,7 +4,7 @@
 
 <div class="mx-auto max-w-screen-xl min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
     <!-- Header -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-screen-xl bg-white z-50">
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-full md:max-w-screen-xl bg-white z-50">
         <div class="relative flex items-center justify-between h-16 px-4">
             <a wire:navigate href="{{ route('profile') }}" class="hover:bg-gray-50 rounded-full p-2">
                 <i class="bi bi-chevron-left text-xl"></i>

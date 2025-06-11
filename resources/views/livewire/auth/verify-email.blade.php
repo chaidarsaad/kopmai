@@ -23,7 +23,7 @@
 
 <body class="bg-gray-50">
     <!-- Verification Page -->
-    <div class="max-w-[480px] mx-auto bg-white min-h-screen relative shadow-lg">
+    <div class="max-w-full mx-auto bg-white min-h-screen relative shadow-lg">
         <div class="p-6">
             <!-- Logo & Verification Text -->
             <div class="text-center mb-8 pt-8">
