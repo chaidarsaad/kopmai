@@ -97,9 +97,7 @@ class StatsOverview extends BaseWidget
             Stat::make('Total Tenant', Shop::count()),
             Stat::make('Total Produk', Product::count()),
             Stat::make('Total Pesanan', $order_count),
-            Stat::make('Total Omset', 'Rp ' . number_format($omset, 2, ",", ".")),
-            Stat::make('Total Modal', 'Rp ' . number_format($expense, 2, ",", ".")),
-            Stat::make('Total Laba', 'Rp ' . number_format($laba, 2, ",", ".")),
+            Stat::make('Total Omzet', 'Rp ' . number_format($omset, 2, ",", ".")),
         ];
     }
 }

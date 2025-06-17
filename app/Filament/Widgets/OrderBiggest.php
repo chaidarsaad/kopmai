@@ -58,8 +58,8 @@ class OrderBiggest extends BaseWidget
                 Tables\Columns\TextColumn::make('order_number')
                     ->label('No. Pesanan'),
 
-                Tables\Columns\TextColumn::make('recipient_name')
-                    ->label('Nama Wali'),
+                Tables\Columns\TextColumn::make('nama_santri')
+                    ->label('Nama Santri'),
 
                 Tables\Columns\TextColumn::make('subtotal')
                     ->label('Jumlah')
@@ -68,8 +68,8 @@ class OrderBiggest extends BaseWidget
                             // Hitung total hanya dari produk tenant yang sedang login
                             $total = $record->orderItems()
                                 ->whereHas('product', function ($q) use ($user) {
-                                    $q->where('shop_id', $user->shop_id);
-                                })
+                                $q->where('shop_id', $user->shop_id);
+                            })
                                 ->selectRaw('SUM(price * quantity) as total')
                                 ->value('total');
 
