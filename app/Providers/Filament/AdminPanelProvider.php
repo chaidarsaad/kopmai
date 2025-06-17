@@ -92,6 +92,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationItems([
                 NavigationItem::make('Ubah Profil')
+                    ->group('Pengaturan')
                     ->sort(20)
                     ->isActiveWhen(fn() => request()->routeIs('filament.pengelola.auth.profile'))
                     ->url(fn() => route('filament.pengelola.auth.profile', absolute: true))
