@@ -81,6 +81,7 @@ class AdminPanelProvider extends PanelProvider
             ->spaUrlExceptions(fn(): array => [
                 url(route('download-template')),
                 url(route('home')),
+                url(route('export-santri')),
                 url(route('download-data')),
                 url(route('download-rekap')),
                 url(route('download-order')),

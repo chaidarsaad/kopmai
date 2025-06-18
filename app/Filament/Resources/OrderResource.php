@@ -308,11 +308,13 @@ class OrderResource extends Resource
                     ->form([
                         DatePicker::make('start_date')
                             ->label('Dari tanggal')
+                            ->displayFormat('l, d F Y')
                             ->closeOnDateSelection()
                             ->native(false)
                             ->required(),
                         DatePicker::make('end_date')
                             ->label('Sampai tanggal')
+                            ->displayFormat('l, d F Y')
                             ->closeOnDateSelection()
                             ->native(false)
                             ->required(),

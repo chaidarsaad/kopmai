@@ -3,6 +3,7 @@
 use App\Exports\DataExport;
 use App\Exports\OrdersExport;
 use App\Exports\SingleOrderExport;
+use App\Exports\TemplateSantriExport;
 use App\Livewire\PrivacyPolicy;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\StoreShow;
@@ -62,6 +63,11 @@ Route::middleware(['auth',])->group(function () {
     Route::get('/download-template', function () {
         return Excel::download(new TemplateExport, 'template.xlsx');
     })->name('download-template');
+
+    Route::get('/template-santri', function () {
+        return Excel::download(new TemplateSantriExport, 'Data Santri.xlsx');
+    })->name('template-santri');
+
     Route::get('/download-data', function () {
         return Excel::download(new DataExport, 'data.xlsx');
     })->name('download-data');
@@ -79,6 +85,10 @@ Route::middleware(['auth',])->group(function () {
         $santriName = str_replace(' ', '_', $order->nama_santri);
         return Excel::download(new SingleOrderExport($orderId), "pesanan_{$santriName}.xlsx");
     })->name('download-order');
+
+    Route::get('/export-santri', function () {
+        return Excel::download(new \App\Exports\StudentsExport, 'Data Santri.xlsx');
+    })->name('export-santri');
 });
 
 Route::middleware(['auth', 'verified', 'store.closed'])->group(function () {
