@@ -39,10 +39,8 @@ use Illuminate\Support\Str;
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
     protected static ?int $navigationSort = 4;
-
     protected static ?string $navigationGroup = 'Manajemen Pesanan';
     protected static ?string $navigationLabel = 'Pesanan';
     protected static ?string $pluralLabel = 'Pesanan';
@@ -310,9 +308,13 @@ class OrderResource extends Resource
                     ->form([
                         DatePicker::make('start_date')
                             ->label('Dari tanggal')
+                            ->closeOnDateSelection()
+                            ->native(false)
                             ->required(),
                         DatePicker::make('end_date')
                             ->label('Sampai tanggal')
+                            ->closeOnDateSelection()
+                            ->native(false)
                             ->required(),
                     ])
                     ->action(function (array $data) {
