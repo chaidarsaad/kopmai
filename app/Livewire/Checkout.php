@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Models\Classroom;
+use App\Models\Student;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use App\Models\Cart;
@@ -24,32 +24,31 @@ class Checkout extends Component
     public $shippingCost = 0;
     public $store;
     public $kelasList = [];
+    public $studentList = [];
     public $totalItems = 0;
     public $shopsWithShipping = [];
-
+    public $searchStudent = '';
+    public $filteredStudents = [];
+    public $showStudentDropdown = false;
     protected $midtrans;
 
     public $shippingData = [
         'recipient_name' => '',
-        'nama_santri' => '',
-        'classroom_id' => '',
+        'student_id' => '',
         'phone' => '',
         'notes' => ''
     ];
 
     public $rules = [
-        'shippingData.nama_santri' => 'required|min:3',
-        'shippingData.classroom_id' => 'required',
+        'shippingData.student_id' => 'required',
         'shippingData.recipient_name' => 'required|min:3',
         'shippingData.phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
     ];
 
     public $messages = [
-        'shippingData.recipient_name.required' => 'Nama penerima wajib diisi.',
-        'shippingData.classroom_id.required' => 'Kelas santri wajib diisi.',
-        'shippingData.nama_santri.required' => 'Nama santri wajib diisi.',
-        'shippingData.nama_santri.min' => 'Nama santri minimal 3 karakter.',
-        'shippingData.recipient_name.min' => 'Nama penerima minimal 3 karakter.',
+        'shippingData.recipient_name.required' => 'Nama BIN / BINTI wajib diisi.',
+        'shippingData.student_id.required' => 'Nama Santri wajib diisi.',
+        'shippingData.recipient_name.min' => 'Nama BIN / BINTI minimal 3 karakter.',
         'shippingData.phone.required' => 'Nomor telepon wajib diisi.',
         'shippingData.phone.regex' => 'Format nomor telepon tidak valid.',
         'shippingData.phone.min' => 'Nomor telepon minimal 10 digit.',
@@ -64,19 +63,19 @@ class Checkout extends Component
     public function mount()
     {
         $this->shippingData['phone'] = Auth::user()->phone_number ?? '';
-        $this->shippingData['nama_santri'] = Auth::user()->nama_santri ?? '';
 
         $this->loadCarts();
         if ($this->carts->isEmpty()) {
             return redirect()->route('home');
         }
         $this->store = Store::first();
-        $this->kelasList = Classroom::orderBy('id', 'asc')->pluck('name', 'id');
+        $this->studentList = Student::orderBy('id', 'asc')->pluck('nama_santri', 'id');
 
-        if (auth()->check()) {
-            $user = auth()->user();
-            $this->shippingData['recipient_name'] = $user->name;
-        }
+        $this->filteredStudents = Student::inRandomOrder()
+            ->limit(10)
+            ->get()
+            ->toArray();
+
     }
 
     public function loadCarts()
@@ -124,7 +123,63 @@ class Checkout extends Component
         $this->shippingCost = array_sum(array_column($this->shopsWithShipping, 'ongkir'));
     }
 
+    public function showStudents()
+    {
+        $this->showStudentDropdown = true;
 
+        // Jika tidak ada pencarian, tampilkan 10 santri teratas
+        if (empty($this->searchStudent)) {
+            $this->filteredStudents = Student::inRandomOrder()
+                ->limit(10)
+                ->get()
+                ->toArray();
+        }
+
+    }
+
+    public function updatedSearchStudent()
+    {
+        $this->shippingData['student_id'] = null;
+
+        if (strlen($this->searchStudent) >= 0) {
+            if (strlen($this->searchStudent) > 1) {
+                $this->filteredStudents = Student::where('nama_santri', 'like', '%' . $this->searchStudent . '%')
+                    ->limit(10)
+                    ->get()
+                    ->toArray();
+            } else {
+                $this->filteredStudents = Student::inRandomOrder()
+                    ->limit(10)
+                    ->get()
+                    ->toArray();
+            }
+
+            $this->dispatch('show-student-dropdown');
+        }
+
+        if (strlen($this->searchStudent) === 0) {
+            $this->shippingData['recipient_name'] = '';
+        }
+    }
+
+    public function clearSelectedStudent()
+    {
+        $this->shippingData['student_id'] = null;
+        $this->searchStudent = '';
+        $this->shippingData['recipient_name'] = '';
+        $this->filteredStudents = Student::inRandomOrder()->limit(10)->get()->toArray();
+    }
+
+
+    public function selectStudent($id, $name): void
+    {
+        $this->shippingData['student_id'] = $id;
+        $this->searchStudent = $name;
+        $this->showStudentDropdown = false; // Sembunyikan dropdown setelah memilih
+
+        $student = Student::find($id);
+        $this->shippingData['recipient_name'] = $student?->nama_wali_santri ?? '';
+    }
 
     public function render()
     {
@@ -142,17 +197,11 @@ class Checkout extends Component
             try {
                 $user = Auth::user();
                 $inputPhone = $this->shippingData['phone'];
-                $inputNamaSantri = $this->shippingData['nama_santri'];
 
                 if (empty($user->phone_number) || $user->phone_number !== $inputPhone) {
                     $user->update(['phone_number' => $inputPhone]);
                 }
 
-                if (empty($user->nama_santri) || $user->nama_santri !== $inputNamaSantri) {
-                    $user->update(['nama_santri' => $inputNamaSantri]);
-                }
-
-                $this->shippingData['recipient_name'] = Auth::user()->name;
                 $order = Order::create([
                     'user_id' => auth()->id(),
                     'order_number' => 'ORD-' . strtoupper(uniqid()),
@@ -160,8 +209,7 @@ class Checkout extends Component
                     'total_amount' => $this->total + $this->shippingCost,
                     'status' => 'pending',
                     'payment_status' => 'unpaid',
-                    'nama_santri' => $this->shippingData['nama_santri'],
-                    'classroom_id' => $this->shippingData['classroom_id'],
+                    'student_id' => $this->shippingData['student_id'],
                     'recipient_name' => $this->shippingData['recipient_name'],
                     'phone' => $this->shippingData['phone'],
                     'notes' => $this->shippingData['notes']
@@ -197,7 +245,7 @@ class Checkout extends Component
                 } else {
                     $admin = User::role(['owner_tenant', 'pengelola_web'])->get();
                     $title = "Ada pesanan baru dari wali santri: {$order->user->name}";
-                    $body = "Untuk santri: {$order->nama_santri}";
+                    $body = "Untuk santri: {$order->student->nama_santri}";
 
                     // Notification::make()
                     //     ->title($title)

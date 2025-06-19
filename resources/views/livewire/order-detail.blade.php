@@ -87,11 +87,7 @@
                 </div>
                 <div class="flex gap-2">
                     <span class="text-gray-600 min-w-[140px]">Nama Santri</span>
-                    <span>: {{ $order->nama_santri }}</span>
-                </div>
-                <div class="flex gap-2">
-                    <span class="text-gray-600 min-w-[140px]">Kelas Santri</span>
-                    <span>: {{ $order->classroom->name }}</span>
+                    <span>: {{ $order->student->nama_santri }}</span>
                 </div>
                 <div class="flex gap-2">
                     <span class="text-gray-600 min-w-[140px]">No HP Wali</span>
@@ -99,7 +95,7 @@
                 </div>
                 <div class="flex gap-2">
                     <span class="text-gray-600 min-w-[140px]">Catatan Tambahan</span>
-                    <span>: {{ $order->notes }}</span>
+                    <span>: {{ $order->notes ?? 'Tidak ada catatan' }}</span>
                 </div>
             </div>
         </div>

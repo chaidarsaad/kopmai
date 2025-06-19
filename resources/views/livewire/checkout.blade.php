@@ -70,39 +70,79 @@
                 <h2 class="text-lg font-medium">Data Pemesan</h2>
             </div>
             <div class="bg-white rounded-xl border border-gray-100 p-4 space-y-4">
-                <!-- Name -->
-                {{-- <div>
-                    <label class="text-sm text-gray-600 mb-1.5 block">Nama Wali</label>
-                    <input type="text" wire:model="shippingData.recipient_name"
-                        class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary"
-                        placeholder="Masukkan nama lengkap penerima">
-                    @error('shippingData.recipient_name')
-                        <span class="text-red-500 text-lg mt-1">{{ $message }}</span>
-                    @enderror
-                </div> --}}
 
-                <!-- santri -->
-                <div>
+                <!-- Searchable Student -->
+                <div class="mb-4">
                     <label class="text-sm text-gray-600 mb-1.5 block">Nama Santri</label>
-                    <input type="text" wire:model="shippingData.nama_santri"
-                        class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary"
-                        placeholder="Masukkan nama lengkap santri">
-                    @error('shippingData.nama_santri')
+
+                    <div x-data="{
+                        open: @entangle('showStudentDropdown'),
+                        closeDropdown() {
+                            this.open = false;
+                            setTimeout(() => this.open = false, 100);
+                        }
+                    }" @click.away="closeDropdown()" class="relative">
+                        <div class="relative">
+                            <input type="text" wire:model.live.debounce.300ms="searchStudent"
+                                placeholder="Cari nama santri..."
+                                class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary"
+                                autocomplete="off" @focus="open = true; $wire.showStudents()" />
+
+                            <!-- Tombol Clear (X) -->
+                            @if (!empty($searchStudent))
+                                <button type="button"
+                                    class="absolute inset-y-0 right-8 flex items-center pr-2 text-gray-400 hover:text-gray-600"
+                                    wire:click="clearSelectedStudent">
+                                    <i class="bi bi-x-circle-fill text-lg"></i>
+                                </button>
+                            @endif
+
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Dropdown Results -->
+                        <div x-show="open" x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute z-50 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1 max-h-60 overflow-auto">
+                            @if ($showStudentDropdown)
+                                @if (count($filteredStudents) > 0)
+                                    <ul>
+                                        @foreach ($filteredStudents as $student)
+                                            <li wire:click="selectStudent({{ $student['id'] }}, '{{ addslashes($student['nama_santri']) }}')"
+                                                class="px-4 py-2 hover:bg-primary/10 cursor-pointer transition-colors">
+                                                {{ $student['nama_santri'] }}
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <div class="px-4 py-2 text-gray-500">
+                                        Santri tidak ditemukan
+                                    </div>
+                                @endif
+                            @endif
+                        </div>
+                    </div>
+
+                    <input type="hidden" wire:model="shippingData.student_id" />
+                    @error('shippingData.student_id')
                         <span class="text-red-500 text-lg mt-1">{{ $message }}</span>
                     @enderror
                 </div>
 
-                <!-- kelas santri -->
+                <!-- recipient_name -->
                 <div>
-                    <label class="text-sm text-gray-600 mb-1.5 block">Kelas Santri</label>
-                    <select wire:model="shippingData.classroom_id"
+                    <label class="text-sm text-gray-600 mb-1.5 block">Nama BIN / BINTI</label>
+                    <input wire:model="shippingData.recipient_name" type="text"
                         class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary">
-                        <option value="">-- Pilih Kelas --</option>
-                        @foreach ($kelasList as $id => $nama)
-                            <option value="{{ $id }}">{{ $nama }}</option>
-                        @endforeach
-                    </select>
-                    @error('shippingData.classroom_id')
+                    @error('shippingData.recipient_name')
                         <span class="text-red-500 text-lg mt-1">{{ $message }}</span>
                     @enderror
                 </div>

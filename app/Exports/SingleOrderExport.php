@@ -32,7 +32,7 @@ class SingleOrderExport implements FromCollection, WithHeadings, WithCustomStart
     public function collection()
     {
         $order = Order::where('id', $this->orderId)
-            ->with(['classroom', 'items.product'])
+            ->with(['items.product'])
             ->first();
 
         if (!$order) {
@@ -41,24 +41,21 @@ class SingleOrderExport implements FromCollection, WithHeadings, WithCustomStart
 
         $data = $order->items->map(function ($item) use ($order) {
             return [
-                'nama_santri' => $order->nama_santri,
-                'kelas'       => $order->classroom ? $order->classroom->name : 'Tidak ada Kelas',
-                'jumlah'      => $item->quantity,
+                'jumlah' => $item->quantity,
                 'nama_barang' => $item->product ? $item->product->name : 'Produk tidak ditemukan',
                 'harga_satuan' => $item->product ? $item->product->price : 0,
-                'modal'       => $item->product ? $item->product->modal : 0,
-                'laba'        => $item->product ? $item->product->laba : 0,
+                'modal' => $item->product ? $item->product->modal : 0,
+                'laba' => $item->product ? $item->product->laba : 0,
             ];
         });
 
         $data->push([
-            'nama_santri'  => '',
-            'kelas'        => '',
-            'jumlah'       => '',
-            'nama_barang'  => 'TOTAL ORDER (Tanpa Ongkir):',
+            'kelas' => '',
+            'jumlah' => '',
+            'nama_barang' => 'TOTAL ORDER (Tanpa Ongkir):',
             'harga_satuan' => $order->subtotal,
-            'modal'        => '',
-            'laba'         => '',
+            'modal' => '',
+            'laba' => '',
         ]);
 
         return $data;

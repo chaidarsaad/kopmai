@@ -12,12 +12,11 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'order_number',
-        'classroom_id',
+        'student_id',
         'subtotal',
         'total_amount',
         'status',
         'payment_status',
-        'nama_santri',
         'recipient_name',
         'phone',
         'payment_gateway_transaction_id',
@@ -37,7 +36,7 @@ class Order extends Model
         'status' => 'string',
         'payment_status' => 'string',
         'user_id' => 'integer',
-        'classroom_id' => 'integer',
+        'student_id' => 'integer',
     ];
 
     protected static function boot()
@@ -61,11 +60,6 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function classroom(): BelongsTo
-    {
-        return $this->belongsTo(Classroom::class);
-    }
-
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
@@ -84,5 +78,10 @@ class Order extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
     }
 }

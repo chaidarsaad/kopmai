@@ -58,7 +58,7 @@ class OrderBiggest extends BaseWidget
                 Tables\Columns\TextColumn::make('order_number')
                     ->label('No. Pesanan'),
 
-                Tables\Columns\TextColumn::make('nama_santri')
+                Tables\Columns\TextColumn::make('student.nama_santri')
                     ->label('Nama Santri'),
 
                 Tables\Columns\TextColumn::make('subtotal')

@@ -11,4 +11,9 @@ class Student extends Model
         'nama_santri',
         'nama_wali_santri',
     ];
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

@@ -82,7 +82,7 @@ Route::middleware(['auth',])->group(function () {
     Route::get('/download-order', function (Request $request) {
         $orderId = $request->query('order_id');
         $order = Order::findOrFail($orderId);
-        $santriName = str_replace(' ', '_', $order->nama_santri);
+        $santriName = str_replace(' ', '_', $order->student->nama_santri);
         return Excel::download(new SingleOrderExport($orderId), "pesanan_{$santriName}.xlsx");
     })->name('download-order');
 

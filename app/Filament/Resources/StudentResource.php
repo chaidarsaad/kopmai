@@ -66,12 +66,15 @@ class StudentResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nomor_induk_santri')
                     ->label('Nomor Induk Santri')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama_santri')
                     ->label('Nama Santri')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama_wali_santri')
                     ->label('BIN / BINTI')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -99,6 +102,7 @@ class StudentResource extends Resource
             ])
             ->headerActions([
                 Action::make("santri")
+                    ->hidden(fn() => Student::count() === 0)
                     ->label('Export Excel')
                     ->color('info')
                     ->url(route('export-santri')),
@@ -159,6 +163,7 @@ class StudentResource extends Resource
                             ->openUrlInNewTab(),
                     ]),
                 Action::make('ubah.santri')
+                    ->hidden(fn() => Student::count() === 0)
                     ->label('Ubah Santri by Excel')
                     ->color('info')
                     ->form([

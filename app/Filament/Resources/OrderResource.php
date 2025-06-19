@@ -84,26 +84,25 @@ class OrderResource extends Resource
                                     ->label('No HP Wali')
                                     ->tel()
                                     ->formatStateUsing(fn($record, $state) => $record->user?->phone_number ?? Auth::user()->phone_number ?? '-'),
-                            ]),
-                    ]),
-                Forms\Components\Group::make()
-                    ->schema([
-                        Forms\Components\Section::make('Penerima')
-                            ->collapsible()
-                            ->schema([
-                                Forms\Components\TextInput::make('nama_santri')
-                                    ->required()
-                                    ->label('Nama Santri'),
-                                Forms\Components\Select::make('classroom_id')
-                                    ->required()
-                                    ->relationship('classroom', 'name')
-                                    ->preload()
-                                    ->native(false)
-                                    ->label('Kelas Santri'),
                                 Forms\Components\Textarea::make('notes')
-                                    ->label('Catatan Tambahan'),
+                                    ->label('Catatan Tambahan')
                             ]),
                     ]),
+                // Forms\Components\Group::make()
+                //     ->schema([
+                //         Forms\Components\Section::make('Penerima')
+                //             ->collapsible()
+                //             ->schema([
+                //                 Forms\Components\Select::make('classroom_id')
+                //                     ->required()
+                //                     ->relationship('classroom', 'name')
+                //                     ->preload()
+                //                     ->native(false)
+                //                     ->label('Kelas Santri'),
+                //                 Forms\Components\Textarea::make('notes')
+                //                     ->label('Catatan Tambahan'),
+                //             ]),
+                //     ]),
                 Forms\Components\Section::make('Detail Harga')
                     ->collapsible()
                     ->schema([
@@ -195,12 +194,6 @@ class OrderResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('recipient_name')
                     ->label('Nama Wali')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('nama_santri')
-                    ->label('Nama Santri')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('classroom.name')
-                    ->label('Kelas Santri')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('total_amount')
                     ->label('Total')

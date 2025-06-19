@@ -43,7 +43,7 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
     {
         return Order::whereBetween('created_at', [$this->startDate, $this->endDate])
             ->where('payment_status', 'paid')
-            ->with(['classroom', 'items.product'])
+            ->with(['items.product'])
             ->get()
             ->flatMap(function ($order) {
                 $data = [];
@@ -51,7 +51,6 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                 // Tambahkan header untuk setiap order
                 $data[] = [
                     'created_at' => 'Tanggal',
-                    'nama_santri' => 'Tujuan (SANTRI)',
                     'kelas' => 'Kelas',
                     'jumlah' => 'Jumlah',
                     'nama_barang' => 'Nama Barang',
@@ -64,8 +63,6 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                 foreach ($order->items as $item) {
                     $data[] = [
                         'created_at' => Carbon::parse($order->created_at)->translatedFormat('l, d F Y H:i:s'),
-                        'nama_santri' => $order->nama_santri,
-                        'kelas' => $order->classroom ? $order->classroom->name : 'Tidak ada Kelas',
                         'jumlah' => $item->quantity,
                         'nama_barang' => $item->product ? $item->product->name : 'Produk tidak ditemukan',
                         'tenant' => $item->product ? $item->product->shop->name : 'Tenant tidak ditemukan',
@@ -78,7 +75,6 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
 
                 $data[] = [
                     'created_at' => '',
-                    'nama_santri' => '',
                     'kelas' => '',
                     'jumlah' => '',
                     'nama_barang' => 'TOTAL ORDER (Tanpa Ongkir):',
@@ -91,7 +87,6 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                 // Baris kosong sebagai pemisah antara order
                 $data[] = [
                     'created_at' => null,
-                    'nama_santri' => null,
                     'kelas' => null,
                     'jumlah' => null,
                     'nama_barang' => null,
