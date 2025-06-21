@@ -30,8 +30,18 @@ class Checkout extends Component
     public $filteredStudents = [];
     public $showStudentDropdown = false;
     protected $midtrans;
+    public $showStudentModal = false;
+    public $isEditingStudent = false;
+    public $studentForm = [
+        'id' => null,
+        'nomor_induk_santri' => '',
+        'nama_santri' => '',
+        'nama_wali_santri' => '',
+    ];
+
 
     public $shippingData = [
+        'nomor_induk_santri' => '',
         'nama_wali' => '',
         'student_id' => '',
         'phone' => '',
@@ -76,6 +86,81 @@ class Checkout extends Component
             ->toArray();
 
     }
+
+    public function openAddStudentModal()
+    {
+        $this->resetErrorBag(); // Bersihkan pesan error lama
+        $this->resetValidation();
+        $this->resetStudentForm();
+        $this->isEditingStudent = false;
+        $this->showStudentModal = true;
+    }
+
+    public function openEditStudentModal($id)
+    {
+        $this->resetErrorBag(); // Bersihkan pesan error lama
+        $this->resetValidation();
+        $this->resetStudentForm();
+        $student = Student::findOrFail($id);
+        $this->studentForm = [
+            'id' => $student->id,
+            'nomor_induk_santri' => $student->nomor_induk_santri,
+            'nama_santri' => $student->nama_santri,
+            'nama_wali_santri' => $student->nama_wali_santri,
+        ];
+        $this->isEditingStudent = true;
+        $this->showStudentModal = true;
+    }
+
+    public function saveStudent()
+    {
+        $this->validate([
+            'studentForm.nomor_induk_santri' => 'required|min:3|unique:students,nomor_induk_santri,' . ($this->studentForm['id'] ?? 'null'),
+            'studentForm.nama_santri' => 'required|min:3|unique:students,nama_santri,' . ($this->studentForm['id'] ?? 'null'),
+            'studentForm.nama_wali_santri' => 'required|min:3',
+        ], [
+            'studentForm.nomor_induk_santri.required' => 'Nomor Induk Santri wajib diisi.',
+            'studentForm.nomor_induk_santri.min' => 'Nomor Induk minimal 3 karakter.',
+            'studentForm.nomor_induk_santri.unique' => 'Nomor Induk ini sudah digunakan.',
+            'studentForm.nama_santri.unique' => 'Nama Santri ini sudah digunakan.',
+
+            'studentForm.nama_santri.required' => 'Nama Santri wajib diisi.',
+            'studentForm.nama_santri.min' => 'Nama Santri minimal 3 karakter.',
+
+            'studentForm.nama_wali_santri.required' => 'Nama BIN/BINTI wajib diisi.',
+            'studentForm.nama_wali_santri.min' => 'Nama BIN/BINTI minimal 3 karakter.',
+        ]);
+
+        $student = Student::updateOrCreate(
+            ['id' => $this->studentForm['id']],
+            [
+                'nomor_induk_santri' => $this->studentForm['nomor_induk_santri'],
+                'nama_santri' => $this->studentForm['nama_santri'],
+                'nama_wali_santri' => $this->studentForm['nama_wali_santri'],
+            ]
+        );
+
+        $this->shippingData['student_id'] = $student->id;
+        $this->searchStudent = $student->nama_santri;
+        $this->shippingData['nomor_induk_santri'] = $student->nomor_induk_santri;
+        $this->shippingData['nama_wali'] = $student->nama_wali_santri;
+
+        $this->showStudentModal = false;
+        $this->showStudentDropdown = false;
+        $this->loadCarts();
+    }
+
+
+    public function resetStudentForm()
+    {
+        $this->studentForm = [
+            'id' => null,
+            'nomor_induk_santri' => '',
+            'nama_santri' => '',
+            'nama_wali_santri' => '',
+        ];
+    }
+
 
     public function loadCarts()
     {
@@ -140,31 +225,32 @@ class Checkout extends Component
     {
         $this->shippingData['student_id'] = null;
 
-        if (strlen($this->searchStudent) >= 0) {
-            if (strlen($this->searchStudent) > 1) {
-                $this->filteredStudents = Student::where('nama_santri', 'like', '%' . $this->searchStudent . '%')
-                    ->limit(10)
-                    ->get()
-                    ->toArray();
-            } else {
-                $this->filteredStudents = Student::inRandomOrder()
-                    ->limit(10)
-                    ->get()
-                    ->toArray();
-            }
-
-            $this->dispatch('show-student-dropdown');
-        }
-
         if (strlen($this->searchStudent) === 0) {
-            $this->shippingData['nama_wali'] = '';
+            $this->clearSelectedStudent(); // Hapus semua data terkait santri
+            return;
         }
+
+        if (strlen($this->searchStudent) > 1) {
+            $this->filteredStudents = Student::where('nama_santri', 'like', '%' . $this->searchStudent . '%')
+                ->limit(10)
+                ->get()
+                ->toArray();
+        } else {
+            $this->filteredStudents = Student::inRandomOrder()
+                ->limit(10)
+                ->get()
+                ->toArray();
+        }
+
+        $this->dispatch('show-student-dropdown');
     }
+
 
     public function clearSelectedStudent()
     {
         $this->shippingData['student_id'] = null;
         $this->searchStudent = '';
+        $this->shippingData['nomor_induk_santri'] = '';
         $this->shippingData['nama_wali'] = '';
         $this->filteredStudents = Student::inRandomOrder()->limit(10)->get()->toArray();
     }
@@ -177,6 +263,7 @@ class Checkout extends Component
         $this->showStudentDropdown = false; // Sembunyikan dropdown setelah memilih
 
         $student = Student::find($id);
+        $this->shippingData['nomor_induk_santri'] = $student?->nomor_induk_santri ?? '';
         $this->shippingData['nama_wali'] = $student?->nama_wali_santri ?? '';
     }
 

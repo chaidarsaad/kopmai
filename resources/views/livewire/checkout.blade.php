@@ -97,6 +97,8 @@
                                 </button>
                             @endif
 
+
+
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
@@ -105,6 +107,16 @@
                                 </svg>
                             </div>
                         </div>
+
+                        @if ($shippingData['student_id'])
+                            <div class="flex justify-between items-center">
+                                <button type="button"
+                                    wire:click="openEditStudentModal({{ $shippingData['student_id'] }})"
+                                    class="text-sm text-orange-600 hover:underline">
+                                    ✎ Edit Santri
+                                </button>
+                            </div>
+                        @endif
 
                         <!-- Dropdown Results -->
                         <div x-show="open" x-transition:enter="transition ease-out duration-200"
@@ -116,15 +128,42 @@
                                 @if (count($filteredStudents) > 0)
                                     <ul>
                                         @foreach ($filteredStudents as $student)
-                                            <li wire:click="selectStudent({{ $student['id'] }}, '{{ addslashes($student['nama_santri']) }}')"
-                                                class="px-4 py-2 hover:bg-primary/10 cursor-pointer transition-colors">
-                                                {{ $student['nama_santri'] }}
+                                            <li
+                                                class="flex justify-between items-center px-4 py-2 hover:bg-primary/10 cursor-pointer transition-colors">
+                                                <div class="truncate max-w-[70%]">
+                                                    <span
+                                                        wire:click="selectStudent({{ $student['id'] }}, '{{ addslashes($student['nama_santri']) }}')"
+                                                        class="block w-full truncate">
+                                                        {{ $student['nama_santri'] }}
+                                                    </span>
+                                                </div>
+
+                                                @if ($student['id'])
+                                                    <button type="button"
+                                                        wire:click.stop="openEditStudentModal({{ $student['id'] }})"
+                                                        class="text-sm text-orange-600 hover:underline ml-2 flex-shrink-0">
+                                                        ✎ Edit
+                                                    </button>
+                                                @endif
                                             </li>
                                         @endforeach
+
+
                                     </ul>
+                                    <div class="px-4 py-2 text-gray-500">
+                                        Tidak ada nama Santri yang sesuai?
+                                        <button type="button" wire:click="openAddStudentModal"
+                                            class="text-sm text-blue-600 hover:underline">
+                                            + Tambah Santri
+                                        </button>
+                                    </div>
                                 @else
                                     <div class="px-4 py-2 text-gray-500">
                                         Santri tidak ditemukan
+                                        <button type="button" wire:click="openAddStudentModal"
+                                            class="text-sm text-blue-600 hover:underline">
+                                            + Tambah Santri
+                                        </button>
                                     </div>
                                 @endif
                             @endif
@@ -137,10 +176,20 @@
                     @enderror
                 </div>
 
+                <!-- nomor_induk_santri -->
+                <div>
+                    <label class="text-sm text-gray-600 mb-1.5 block">Nomor Induk Santri</label>
+                    <input readonly wire:model="shippingData.nomor_induk_santri" type="text"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary">
+                    @error('shippingData.nomor_induk_santri')
+                        <span class="text-red-500 text-lg mt-1">{{ $message }}</span>
+                    @enderror
+                </div>
+
                 <!-- nama_wali -->
                 <div>
                     <label class="text-sm text-gray-600 mb-1.5 block">Nama BIN / BINTI</label>
-                    <input wire:model="shippingData.nama_wali" type="text"
+                    <input readonly wire:model="shippingData.nama_wali" type="text"
                         class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary">
                     @error('shippingData.nama_wali')
                         <span class="text-red-500 text-lg mt-1">{{ $message }}</span>
@@ -204,7 +253,57 @@
             </span>
         </button>
     </div>
+
+    @if ($showStudentModal)
+        <div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+            <div class="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg">
+                <h2 class="text-lg font-semibold mb-4">
+                    {{ $isEditingStudent ? 'Edit Santri' : 'Tambah Santri' }}
+                </h2>
+
+                <form wire:submit.prevent="saveStudent" class="space-y-4">
+                    <div>
+                        <label class="text-sm">Nomor Induk Santri</label>
+                        <input type="text" wire:model.defer="studentForm.nomor_induk_santri"
+                            class="w-full border rounded px-3 py-2" />
+                        @error('studentForm.nomor_induk_santri')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="text-sm">Nama Santri</label>
+                        <input type="text" wire:model.defer="studentForm.nama_santri"
+                            class="w-full border rounded px-3 py-2" />
+                        @error('studentForm.nama_santri')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="text-sm">Nama BIN / BINTI</label>
+                        <input type="text" wire:model.defer="studentForm.nama_wali_santri"
+                            class="w-full border rounded px-3 py-2" />
+                        @error('studentForm.nama_wali_santri')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="flex justify-end gap-3">
+                        <button type="button" wire:click="$set('showStudentModal', false)"
+                            class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Batal</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
 </div>
+
+
+
 
 @push('scripts')
     <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"

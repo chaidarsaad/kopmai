@@ -43,7 +43,6 @@ class ItemsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\ToggleColumn::make('is_received')
                     ->label('Terima Produk')
-                    ->toggleable()
                     ->onColor('success')
                     ->offColor('danger')
                     ->sortable()

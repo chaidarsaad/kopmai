@@ -188,7 +188,7 @@ class OrderResource extends Resource
                             ->stripCharacters(['.', ','])
                             ->numeric()
                             ->prefix('Rp')
-                            ->live(),
+                            ->hidden(fn() => Auth::user()->hasRole('owner_tenant')),
                         Forms\Components\Select::make('status')
                             ->label('Status')
                             ->options([
@@ -223,7 +223,6 @@ class OrderResource extends Resource
         });
 
         return $table
-            ->poll('5s')
             ->paginationPageOptions([5, 25, 50, 100, 250])
             ->defaultPaginationPageOption(5)
             ->defaultSort('id', direction: 'desc')
