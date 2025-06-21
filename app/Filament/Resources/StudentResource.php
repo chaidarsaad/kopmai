@@ -37,6 +37,7 @@ class StudentResource extends Resource
         return $form
             ->schema([
                 Section::make('Data Santri')
+                    ->collapsible()
                     ->columns(2)
                     ->schema([
                         Forms\Components\TextInput::make('nomor_induk_santri')

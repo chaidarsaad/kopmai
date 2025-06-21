@@ -11,7 +11,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->string('nama_wali')->nullable();
+            $table->dateTime('paid_date')->nullable()->after('phone');
+            $table->integer('nominal_pembayaran')->nullable()->after('paid_date');
         });
     }
 
@@ -21,7 +22,8 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('nama_wali');
+            $table->dropColumn('paid_date');
+            $table->dropColumn('nominal_pembayaran');
         });
     }
 };

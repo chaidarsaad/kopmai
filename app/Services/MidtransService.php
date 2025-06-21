@@ -24,11 +24,11 @@ class MidtransService
                 'gross_amount' => (int) $order->total_amount,
             ],
             'customer_details' => [
-                'first_name' => $order->recipient_name,
+                'first_name' => $order->nama_wali,
                 'email' => auth()->user()->email,
                 'phone' => $order->phone,
                 'shipping_address' => [
-                    'first_name' => $order->recipient_name,
+                    'first_name' => $order->nama_wali,
                     'phone' => $order->phone,
                     'address' => $order->address_detail,
                     'city' => $order->city,
@@ -45,12 +45,14 @@ class MidtransService
                         'name' => substr($item->product_name, 0, 50)
                     ];
                 })->toArray(),
-                [[
-                    'id' => 'SHIPPING',
-                    'price' => (int) $order->shipping_cost,
-                    'quantity' => 1,
-                    'name' => substr($order->shipping_service . '-' . $order->shipping_description, 0, 50)
-                ]]
+                [
+                    [
+                        'id' => 'SHIPPING',
+                        'price' => (int) $order->shipping_cost,
+                        'quantity' => 1,
+                        'name' => substr($order->shipping_service . '-' . $order->shipping_description, 0, 50)
+                    ]
+                ]
             )
         ];
 

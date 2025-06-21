@@ -11,7 +11,6 @@ use App\Models\Order;
 use App\Models\User;
 use App\Services\BiteshipService;
 use App\Notifications\NewOrderNotification;
-// use Illuminate\Support\Facades\Notification;
 use App\Services\MidtransService;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
@@ -33,7 +32,7 @@ class Checkout extends Component
     protected $midtrans;
 
     public $shippingData = [
-        'recipient_name' => '',
+        'nama_wali' => '',
         'student_id' => '',
         'phone' => '',
         'notes' => ''
@@ -41,14 +40,14 @@ class Checkout extends Component
 
     public $rules = [
         'shippingData.student_id' => 'required',
-        'shippingData.recipient_name' => 'required|min:3',
+        'shippingData.nama_wali' => 'required|min:3',
         'shippingData.phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
     ];
 
     public $messages = [
-        'shippingData.recipient_name.required' => 'Nama BIN / BINTI wajib diisi.',
+        'shippingData.nama_wali.required' => 'Nama BIN / BINTI wajib diisi.',
         'shippingData.student_id.required' => 'Nama Santri wajib diisi.',
-        'shippingData.recipient_name.min' => 'Nama BIN / BINTI minimal 3 karakter.',
+        'shippingData.nama_wali.min' => 'Nama BIN / BINTI minimal 3 karakter.',
         'shippingData.phone.required' => 'Nomor telepon wajib diisi.',
         'shippingData.phone.regex' => 'Format nomor telepon tidak valid.',
         'shippingData.phone.min' => 'Nomor telepon minimal 10 digit.',
@@ -158,7 +157,7 @@ class Checkout extends Component
         }
 
         if (strlen($this->searchStudent) === 0) {
-            $this->shippingData['recipient_name'] = '';
+            $this->shippingData['nama_wali'] = '';
         }
     }
 
@@ -166,7 +165,7 @@ class Checkout extends Component
     {
         $this->shippingData['student_id'] = null;
         $this->searchStudent = '';
-        $this->shippingData['recipient_name'] = '';
+        $this->shippingData['nama_wali'] = '';
         $this->filteredStudents = Student::inRandomOrder()->limit(10)->get()->toArray();
     }
 
@@ -178,7 +177,7 @@ class Checkout extends Component
         $this->showStudentDropdown = false; // Sembunyikan dropdown setelah memilih
 
         $student = Student::find($id);
-        $this->shippingData['recipient_name'] = $student?->nama_wali_santri ?? '';
+        $this->shippingData['nama_wali'] = $student?->nama_wali_santri ?? '';
     }
 
     public function render()
@@ -210,7 +209,7 @@ class Checkout extends Component
                     'status' => 'pending',
                     'payment_status' => 'unpaid',
                     'student_id' => $this->shippingData['student_id'],
-                    'recipient_name' => $this->shippingData['recipient_name'],
+                    'nama_wali' => $this->shippingData['nama_wali'],
                     'phone' => $this->shippingData['phone'],
                     'notes' => $this->shippingData['notes']
                 ]);
@@ -226,8 +225,7 @@ class Checkout extends Component
 
                 Cart::where('user_id', auth()->id())->delete();
 
-                // Notification::route('mail', $this->store->email_notification)
-                //     ->notify(new NewOrderNotification($order));
+                // Notification::route('mail', $this->store->email_notification)->notify(new NewOrderNotification($order));
 
                 if ($this->store->is_use_payment_gateway) {
                     $result = $this->midtrans->createTransaction($order, $order->items);
@@ -247,17 +245,17 @@ class Checkout extends Component
                     $title = "Ada pesanan baru dari wali santri: {$order->user->name}";
                     $body = "Untuk santri: {$order->student->nama_santri}";
 
-                    // Notification::make()
-                    //     ->title($title)
-                    //     ->body($body)
-                    //     ->actions([
-                    //         Action::make('view')
-                    //             ->label('Lihat')
-                    //             ->url(fn() => route('filament.pengelola.resources.pesanan.index'))
-                    //             ->button()
-                    //             ->markAsRead(),
-                    //     ])
-                    //     ->sendToDatabase($admin);
+                    Notification::make()
+                        ->title($title)
+                        ->body($body)
+                        ->actions([
+                            Action::make('view')
+                                ->label('Lihat')
+                                ->url(fn() => route('filament.pengelola.resources.pesanan.index'))
+                                ->button()
+                                ->markAsRead(),
+                        ])
+                        ->sendToDatabase($admin);
 
                     // return redirect()->route('order-detail', ['orderNumber' => $order->order_number]);
                     $this->redirectRoute('order-detail', ['orderNumber' => $order->order_number], navigate: true);

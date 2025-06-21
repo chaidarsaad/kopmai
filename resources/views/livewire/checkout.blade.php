@@ -137,12 +137,12 @@
                     @enderror
                 </div>
 
-                <!-- recipient_name -->
+                <!-- nama_wali -->
                 <div>
                     <label class="text-sm text-gray-600 mb-1.5 block">Nama BIN / BINTI</label>
-                    <input wire:model="shippingData.recipient_name" type="text"
+                    <input wire:model="shippingData.nama_wali" type="text"
                         class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary">
-                    @error('shippingData.recipient_name')
+                    @error('shippingData.nama_wali')
                         <span class="text-red-500 text-lg mt-1">{{ $message }}</span>
                     @enderror
                 </div>

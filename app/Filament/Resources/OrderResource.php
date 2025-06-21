@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Shop;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -35,6 +36,7 @@ use Illuminate\Support\HtmlString;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Filament\Forms\Components\TextInput;
 
 class OrderResource extends Resource
 {
@@ -50,59 +52,75 @@ class OrderResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Group::make()
+                Forms\Components\Section::make('Informasi Umum')
+                    ->collapsible()
+                    ->columns(2)
                     ->schema([
-                        Forms\Components\Section::make('Informasi Umum')
-                            ->collapsible()
-                            ->schema([
-                                Forms\Components\TextInput::make('order_number')
-                                    ->unique(ignoreRecord: true)
-                                    ->required()
-                                    ->label('No. Pesanan')
-                                    ->default(fn() => 'ORD-' . strtoupper(uniqid())),
-                                Forms\Components\TextInput::make('created_at')
-                                    ->label('Tanggal Pesan')
-                                    ->formatStateUsing(fn($state) => Carbon::parse($state)->format('d M Y H:i')),
-                                Forms\Components\TextInput::make('user.email')
-                                    ->label('Email')
-                                    ->default(Auth::user()->email ?? '')
-                                    ->formatStateUsing(fn($record, $state) => $record->user?->email ?? Auth::user()->email ?? '-'),
-                                Forms\Components\TextInput::make('user.name')
-                                    ->readOnly()
-                                    ->label('Nama Wali')
-                                    ->default(Auth::user()->name ?? '')
-                                    ->formatStateUsing(fn($record, $state) => $record->user?->name ?? Auth::user()->name ?? '-'),
-                                Forms\Components\Hidden::make('recipient_name')
-                                    ->label('Nama Wali')
-                                    ->default(fn() => Auth::user()->name) // Ambil nama user yang sedang login
-                                    ->formatStateUsing(fn($record, $state) => $record->user?->name ?? Auth::user()->name ?? '-'),
-                                Forms\Components\Select::make('user_id')
-                                    ->relationship('user', 'name')
-                                    ->default(fn() => Auth::id())
-                                    ->hidden(),
-                                Forms\Components\TextInput::make('phone')
-                                    ->label('No HP Wali')
-                                    ->tel()
-                                    ->formatStateUsing(fn($record, $state) => $record->user?->phone_number ?? Auth::user()->phone_number ?? '-'),
-                                Forms\Components\Textarea::make('notes')
-                                    ->label('Catatan Tambahan')
-                            ]),
+                        Forms\Components\TextInput::make('order_number')
+                            ->readOnly()
+                            ->unique(ignoreRecord: true)
+                            ->required()
+                            ->label('No. Pesanan')
+                            ->default(fn() => 'ORD-' . strtoupper(uniqid())),
+                        Forms\Components\DatePicker::make('created_at')
+                            ->label('Tanggal Pesan')
+                            ->native(false)
+                            ->displayFormat('l, d F Y')
+                            ->default(now())
+                            ->closeOnDateSelection()
+                            ->required(),
+                        Forms\Components\Select::make('student_id')
+                            ->label('Nama Santri')
+                            ->required()
+                            ->relationship('student', 'nama_santri')
+                            ->preload()
+                            ->native(false)
+                            ->searchable()
+                            ->createOptionForm([
+                                Section::make('Data Santri')
+                                    ->collapsible()
+                                    ->columns(2)
+                                    ->schema([
+                                        Forms\Components\TextInput::make('nomor_induk_santri')
+                                            ->label('Nomor Induk Santri')
+                                            ->required()
+                                            ->maxLength(50)
+                                            ->unique(ignoreRecord: true),
+                                        Forms\Components\TextInput::make('nama_santri')
+                                            ->unique(ignoreRecord: true)
+                                            ->label('Nama Santri')
+                                            ->required()
+                                            ->maxLength(100),
+                                        Forms\Components\TextInput::make('nama_wali_santri')
+                                            ->label('BIN / BINTI')
+                                            ->required(),
+                                    ])
+                            ])
+                            ->live()
+                            ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                                if ($state) {
+                                    $student = \App\Models\Student::find($state);
+                                    $set('nama_wali', $student?->nama_wali_santri);
+                                } else {
+                                    $set('nama_wali', null);
+                                }
+                            }),
+                        Forms\Components\TextInput::make('nama_wali')
+                            ->label('Nama Wali')
+                            ->readOnly()
+                            ->dehydrated(true)
+                            ->required(),
+                        Forms\Components\Select::make('user_id')
+                            ->relationship('user', 'name')
+                            ->default(fn() => Auth::id())
+                            ->hidden(),
+                        Forms\Components\TextInput::make('phone')
+                            ->label('No HP Wali')
+                            ->tel()
+                            ->formatStateUsing(fn($record, $state) => $record->user?->phone_number ?? Auth::user()->phone_number ?? '-'),
+                        Forms\Components\Textarea::make('notes')
+                            ->label('Catatan Tambahan')
                     ]),
-                // Forms\Components\Group::make()
-                //     ->schema([
-                //         Forms\Components\Section::make('Penerima')
-                //             ->collapsible()
-                //             ->schema([
-                //                 Forms\Components\Select::make('classroom_id')
-                //                     ->required()
-                //                     ->relationship('classroom', 'name')
-                //                     ->preload()
-                //                     ->native(false)
-                //                     ->label('Kelas Santri'),
-                //                 Forms\Components\Textarea::make('notes')
-                //                     ->label('Catatan Tambahan'),
-                //             ]),
-                //     ]),
                 Forms\Components\Section::make('Detail Harga')
                     ->collapsible()
                     ->schema([
@@ -111,18 +129,21 @@ class OrderResource extends Resource
                             ->readOnly()
                             ->mask(
                                 RawJs::make(<<<'JS'
-                                    $input => {
-                                        let number = $input.replace(/[^\d]/g, '');
-                                        if (number === '') return '0';
-                                        return new Intl.NumberFormat('id-ID').format(Number(number));
-                                    }
+                                function(input) {
+                                    const cleaned = input.replace(/\D/g, '');
+                                    if (cleaned === '') return '';
+                                    const numberValue = Number(cleaned);
+                                    if (isNaN(numberValue)) return '';
+                                    return new Intl.NumberFormat('id-ID').format(numberValue);
+                                }
                                 JS)
                             )
-                            ->stripCharacters([',', '.'])
+                            ->stripCharacters(['.', ','])
                             ->numeric()
                             ->prefix('Rp')
                             ->default(0)
-                            ->live(),
+                            ->live()
+                        ,
                         Forms\Components\Hidden::make('subtotal')
                             ->label('Total Harga')
                             ->default(0)
@@ -146,6 +167,28 @@ class OrderResource extends Resource
                             ])
                             ->required()
                             ->native(false),
+                        Forms\Components\DatePicker::make('paid_date')
+                            ->label('Tanggal Bayar')
+                            ->native(false)
+                            ->closeOnDateSelection()
+                            ->displayFormat('l, d F Y'),
+                        Forms\Components\TextInput::make('nominal_pembayaran')
+                            ->label('Nominal Pembayaran')
+                            ->mask(
+                                RawJs::make(<<<'JS'
+                                function(input) {
+                                    const cleaned = input.replace(/\D/g, '');
+                                    if (cleaned === '') return '';
+                                    const numberValue = Number(cleaned);
+                                    if (isNaN(numberValue)) return '';
+                                    return new Intl.NumberFormat('id-ID').format(numberValue);
+                                }
+                                JS)
+                            )
+                            ->stripCharacters(['.', ','])
+                            ->numeric()
+                            ->prefix('Rp')
+                            ->live(),
                         Forms\Components\Select::make('status')
                             ->label('Status')
                             ->options([
@@ -185,37 +228,33 @@ class OrderResource extends Resource
             ->defaultPaginationPageOption(5)
             ->defaultSort('id', direction: 'desc')
             ->columns([
+                Tables\Columns\TextColumn::make('order_number')
+                    ->label('No. Pesanan')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Tanggal')
                     ->dateTime('l, d F Y H:i')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('order_number')
-                    ->label('No. Pesanan')
+                Tables\Columns\TextColumn::make('student.nama_santri')
+                    ->label('Nama Santri')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('recipient_name')
-                    ->label('Nama Wali')
+                Tables\Columns\TextColumn::make('student.nama_wali_santri')
+                    ->label('Nama BIN / BINTI')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('total_amount')
                     ->label('Total')
                     ->sortable()
                     ->formatStateUsing(function ($state, $record) {
                         $user = auth()->user();
-
-                        // Jika user adalah owner_tenant, hitung ulang total berdasarkan produknya
                         if ($user->hasRole('owner_tenant')) {
                             $tenantShopId = $user->shop_id;
-
-                            // Hitung ulang total dari produk milik tenant saja
                             $total = $record->orderItems->sum(function ($item) use ($tenantShopId) {
                                 return $item->product?->shop_id === $tenantShopId
                                     ? $item->quantity * $item->price
                                     : 0;
                             });
-
                             return 'Rp ' . number_format($total, 2, ',', '.');
                         }
-
-                        // Default: tampilkan total_amount seperti biasa
                         return 'Rp ' . number_format($state, 2, ',', '.');
                     }),
 

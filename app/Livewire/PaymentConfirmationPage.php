@@ -10,8 +10,6 @@ class PaymentConfirmationPage extends Component
 {
     use WithFileUploads;
     public $order;
-
-    // form fields
     public $payment_proof;
 
     protected $rules = [
@@ -49,10 +47,8 @@ class PaymentConfirmationPage extends Component
                 'payment_proof' => $imagePath,
             ]);
 
-            $this->dispatch('showAlert', [
-                'message' => 'Bukti pembayaran berhasil diunggah',
-                'type' => 'success'
-            ]);
+            session()->flash('alert_message', 'Bukti pembayaran berhasil diunggah');
+            session()->flash('alert_type', 'success');
 
             $this->redirectRoute('order-detail', ['orderNumber' => $this->order->order_number], navigate: true);
         } catch (\Exception $e) {

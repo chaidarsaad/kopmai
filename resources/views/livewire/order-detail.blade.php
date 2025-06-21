@@ -83,7 +83,7 @@
             <div class="p-4 space-y-3">
                 <div class="flex gap-2">
                     <span class="text-gray-600 min-w-[140px]">Nama Wali</span>
-                    <span>: {{ $order->recipient_name }}</span>
+                    <span>: {{ $order->nama_wali }}</span>
                 </div>
                 <div class="flex gap-2">
                     <span class="text-gray-600 min-w-[140px]">Nama Santri</span>
@@ -95,7 +95,7 @@
                 </div>
                 <div class="flex gap-2">
                     <span class="text-gray-600 min-w-[140px]">Catatan Tambahan</span>
-                    <span>: {{ $order->notes ?? 'Tidak ada catatan' }}</span>
+                    <span>: {{ $order->notes ?: 'Tidak ada catatan' }}</span>
                 </div>
             </div>
         </div>
@@ -156,7 +156,6 @@
             </div>
         @endif
     </div>
-
 
 
     @if ($order->status === 'pending' && $order->payment_gateway_transaction_id == null && $order->payment_proof == null)

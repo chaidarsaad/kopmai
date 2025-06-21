@@ -27,10 +27,16 @@ class Dashboard extends BaseDashboard
                 Section::make()
                     ->schema([
                         DatePicker::make('startDate')
+                            ->native(condition: false)
+                            ->closeOnDateSelection()
+                            ->displayFormat('l, d F Y')
                             ->label('Tanggal Mulai')
                             ->maxDate(fn(Get $get) => $get('endDate')),
                         DatePicker::make('endDate')
                             ->label('Tanggal Akhir')
+                            ->native(false)
+                            ->closeOnDateSelection()
+                            ->displayFormat('l, d F Y')
                             ->minDate(fn(Get $get) => $get('startDate'))
                             ->maxDate(now()),
                     ])

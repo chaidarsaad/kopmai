@@ -39,7 +39,7 @@ class NewOrderNotification extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('New Order #' . $this->order->order_number)
             ->greeting('Hello Admin !')
-            ->line('Ada pesanan baru dari ' . $this->order->recipient_name)
+            ->line('Ada pesanan baru dari ' . $this->order->nama_wali)
             ->line('Detail Pesanan :')
             ->line('- Order Number : ' . $this->order->order_number)
             ->line('- Total Rp ' . number_format($this->order->total_amount, 2, ',', '.'))

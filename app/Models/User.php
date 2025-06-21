@@ -26,7 +26,6 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         'password',
         'is_admin',
         'phone_number',
-        'nama_santri',
     ];
 
     protected static function booted()

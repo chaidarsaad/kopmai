@@ -21,59 +21,6 @@ class ItemsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('product_id')
-                    ->native(false)
-                    ->searchable()
-                    ->label('Produk')
-                    ->required()
-                    ->options(Product::query()->pluck('name', 'id'))
-                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
-                        $product = Product::with('shop')->find($state);
-                        if ($product) {
-                            $set('price', $product->price ?? 0);
-                            $set('product_name', $product->name ?? '');
-                            $set('shop_id', $product->shop_id ?? null);
-                            $set('is_ongkir', $product->shop->is_ongkir ?? false);
-                            $set('shipping_cost', $product->shop->ongkir ?? 0);
-                        }
-                        self::updateTotalPrice($get, $set);
-                    })
-                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                    ->preload(),
-                Forms\Components\Hidden::make('product_name')
-                    ->dehydrated()
-                    ->label('Nama Produk'),
-                Forms\Components\TextInput::make('quantity')
-                    ->required()
-                    ->label('Jumlah')
-                    ->numeric()
-                    ->default(1)
-                    ->minValue(1)
-                    ->afterStateUpdated(fn($state, Forms\Set $set, Forms\Get $get) => self::updateTotalPrice($get, $set)),
-
-                Forms\Components\TextInput::make('price')
-                    ->label('Harga')
-                    ->readOnly()
-                    ->numeric()
-                    ->mask(
-                        RawJs::make(<<<'JS'
-                                    $input => {
-                                        let number = $input.replace(/[^\d]/g, '');
-                                        if (number === '') return '0';
-                                        return new Intl.NumberFormat('id-ID').format(Number(number));
-                                    }
-                                JS)
-                    )
-                    ->stripCharacters([',', '.'])
-                    ->numeric()
-                    ->prefix('Rp'),
-
-                Forms\Components\TextInput::make('shipping_cost')
-                    ->label('Ongkir')
-                    ->prefix('Rp')
-                    ->numeric()
-                    ->hidden(fn(Forms\Get $get) => !$get('is_ongkir'))
-                    ->afterStateUpdated(fn($state, Forms\Set $set, Forms\Get $get) => self::updateTotalPrice($get, $set)),
             ]);
     }
 
@@ -94,6 +41,13 @@ class ItemsRelationManager extends RelationManager
             })
             ->recordTitleAttribute('product_name')
             ->columns([
+                Tables\Columns\ToggleColumn::make('is_received')
+                    ->label('Terima Produk')
+                    ->toggleable()
+                    ->onColor('success')
+                    ->offColor('danger')
+                    ->sortable()
+                    ->disabled(fn() => Auth::user()->hasRole('owner_tenant')),
                 Tables\Columns\ImageColumn::make('product.image_url')
                     ->label('Gambar Produk'),
                 Tables\Columns\TextColumn::make('product_name')
@@ -108,11 +62,11 @@ class ItemsRelationManager extends RelationManager
             ])
             ->filters([])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                // Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                // Tables\Actions\EditAction::make(),
+                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([]);
     }
