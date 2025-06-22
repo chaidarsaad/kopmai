@@ -97,8 +97,6 @@
                                 </button>
                             @endif
 
-
-
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
@@ -112,7 +110,7 @@
                             <div class="flex justify-between items-center">
                                 <button type="button"
                                     wire:click="openEditStudentModal({{ $shippingData['student_id'] }})"
-                                    class="text-sm text-orange-600 hover:underline">
+                                    class="text-sm text-orange-600 hover:underline mt-1">
                                     ✎ Edit Santri
                                 </button>
                             </div>
@@ -128,23 +126,11 @@
                                 @if (count($filteredStudents) > 0)
                                     <ul>
                                         @foreach ($filteredStudents as $student)
-                                            <li
+                                            <li wire:click="selectStudent({{ $student['id'] }}, '{{ addslashes($student['nama_santri']) }}')"
                                                 class="flex justify-between items-center px-4 py-2 hover:bg-primary/10 cursor-pointer transition-colors">
-                                                <div class="truncate max-w-[70%]">
-                                                    <span
-                                                        wire:click="selectStudent({{ $student['id'] }}, '{{ addslashes($student['nama_santri']) }}')"
-                                                        class="block w-full truncate">
-                                                        {{ $student['nama_santri'] }}
-                                                    </span>
+                                                <div class="truncate max-w-[70%]" class="block w-full truncate">
+                                                    {{ $student['nama_santri'] }}
                                                 </div>
-
-                                                @if ($student['id'])
-                                                    <button type="button"
-                                                        wire:click.stop="openEditStudentModal({{ $student['id'] }})"
-                                                        class="text-sm text-orange-600 hover:underline ml-2 flex-shrink-0">
-                                                        ✎ Edit
-                                                    </button>
-                                                @endif
                                             </li>
                                         @endforeach
 
@@ -177,14 +163,14 @@
                 </div>
 
                 <!-- nomor_induk_santri -->
-                <div>
+                {{-- <div>
                     <label class="text-sm text-gray-600 mb-1.5 block">Nomor Induk Santri</label>
                     <input readonly wire:model="shippingData.nomor_induk_santri" type="text"
                         class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary">
                     @error('shippingData.nomor_induk_santri')
                         <span class="text-red-500 text-lg mt-1">{{ $message }}</span>
                     @enderror
-                </div>
+                </div> --}}
 
                 <!-- nama_wali -->
                 <div>
@@ -262,14 +248,14 @@
                 </h2>
 
                 <form wire:submit.prevent="saveStudent" class="space-y-4">
-                    <div>
+                    {{-- <div>
                         <label class="text-sm">Nomor Induk Santri</label>
                         <input type="text" wire:model.defer="studentForm.nomor_induk_santri"
                             class="w-full border rounded px-3 py-2" />
                         @error('studentForm.nomor_induk_santri')
                             <span class="text-red-500 text-sm">{{ $message }}</span>
                         @enderror
-                    </div>
+                    </div> --}}
 
                     <div>
                         <label class="text-sm">Nama Santri</label>

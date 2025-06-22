@@ -89,7 +89,7 @@ class Checkout extends Component
 
     public function openAddStudentModal()
     {
-        $this->resetErrorBag(); // Bersihkan pesan error lama
+        $this->resetErrorBag();  // Bersihkan pesan error lama
         $this->resetValidation();
         $this->resetStudentForm();
         $this->isEditingStudent = false;
@@ -98,7 +98,7 @@ class Checkout extends Component
 
     public function openEditStudentModal($id)
     {
-        $this->resetErrorBag(); // Bersihkan pesan error lama
+        $this->resetErrorBag();  // Bersihkan pesan error lama
         $this->resetValidation();
         $this->resetStudentForm();
         $student = Student::findOrFail($id);
@@ -115,13 +115,9 @@ class Checkout extends Component
     public function saveStudent()
     {
         $this->validate([
-            'studentForm.nomor_induk_santri' => 'required|min:3|unique:students,nomor_induk_santri,' . ($this->studentForm['id'] ?? 'null'),
             'studentForm.nama_santri' => 'required|min:3|unique:students,nama_santri,' . ($this->studentForm['id'] ?? 'null'),
             'studentForm.nama_wali_santri' => 'required|min:3',
         ], [
-            'studentForm.nomor_induk_santri.required' => 'Nomor Induk Santri wajib diisi.',
-            'studentForm.nomor_induk_santri.min' => 'Nomor Induk minimal 3 karakter.',
-            'studentForm.nomor_induk_santri.unique' => 'Nomor Induk ini sudah digunakan.',
             'studentForm.nama_santri.unique' => 'Nama Santri ini sudah digunakan.',
 
             'studentForm.nama_santri.required' => 'Nama Santri wajib diisi.',
@@ -134,7 +130,7 @@ class Checkout extends Component
         $student = Student::updateOrCreate(
             ['id' => $this->studentForm['id']],
             [
-                'nomor_induk_santri' => $this->studentForm['nomor_induk_santri'],
+                'nomor_induk_santri' => strtoupper(uniqid()),
                 'nama_santri' => $this->studentForm['nama_santri'],
                 'nama_wali_santri' => $this->studentForm['nama_wali_santri'],
             ]
@@ -186,7 +182,7 @@ class Checkout extends Component
         $this->total = 0;
         $this->totalItems = 0;
         $this->shippingCost = 0;
-        $this->shopsWithShipping = []; // Menyimpan daftar toko dengan ongkir
+        $this->shopsWithShipping = [];  // Menyimpan daftar toko dengan ongkir
 
         foreach ($this->carts as $cart) {
             $this->total += $cart->product->price * $cart->quantity;
@@ -226,7 +222,7 @@ class Checkout extends Component
         $this->shippingData['student_id'] = null;
 
         if (strlen($this->searchStudent) === 0) {
-            $this->clearSelectedStudent(); // Hapus semua data terkait santri
+            $this->clearSelectedStudent();  // Hapus semua data terkait santri
             return;
         }
 
@@ -260,7 +256,7 @@ class Checkout extends Component
     {
         $this->shippingData['student_id'] = $id;
         $this->searchStudent = $name;
-        $this->showStudentDropdown = false; // Sembunyikan dropdown setelah memilih
+        $this->showStudentDropdown = false;  // Sembunyikan dropdown setelah memilih
 
         $student = Student::find($id);
         $this->shippingData['nomor_induk_santri'] = $student?->nomor_induk_santri ?? '';
