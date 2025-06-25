@@ -7,6 +7,7 @@ use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Imports\ProductEditImport;
 use App\Imports\ProductImport;
 use App\Models\Product;
+use App\Models\Store;
 use Filament\Tables\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
@@ -21,6 +22,8 @@ use Filament\Notifications\Notification;
 use Filament\Support\RawJs;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductResource extends Resource
@@ -70,29 +73,14 @@ class ProductResource extends Resource
                         Forms\Components\Section::make('Harga')
                             ->collapsible()
                             ->schema([
-                                Forms\Components\TextInput::make('modal')
-                                    ->visible(fn() => auth()->user()->hasRole('pengelola_web'))
-                                    ->numeric()
-                                    ->mask(
-                                        RawJs::make(<<<'JS'
-                                    $input => {
-                                        let number = $input.replace(/[^\d]/g, '');
-                                        if (number === '') return '0';
-                                        return new Intl.NumberFormat('id-ID').format(Number(number));
-                                    }
-                                JS)
-                                    )
-                                    ->stripCharacters([',', '.'])
-                                    ->numeric()
-                                    ->prefix('Rp'),
                                 Forms\Components\TextInput::make('price')
                                     ->required()
-                                    ->label('Harga Produk')
+                                    ->label('Harga Jual Kopmai')
                                     ->mask(
                                         RawJs::make(<<<'JS'
                                     $input => {
                                         let number = $input.replace(/[^\d]/g, '');
-                                        if (number === '') return '0';
+                                        if (number === '') return '';
                                         return new Intl.NumberFormat('id-ID').format(Number(number));
                                     }
                                 JS)
@@ -100,10 +88,26 @@ class ProductResource extends Resource
                                     ->stripCharacters([',', '.'])
                                     ->numeric()
                                     ->prefix('Rp'),
-                                Forms\Components\TextInput::make('stock')
-                                    ->visible(fn() => auth()->user()->hasRole('pengelola_web'))
-                                    ->label('Stok Produk')
-                                    ->numeric(),
+                                Forms\Components\TextInput::make('buying_price')
+                                    ->required()
+                                    ->label('Harga Beli Kopmai')
+                                    ->mask(
+                                        RawJs::make(<<<'JS'
+                                    $input => {
+                                        let number = $input.replace(/[^\d]/g, '');
+                                        if (number === '') return '';
+                                        return new Intl.NumberFormat('id-ID').format(Number(number));
+                                    }
+                                JS)
+                                    )
+                                    ->stripCharacters([',', '.'])
+                                    ->numeric()
+                                    ->prefix('Rp'),
+                                // Forms\Components\TextInput::make('stock')
+                                //     ->visible(fn() => auth()->user()->hasRole('pengelola_web'))
+                                //     ->label('Stok Produk')
+                                //     ->helperText('Boleh kosong')
+                                //     ->numeric(),
                                 Forms\Components\Toggle::make('is_active')
                                     ->default(true)
                                     ->required()
@@ -114,9 +118,33 @@ class ProductResource extends Resource
                 Forms\Components\Section::make('Gambar')
                     ->collapsible()
                     ->schema([
-                        Forms\Components\TextInput::make('image')
+                        // Forms\Components\TextInput::make('image')
+                        //     ->label('Gambar Produk')
+                        //     ->columnSpanFull(),
+                        Forms\Components\FileUpload::make('images')
                             ->label('Gambar Produk')
-                            ->columnSpanFull(),
+                            ->multiple()
+                            ->image()
+                            ->downloadable()
+                            ->openable()
+                            ->reorderable()
+                            ->columnSpanFull()
+                            ->helperText(function () {
+                                $store = Store::first();
+                                $waUrl = 'https://wa.me/' . ($store?->whatsapp ?? '6281234567890');
+
+                                return new HtmlString("
+                                    Dimensi gambar: 500px x 500px<br>
+                                    Background transparan<br>
+                                    Fokus ke produknya<br>
+                                    Format gambar: PNG dengan ukuran maksimal 2MB<br>
+                                    Gambar bisa lebih dari 1, gambar pertama (urutan paling atas) akan dijadikan thumbnail, silahkan klik dan tahan lalu pindahkan keatas untuk mengubah posisinya<br>
+                                    Jika merasa kesulitan, segera hubungi Admin —
+                                    <a href=\"{$waUrl}\" target=\"_blank\" style=\"color: #1c64f2; text-decoration: underline;\">
+                                        klik di sini untuk chat via WhatsApp
+                                    </a>. InsyaAllah nanti dibantu prosesnya.
+                                ");
+                            })
                     ]),
             ]);
     }
@@ -144,8 +172,22 @@ class ProductResource extends Resource
                 Tables\Columns\ImageColumn::make('image')
                     ->label('Gambar')
                     ->circular()
-                    ->stacked()
-                    ->getStateUsing(fn($record) => "https://drive.google.com/thumbnail?id={$record->image}&sz=w1000"),
+                    ->getStateUsing(function ($record) {
+                        $images = $record->images;
+
+                        if (is_array($images) && !empty($images)) {
+                            $reversed = array_reverse($images);
+                            return asset('storage/' . $reversed[0]); // ✅ Pasti aman
+                        }
+
+                        if (!empty($record->image)) {
+                            return "https://drive.google.com/thumbnail?id={$record->image}&sz=w1000";
+                        }
+
+                        return asset('image/no-pictures.png');
+                    }),
+
+
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama Produk')
                     ->searchable(),
@@ -161,16 +203,11 @@ class ProductResource extends Resource
                     ->searchable()
                     ->label('Harga')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('modal')
-                    ->money('IDR')
-                    ->searchable()
-                    ->sortable()
-                    ->visible(fn() => auth()->user()->hasRole('pengelola_web')),
-                Tables\Columns\TextColumn::make('laba')
-                    ->money('IDR')
-                    ->searchable()
-                    ->sortable()
-                    ->visible(fn() => auth()->user()->hasRole('pengelola_web')),
+                // Tables\Columns\TextColumn::make('laba')
+                //     ->money('IDR')
+                //     ->searchable()
+                //     ->sortable()
+                //     ->visible(fn() => auth()->user()->hasRole('pengelola_web')),
 
                 Tables\Columns\TextColumn::make('stock')
                     ->label('Stok')

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -16,39 +17,51 @@ class Product extends Model
         'category_id',
         'shop_id',
         'description',
-        'modal',
         'price',
-        'laba',
+        'buying_price',
         'stock',
         'is_active',
         'image',
+        'images',
     ];
 
-    public function setLabaAttribute()
+    public function getRouteKeyName()
     {
-        $this->attributes['laba'] = $this->attributes['price'] - $this->attributes['modal'];
+        return 'slug';
     }
+    protected $casts = [
+        'images' => 'array',
+    ];
 
     public function getImageUrlAttribute()
     {
+        if (empty($this->image)) {
+            return null;
+        }
+
         return 'https://drive.google.com/thumbnail?id=' . $this->image . '&sz=w1000';
     }
+
+
+    public function getFirstImageUrlAttribute()
+    {
+        $images = $this->images;
+
+        if (is_array($images) && !empty($images)) {
+            $reversed = array_reverse($images);
+            return Storage::url($reversed[0]);
+        }
+
+        return null;
+    }
+
+
 
     protected static function boot()
     {
         parent::boot();
 
         static::saving(function ($product) {
-            // Jika modal kosong, maka laba = price
-            if (!is_null($product->price) && is_null($product->modal)) {
-                $product->laba = $product->price;
-            }
-
-            // Jika price dan modal tersedia, maka laba = price - modal
-            if (!is_null($product->price) && !is_null($product->modal)) {
-                $product->laba = $product->price - $product->modal;
-            }
-
             // Set is_active menjadi false jika price kosong
             if (empty($product->price)) {
                 $product->is_active = false;

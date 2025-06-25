@@ -25,8 +25,17 @@
                         <a href="{{ route('product.detail', $cart->product->slug) }}" wire:navigate
                             onclick="sessionStorage.setItem('previous_url', window.location.href)">
                             <div class="flex-shrink-0">
-                                <img src="{{ $cart->product->image_url ?? asset('image/no-pictures.png') }}"
-                                    alt="{{ $cart->product->name }}" class="w-20 h-20 object-cover rounded-lg">
+                                @if (!empty($cart->product->first_image_url))
+                                    <img src="{{ $cart->product->first_image_url }}" alt="{{ $cart->product->name }}"
+                                        class="w-20 h-20 object-cover rounded-lg">
+                                @elseif (!empty($cart->product->image_url))
+                                    <img src="{{ $cart->product->image_url }}" alt="{{ $cart->product->name }}"
+                                        class="w-20 h-20 object-cover rounded-lg">
+                                @else
+                                    <img src="{{ asset('image/no-pictures.png') }}" alt="Gambar tidak tersedia"
+                                        class="w-20 h-20 object-cover rounded-lg">
+                                @endif
+
                             </div>
                         </a>
 

@@ -8,14 +8,17 @@
     <!-- Profile Content -->
     <div class="">
         <!-- Profile Header -->
-        <div class="bg-gradient-to-br from-primary to-secondary p-6">
-            <div class="flex items-center gap-4">
-                <div class="text-white">
-                    <h2 class="text-xl font-semibold">{{ $name }}</h2>
-                    <p class="text-white/80">{{ $email }}</p>
+        <div class="p-4 space-y-4">
+            <div class="bg-gradient-to-br from-primary to-secondary p-6 space-y-2 rounded-2xl">
+                <div class="flex items-center gap-4">
+                    <div class="text-white">
+                        <h2 class="text-xl font-semibold">{{ $name }}</h2>
+                        <p class="text-white/80">{{ $email }}</p>
+                    </div>
                 </div>
             </div>
         </div>
+
 
         <!-- Profile Menu -->
         <div class="p-4 space-y-4">

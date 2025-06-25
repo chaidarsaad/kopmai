@@ -69,22 +69,22 @@ class StatsOverview extends BaseWidget
             $orderQuery->where('created_at', '<=', $endDate);
         }
 
-        $expense = OrderItem::whereHas('order', function ($query) use ($startDate, $endDate) {
-            $query->where('payment_status', 'paid');
+        // $expense = OrderItem::whereHas('order', function ($query) use ($startDate, $endDate) {
+        //     $query->where('payment_status', 'paid');
 
-            if ($startDate && $endDate) {
-                $query->whereBetween('created_at', [$startDate, $endDate]);
-            } elseif ($startDate) {
-                $query->where('created_at', '>=', $startDate);
-            } elseif ($endDate) {
-                $query->where('created_at', '<=', $endDate);
-            }
-        })->join('products', 'order_items.product_id', '=', 'products.id')
-            ->sum(DB::raw('order_items.quantity * products.modal'));
+        //     if ($startDate && $endDate) {
+        //         $query->whereBetween('created_at', [$startDate, $endDate]);
+        //     } elseif ($startDate) {
+        //         $query->where('created_at', '>=', $startDate);
+        //     } elseif ($endDate) {
+        //         $query->where('created_at', '<=', $endDate);
+        //     }
+        // })->join('products', 'order_items.product_id', '=', 'products.id')
+        //     ->sum(DB::raw('order_items.quantity * products.modal'));
 
         $order_count = $orderQuery->count();
         $omset = $orderQuery->sum('subtotal');
-        $laba = $omset - $expense;
+        // $laba = $omset - $expense;
 
         return [
             Stat::make('Total Pengelola', User::whereHas('roles', function ($q) {

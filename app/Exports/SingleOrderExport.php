@@ -24,8 +24,6 @@ class SingleOrderExport implements FromCollection, WithHeadings, WithCustomStart
             "Jumlah",
             "Nama Barang",
             "Harga Satuan",
-            "Modal",
-            "Laba",
         ];
     }
 
@@ -44,8 +42,6 @@ class SingleOrderExport implements FromCollection, WithHeadings, WithCustomStart
                 'jumlah' => $item->quantity,
                 'nama_barang' => $item->product ? $item->product->name : 'Produk tidak ditemukan',
                 'harga_satuan' => $item->product ? $item->product->price : 0,
-                'modal' => $item->product ? $item->product->modal : 0,
-                'laba' => $item->product ? $item->product->laba : 0,
             ];
         });
 
@@ -54,8 +50,6 @@ class SingleOrderExport implements FromCollection, WithHeadings, WithCustomStart
             'jumlah' => '',
             'nama_barang' => 'TOTAL ORDER (Tanpa Ongkir):',
             'harga_satuan' => $order->subtotal,
-            'modal' => '',
-            'laba' => '',
         ]);
 
         return $data;

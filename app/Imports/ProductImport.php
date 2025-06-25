@@ -32,8 +32,6 @@ class ProductImport implements ToModel, WithHeadingRow, WithMultipleSheets, Skip
             'shop_id' => $row['shop_id'],
             'stock' => $row['stock'],
             'price' => $row['price'],
-            'modal' => $row['modal'],
-            'laba' => $row['laba'],
             'is_active' => $row['is_active'] ?? 0,
             'description' => $row['description'] ?? '',
             'image' => $row['image'],

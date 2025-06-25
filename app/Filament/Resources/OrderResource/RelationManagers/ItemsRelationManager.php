@@ -47,8 +47,26 @@ class ItemsRelationManager extends RelationManager
                     ->offColor('danger')
                     ->sortable()
                     ->disabled(fn() => Auth::user()->hasRole('owner_tenant')),
-                Tables\Columns\ImageColumn::make('product.image_url')
-                    ->label('Gambar Produk'),
+                Tables\Columns\ImageColumn::make('product.images')
+                    ->label('Gambar Produk')
+                    ->circular()
+                    ->getStateUsing(function ($record) {
+                        $product = $record->product;
+
+                        // Pastikan product dan images-nya ada
+                        if ($product && is_array($product->images) && !empty($product->images)) {
+                            $reversed = array_reverse($product->images);
+                            return asset('storage/' . $reversed[0]); // ✅ thumbnail paling atas
+                        }
+
+                        // Jika ada image dari Google Drive
+                        if (!empty($product?->image)) {
+                            return "https://drive.google.com/thumbnail?id={$product->image}&sz=w1000";
+                        }
+
+                        // Fallback ke gambar kosong
+                        return asset('image/no-pictures.png');
+                    }),
                 Tables\Columns\TextColumn::make('product_name')
                     ->label('Nama Produk'),
                 Tables\Columns\TextColumn::make('product.shop.name')

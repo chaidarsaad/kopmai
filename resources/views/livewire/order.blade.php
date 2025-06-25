@@ -48,8 +48,16 @@
                     @foreach ($order->items as $item)
                         <div class="p-4">
                             <div class="flex gap-3">
-                                <img src="{{ $item->product->image_url ?? asset('image/no-pictures.png') }}"
-                                    alt="{{ $item->product->name }}" class="w-20 h-20 object-cover rounded-lg">
+                                @if (!empty($item->product->first_image_url))
+                                    <img src="{{ $item->product->first_image_url }}" alt="{{ $item->product->name }}"
+                                        class="w-20 h-20 object-cover rounded-lg">
+                                @elseif (!empty($item->product->image_url))
+                                    <img src="{{ $item->product->image_url }}" alt="{{ $item->product->name }}"
+                                        class="w-20 h-20 object-cover rounded-lg">
+                                @else
+                                    <img src="{{ asset('image/no-pictures.png') }}" alt="Gambar tidak tersedia"
+                                        class="w-20 h-20 object-cover rounded-lg">
+                                @endif
                                 <div>
                                     <h3 class="text-sm font-medium">{{ $item->product->name }}</h3>
                                     <div class="mt-2">

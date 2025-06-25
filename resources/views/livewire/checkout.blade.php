@@ -25,8 +25,16 @@
                 <div class="space-y-4">
                     @foreach ($carts as $cart)
                         <div class="flex gap-3">
-                            <img src="{{ $cart->product->image_url ?? asset('image/no-pictures.png') }}"
-                                alt="{{ $cart->product->name }}" class="w-20 h-20 object-cover rounded-lg">
+                            @if (!empty($cart->product->first_image_url))
+                                <img src="{{ $cart->product->first_image_url }}" alt="{{ $cart->product->name }}"
+                                    class="w-20 h-20 object-cover rounded-lg">
+                            @elseif (!empty($cart->product->image_url))
+                                <img src="{{ $cart->product->image_url }}" alt="{{ $cart->product->name }}"
+                                    class="w-20 h-20 object-cover rounded-lg">
+                            @else
+                                <img src="{{ asset('image/no-pictures.png') }}" alt="Gambar tidak tersedia"
+                                    class="w-20 h-20 object-cover rounded-lg">
+                            @endif
                             <div class="flex-1">
                                 <h3 class="text-sm font-medium line-clamp-2">{{ $cart->product->name }}</h3>
                                 <div class="text-sm text-gray-500 mt-1">{{ $cart->quantity }} x Rp

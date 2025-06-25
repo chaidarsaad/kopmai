@@ -11,7 +11,7 @@ class EditProduct extends EditRecord
 {
     protected static string $resource = ProductResource::class;
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return 'Ubah Produk';
     }
@@ -22,8 +22,8 @@ class EditProduct extends EditRecord
         ];
     }
 
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('index');
-    }
+    // protected function getRedirectUrl(): string
+    // {
+    //     return $this->getResource()::getUrl('index');
+    // }
 }

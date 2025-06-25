@@ -34,8 +34,6 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
     //         "Nama Barang",
     //         "Tenant",
     //         "Harga Satuan",
-    //         "Modal",
-    //         "Laba",
     //     ];
     // }
 
@@ -48,7 +46,6 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
             ->flatMap(function ($order) {
                 $data = [];
 
-                // Tambahkan header untuk setiap order
                 $data[] = [
                     'created_at' => 'Tanggal',
                     'kelas' => 'Kelas',
@@ -56,8 +53,6 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                     'nama_barang' => 'Nama Barang',
                     'tenant' => 'Tenant',
                     'harga_satuan' => 'Harga Total',
-                    'modal' => 'Modal',
-                    'laba' => 'Laba',
                 ];
 
                 foreach ($order->items as $item) {
@@ -66,10 +61,7 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                         'jumlah' => $item->quantity,
                         'nama_barang' => $item->product ? $item->product->name : 'Produk tidak ditemukan',
                         'tenant' => $item->product ? $item->product->shop->name : 'Tenant tidak ditemukan',
-                        'harga_satuan' => $item->product ? 'Rp ' . number_format(($item->product->price * $item->quantity), 2, ',', '.') : 'Rp 0,00',                        // 'modal'        => $item->product ? $item->product->modal : 0,
-                        // 'laba'         => $item->product ? $item->product->laba : 0,
-                        'modal' => 0,
-                        'laba' => 0,
+                        'harga_satuan' => $item->product ? 'Rp ' . number_format(($item->product->price * $item->quantity), 2, ',', '.') : 'Rp 0,00',
                     ];
                 }
 
@@ -80,11 +72,8 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                     'nama_barang' => 'TOTAL ORDER (Tanpa Ongkir):',
                     'tenant' => '',
                     'harga_satuan' => 'Rp ' . number_format($order->subtotal, 2, ',', '.'),
-                    'modal' => '',
-                    'laba' => '',
                 ];
 
-                // Baris kosong sebagai pemisah antara order
                 $data[] = [
                     'created_at' => null,
                     'kelas' => null,
@@ -92,8 +81,6 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                     'nama_barang' => null,
                     'tenant' => null,
                     'harga_satuan' => null,
-                    'modal' => null,
-                    'laba' => null,
                 ];
 
                 return $data;

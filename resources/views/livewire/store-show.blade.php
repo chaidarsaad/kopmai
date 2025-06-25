@@ -81,9 +81,22 @@
                             onclick="sessionStorage.setItem('previous_url', window.location.href)">
                             <div
                                 class="relative w-full h-[200px] flex items-center justify-center overflow-hidden group">
-                                <img src="{{ $item->image_url ?? asset('image/no-pictures.png') }}"
-                                    alt="{{ $item->name }}"
-                                    class="max-h-full max-w-full object-contain group-hover:scale-110">
+                                @if (!empty($item->first_image_url))
+                                    {{-- Utamakan gambar dari array `images` --}}
+                                    <img src="{{ $item->first_image_url }}" alt="{{ $item->name }}"
+                                        class="max-h-full max-w-full object-contain group-hover:scale-110">
+                                @elseif (!empty($item->image_url))
+                                    {{-- Jika `images` kosong, baru pakai `image` (Google Drive) --}}
+                                    <img src="{{ $item->image_url }}" alt="{{ $item->name }}"
+                                        class="max-h-full max-w-full object-contain group-hover:scale-110">
+                                @else
+                                    {{-- Fallback jika dua-duanya kosong --}}
+                                    <img src="{{ asset('image/no-pictures.png') }}" alt="Gambar tidak tersedia"
+                                        class="max-h-full max-w-full object-contain group-hover:scale-110">
+                                @endif
+
+
+
                             </div>
                         </a>
                         <div class="p-3 flex flex-col flex-grow">

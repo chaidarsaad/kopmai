@@ -36,8 +36,6 @@ class ProductsExport implements FromCollection, WithHeadings, WithTitle
             'category_id',
             'shop_id',
             'price',
-            'modal',
-            'laba',
             'stock',
             'is_active',
             'description',
@@ -58,7 +56,8 @@ class CategoriesExport implements FromCollection, WithHeadings, WithTitle
      */
     public function collection()
     {
-        return Category::select('id', 'name')->orderBy('id', 'asc')->get();;
+        return Category::select('id', 'name')->orderBy('id', 'asc')->get();
+        ;
     }
 
     public function headings(): array

@@ -44,9 +44,6 @@ class ProductsRelationManager extends RelationManager
                         Forms\Components\Section::make('Harga & Stok')
                             ->collapsible()
                             ->schema([
-                                Forms\Components\TextInput::make('modal')
-                                    ->numeric()
-                                    ->prefix('Rp'),
                                 Forms\Components\TextInput::make('price')
                                     ->label('Harga Produk')
                                     ->numeric()
@@ -95,14 +92,6 @@ class ProductsRelationManager extends RelationManager
                     ->money('IDR')
                     ->searchable()
                     ->label('Harga')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('modal')
-                    ->money('IDR')
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('laba')
-                    ->money('IDR')
-                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('stock')
                     ->label('Stok')
