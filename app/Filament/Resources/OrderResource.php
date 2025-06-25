@@ -158,7 +158,7 @@ class OrderResource extends Resource
                             ->disk('public')
                             ->directory('payment-proofs')
                             ->openable()
-                            ->downloadable(),
+                            ->downloadable(fn() => !Auth::user()->hasRole('owner_tenant')),
                         Forms\Components\Select::make('payment_status')
                             ->label('Status Pembayaran')
                             ->options([

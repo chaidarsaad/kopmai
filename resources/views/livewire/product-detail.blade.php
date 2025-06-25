@@ -35,8 +35,37 @@
     <div class="pt-16 md:pt-4 md:pb-40">
         <!-- Product Images Slider -->
         <div class="relative bg-gray-100">
-            <img src="{{ $product->image_url ?? asset('image/no-pictures.png') }}"
-                class="w-full object-contain max-h-[500px] mx-auto">
+            @if (!empty($product->image_url))
+                <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
+                    class="w-full object-contain max-h-[500px] mx-auto">
+            @elseif (!empty($currentImage))
+                <img src="{{ Storage::url($currentImage) }}" alt="{{ $product->name }}"
+                    class="w-full object-contain max-h-[500px] mx-auto">
+            @else
+                <img src="{{ asset('image/no-pictures.png') }}" alt="Gambar tidak tersedia"
+                    class="w-full object-contain max-h-[500px] mx-auto">
+            @endif
+
+            @if (count($images) > 1)
+                <button wire:click="previousImage"
+                    class="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white"
+                    @if ($currentImageIndex == 0) disabled @endif>
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+
+                <button wire:click="nextImage"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white"
+                    @if ($currentImageIndex == count($images) - 1) disabled @endif>
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            @endif
+
+            @if (count($images) > 0)
+                <!-- Image Counter -->
+                <div class="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                    {{ $currentImageIndex + 1 }}/{{ count($images) }}
+                </div>
+            @endif
         </div>
 
         <!-- Product Info -->
