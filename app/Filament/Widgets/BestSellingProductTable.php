@@ -36,12 +36,20 @@ class BestSellingProductTable extends BaseWidget
 
         $query = OrderItem::query()
             ->select([
-                'product_id',
-                'product_name',
-                DB::raw('COUNT(DISTINCT order_id) as total_orders'),
-                DB::raw('SUM(quantity) as total_quantity'),
-                DB::raw('SUM(price * quantity) as total_revenue')
+                'order_items.product_id',
+                'order_items.product_name',
+                DB::raw('COUNT(DISTINCT order_items.order_id) as total_orders'),
+                DB::raw('SUM(order_items.quantity) as total_quantity'),
             ])
+            ->when($user->hasRole('owner_tenant'), function ($query) use ($user) {
+                // Join ke products untuk ambil buying_price
+                $query->join('products', 'order_items.product_id', '=', 'products.id')
+                    ->addSelect(DB::raw('SUM(products.buying_price * order_items.quantity) as total_revenue'))
+                    ->where('products.shop_id', $user->shop_id);
+            }, function ($query) {
+                // Untuk non-tenant, tetap pakai price * quantity
+                $query->addSelect(DB::raw('SUM(order_items.price * order_items.quantity) as total_revenue'));
+            })
             ->whereHas('order', function ($query) use ($startDate, $endDate) {
                 $query->where('payment_status', 'paid');
 
@@ -53,13 +61,9 @@ class BestSellingProductTable extends BaseWidget
                     $query->where('created_at', '<=', $endDate);
                 }
             })
-            ->when($user->hasRole('owner_tenant'), function ($query) use ($user) {
-                $query->whereHas('product', function ($q) use ($user) {
-                    $q->where('shop_id', $user->shop_id);
-                });
-            })
-            ->groupBy('product_id', 'product_name')
+            ->groupBy('order_items.product_id', 'order_items.product_name')
             ->orderByDesc('total_quantity');
+
 
         return $table
             ->paginationPageOptions([10, 25, 50, 100, 250])
@@ -68,6 +72,12 @@ class BestSellingProductTable extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('product_name')
                     ->limit(30)
+                    ->url(function ($record) {
+                        $product = \App\Models\Product::find($record->product_id);
+                        return $product
+                            ? route('filament.pengelola.resources.produk.edit', ['record' => $product->slug])
+                            : null;
+                    })
                     ->label('Nama Produk'),
                 Tables\Columns\TextColumn::make('total_quantity')
                     ->label('Total Terjual'),

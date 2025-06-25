@@ -56,6 +56,19 @@ class OrderBiggest extends BaseWidget
             ->query($query)
             ->columns([
                 Tables\Columns\TextColumn::make('order_number')
+                    ->url(function ($record) {
+                        $user = auth()->user();
+
+                        if ($user->hasRole('owner_tenant')) {
+                            return route('filament.pengelola.resources.pesanan.view', ['record' => $record->getRouteKey()]);
+                        }
+
+                        if ($user->hasRole('pengelola_web')) {
+                            return route('filament.pengelola.resources.pesanan.edit', ['record' => $record->getRouteKey()]);
+                        }
+
+                        return null; // Atau arahkan ke halaman default jika role lain
+                    })
                     ->label('No. Pesanan'),
 
                 Tables\Columns\TextColumn::make('student.nama_santri')
@@ -65,12 +78,13 @@ class OrderBiggest extends BaseWidget
                     ->label('Jumlah')
                     ->formatStateUsing(function ($record) use ($isOwnerTenant, $user) {
                         if ($isOwnerTenant) {
-                            // Hitung total hanya dari produk tenant yang sedang login
+                            // Hitung subtotal berdasarkan buying_price dari produk milik tenant
                             $total = $record->orderItems()
                                 ->whereHas('product', function ($q) use ($user) {
                                 $q->where('shop_id', $user->shop_id);
                             })
-                                ->selectRaw('SUM(price * quantity) as total')
+                                ->join('products', 'order_items.product_id', '=', 'products.id')
+                                ->selectRaw('SUM(products.buying_price * order_items.quantity) as total')
                                 ->value('total');
 
                             return 'Rp ' . number_format($total ?? 0, 2, ',', '.');
@@ -78,7 +92,8 @@ class OrderBiggest extends BaseWidget
 
                         // Untuk admin/pengelola, tetap tampilkan subtotal pesanan
                         return 'Rp ' . number_format($record->subtotal, 2, ',', '.');
-                    }),
+                    })
+
             ]);
     }
 }

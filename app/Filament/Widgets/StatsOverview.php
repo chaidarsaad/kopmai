@@ -33,8 +33,10 @@ class StatsOverview extends BaseWidget
             ->whereHas('product', function ($query) use ($shopId) {
                 $query->where('shop_id', $shopId);
             })
-            ->select(DB::raw('SUM(price * quantity) as total'))
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->select(DB::raw('SUM(products.buying_price * order_items.quantity) as total'))
             ->value('total') ?? 0;
+
 
         // Jika role adalah owner_tenant
         if ($user->hasRole('owner_tenant')) {

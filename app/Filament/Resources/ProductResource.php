@@ -129,6 +129,8 @@ class ProductResource extends Resource
                             ->downloadable(fn() => !Auth::user()->hasRole('owner_tenant'))
                             ->openable()
                             ->reorderable()
+                            ->acceptedFileTypes(['image/png'])
+                            ->maxSize(2048)
                             ->columnSpanFull()
                             ->helperText(function () {
                                 $store = Store::first();
