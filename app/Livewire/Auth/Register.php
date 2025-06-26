@@ -94,17 +94,17 @@ class Register extends Component
         $admins = User::where('is_admin', 1)->get()->unique('id');
         $title = 'Ada pengguna baru dengan nama: ' . $user->name;
         $body = 'email: ' . $user->email;
-        // Notification::make()
-        //     ->title($title)
-        //     ->body($body)
-        //     ->actions([
-        //         Action::make('view')
-        //             ->label('Lihat')
-        //             ->url(fn() => route('filament.pengelola.resources.pengguna.index'))
-        //             ->button()
-        //             ->markAsRead(),
-        //     ])
-        //     ->sendToDatabase($admins);
+        Notification::make()
+            ->title($title)
+            ->body($body)
+            ->actions([
+                Action::make('view')
+                    ->label('Lihat')
+                    ->url(fn() => route('filament.pengelola.resources.pengguna.index'))
+                    ->button()
+                    ->markAsRead(),
+            ])
+            ->sendToDatabase($admins);
 
         // return redirect()->intended($isFirstUser ? '/admin' : route('home'));
         return redirect()->intended(route('home'));
