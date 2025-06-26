@@ -74,6 +74,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->unsavedChangesAlerts()
             ->databaseNotifications()
+            ->databaseNotificationsPolling(5)
             ->profile(isSimple: false)
             ->breadcrumbs(false)
             ->spa()
