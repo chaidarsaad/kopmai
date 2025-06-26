@@ -119,7 +119,7 @@
                                 <button type="button"
                                     wire:click="openEditStudentModal({{ $shippingData['student_id'] }})"
                                     class="text-sm text-orange-600 hover:underline mt-1">
-                                    ✎ Edit Santri
+                                    Data Santri tidak sesuai? ✎ Edit data Santri
                                 </button>
                             </div>
                         @endif
