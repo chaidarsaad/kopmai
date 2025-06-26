@@ -13,7 +13,6 @@
         <div class="absolute inset-0 opacity-50 pattern-dots"></div>
     </div>
 
-
     <!-- Profile Section -->
     <div class="relative -mt-12 md:-mt-16 px-5 md:px-0">
         <div
@@ -94,9 +93,6 @@
                                     <img src="{{ asset('image/no-pictures.png') }}" alt="Gambar tidak tersedia"
                                         class="max-h-full max-w-full object-contain group-hover:scale-110">
                                 @endif
-
-
-
                             </div>
                         </a>
                         <div class="p-3 flex flex-col flex-grow">
@@ -118,7 +114,6 @@
                                 class="w-full bg-primary text-white rounded-lg py-2 font-semibold hover:bg-primary/90 transition">
                                 + Keranjang
                             </button>
-
                         </div>
                     </div>
                 @endforeach
@@ -135,6 +130,4 @@
             @endif
         @endif
     </div>
-
-
 </div>
