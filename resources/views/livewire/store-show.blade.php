@@ -14,7 +14,7 @@
     </div>
 
     <!-- Profile Section -->
-    <div class="relative -mt-12 md:-mt-16 px-5 md:px-0">
+    <div class="relative -mt-12 md:-mt-16 px-5 md:px-0 hidden md:flex">
         <div
             class="w-[90px] h-[90px] md:w-[120px] md:h-[120px] bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center shadow-lg">
             <img src="{{ $store->imageUrl ?? asset('image/store.png') }}" alt="{{ $store->name }}"
