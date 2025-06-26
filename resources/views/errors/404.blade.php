@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $store->name ?? 'Toko Online' }} | @yield('title')</title>
+    <title>KOPMAI STORE</title>
 
     <!-- Favicon & App Icons -->
     <link rel="icon" type="image/png" href="{{ $store->imageUrl ?? asset('image/store.png') }}">
@@ -12,10 +12,7 @@
     <meta name="msapplication-TileImage" content="{{ $store->imageUrl ?? asset('image/store.png') }}">
     <meta name="theme-color" content= "{{ $store->primary_color ?? '#ff6666' }}">
     <script>
-        // Simpan console.warn asli
         const originalWarn = console.warn;
-
-        // Ganti console.warn untuk sementara
         console.warn = function(message, ...args) {
             if (
                 typeof message === "string" &&
@@ -23,7 +20,7 @@
                     "cdn.tailwindcss.com should not be used in production"
                 )
             ) {
-                return; // abaikan pesan ini
+                return;
             }
             originalWarn.apply(console, [message, ...args]);
         };
