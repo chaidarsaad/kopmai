@@ -32,17 +32,17 @@ class IncomingOrder
         //     ]),
         // ]);
 
-        Notification::make()
-            ->title($title)
-            ->body($body)
-            ->actions([
-                Action::make('view')
-                    ->label('Lihat')
-                    ->url(fn() => route('filament.pengelola.resources.pesanan.index'))
-                    ->button()
-                    ->markAsRead(),
-            ])
-            ->sendToDatabase($admin);
+        // Notification::make()
+        //     ->title($title)
+        //     ->body($body)
+        //     ->actions([
+        //         Action::make('view')
+        //             ->label('Lihat')
+        //             ->url(fn() => route('filament.pengelola.resources.pesanan.index'))
+        //             ->button()
+        //             ->markAsRead(),
+        //     ])
+        //     ->sendToDatabase($admin);
     }
 
     /**
