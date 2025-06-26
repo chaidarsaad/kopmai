@@ -69,13 +69,16 @@ class ItemsRelationManager extends RelationManager
                     }),
                 Tables\Columns\TextColumn::make('product_name')
                     ->label('Nama Produk'),
+                Tables\Columns\TextColumn::make('quantity')
+                    ->label('Jumlah'),
                 Tables\Columns\TextColumn::make('product.shop.name')
                     ->label('Tenant'),
                 Tables\Columns\TextColumn::make('price')
-                    ->label('Harga')
+                    ->label('Harga Jual')
                     ->money('IDR'),
-                Tables\Columns\TextColumn::make('quantity')
-                    ->label('Jumlah'),
+                Tables\Columns\TextColumn::make('product.buying_price')
+                    ->label('Harga Beli')
+                    ->money('IDR'),
             ])
             ->filters([])
             ->headerActions([
