@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Carousel;
 use App\Models\Cart;
 use Livewire\Component;
 use App\Models\Store;
@@ -22,11 +23,14 @@ class StoreShow extends Component
     public $selectedCategory;
     public $selectedShop = 'all';
     public $selectedFilterType = 'category';
-
+    public $carousels;
     public $paketSantri;
 
     public function mount()
     {
+        $this->carousels = Carousel::where('is_show', 1)
+            ->orderByDesc('is_priority')
+            ->get();
         $this->paketSantri = Category::where('name', 'Paket Santri')->first();
         $this->store = Store::first();
         $this->cartCount = Cart::where('user_id', auth()->id())->sum('quantity');

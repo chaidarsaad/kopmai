@@ -4,14 +4,53 @@
 
 <!-- Main Container -->
 <div class="mx-auto max-w-screen-xl min-h-screen bg-white pb-[70px] md:px-10 md:pb-10 pt-0 md:pt-[72px]">
-    <!-- Banner -->
-    <div
-        class="relative min-h-[160px] md:min-h-[220px] overflow-hidden bg-gradient-to-br from-primary to-secondary md:rounded-2xl">
-        @if ($store->bannerUrl)
-            <img src="{{ $store->bannerUrl }}" alt="Banner" class="w-full h-full object-cover">
-        @endif
-        <div class="absolute inset-0 opacity-50 pattern-dots"></div>
-    </div>
+    <!-- carousel -->
+    @if ($carousels->isNotEmpty())
+        <div x-data="carousel()" class="relative w-full overflow-hidden">
+            <!-- Slides -->
+            <div class="flex transition-transform duration-500 ease-in-out"
+                :style="`transform: translateX(-${active * 100}%)`">
+                @foreach ($carousels as $carousel)
+                    <div class="w-full flex-shrink-0 aspect-[2/1] flex items-center justify-center bg-white">
+                        @if (!empty($carousel->url))
+                            <a href="{{ $carousel->url }}" wire:navigate
+                                class="w-full h-full flex items-center justify-center">
+                                <img src="{{ Storage::url($carousel->image) }}" alt="carousel image"
+                                    class="w-full h-full object-contain rounded-none md:rounded-xl" />
+                            </a>
+                        @else
+                            <div class="w-full h-full flex items-center justify-center">
+                                <img src="{{ Storage::url($carousel->image) }}" alt="carousel image"
+                                    class="w-full h-full object-contain rounded-none md:rounded-xl" />
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Dots Navigation -->
+            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                @foreach ($carousels as $index => $carousel)
+                    <button class="w-3 h-3 rounded-full"
+                        :class="active === {{ $index }} ? 'bg-white' : 'bg-white/50'"
+                        @click="goTo({{ $index }})"></button>
+                @endforeach
+            </div>
+
+            <!-- Navigation Arrows -->
+            <button @click="prev()"
+                class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/40 text-white p-1 rounded-full">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <button @click="next()"
+                class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/40 text-white p-1 rounded-full">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+    @endif
+
+
+
 
     <!-- Profile Section -->
     <div class="relative -mt-12 md:-mt-16 px-5 md:px-0 md:hidden">
@@ -131,3 +170,36 @@
         @endif
     </div>
 </div>
+
+@push('scripts')
+    <script>
+        function carousel() {
+            return {
+                active: 0,
+                total: {{ $carousels->count() }},
+                interval: null,
+                init() {
+                    this.start()
+                },
+                start() {
+                    this.interval = setInterval(() => {
+                        this.next()
+                    }, 5000)
+                },
+                stop() {
+                    clearInterval(this.interval)
+                    this.interval = null
+                },
+                next() {
+                    this.active = (this.active + 1) % this.total
+                },
+                prev() {
+                    this.active = (this.active - 1 + this.total) % this.total
+                },
+                goTo(index) {
+                    this.active = index
+                }
+            }
+        }
+    </script>
+@endpush
