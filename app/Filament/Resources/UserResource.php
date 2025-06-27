@@ -44,7 +44,6 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('phone_number')
                     ->label('No HP')
                     ->tel()
-                    ->required()
                     ->maxLength(20)
                     ->dehydrated(fn(?string $state): bool => filled($state))
                     ->placeholder('Masukkan nomor telepon'),

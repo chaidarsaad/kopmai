@@ -324,8 +324,22 @@ class Checkout extends Component
                         'order_id' => $order->order_number
                     ]);
                 } else {
-                    $admin = User::role(['owner_tenant', 'pengelola_web'])->get();
-                    $title = "Ada pesanan baru dari wali santri: {$order->user->name}";
+                    $shopIds = $order->orderItems()
+                        ->with('product')
+                        ->get()
+                        ->pluck('product.shop_id')
+                        ->unique()
+                        ->filter();
+
+                    $ownerTenants = User::role('owner_tenant')
+                        ->whereIn('shop_id', $shopIds)
+                        ->get();
+
+                    $webAdmins = User::role('pengelola_web')->get();
+
+                    $admin = $ownerTenants->merge($webAdmins)->unique('id');
+
+                    $title = "Ada pesanan baru dari wali santri: {$order->student->nama_wali_santri}";
                     $body = "Untuk santri: {$order->student->nama_santri}";
 
                     Notification::make()
@@ -339,6 +353,7 @@ class Checkout extends Component
                                 ->markAsRead(),
                         ])
                         ->sendToDatabase($admin);
+
 
                     // return redirect()->route('order-detail', ['orderNumber' => $order->order_number]);
                     $this->redirectRoute('order-detail', ['orderNumber' => $order->order_number], navigate: true);
