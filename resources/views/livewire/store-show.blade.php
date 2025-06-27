@@ -184,7 +184,7 @@
                 start() {
                     this.interval = setInterval(() => {
                         this.next()
-                    }, 5000)
+                    }, 10000)
                 },
                 stop() {
                     clearInterval(this.interval)
