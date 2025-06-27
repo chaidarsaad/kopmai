@@ -18,9 +18,13 @@ class TopNavigation extends Component
 
     public function getActiveMenu()
     {
-        $currentRoute = request()->route()->getName();
+        $route = request()->route();
 
-        return match ($currentRoute) {
+        if (!$route) {
+            return 'home'; // fallback jika route tidak ditemukan
+        }
+
+        return match ($route->getName()) {
             'home' => 'home',
             'shopping-cart' => 'shopping-cart',
             'orders' => 'orders',
@@ -28,6 +32,7 @@ class TopNavigation extends Component
             default => 'home'
         };
     }
+
 
     public function setActiveMenu($menu)
     {
