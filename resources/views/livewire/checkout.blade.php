@@ -114,7 +114,7 @@
                             </div>
                         </div>
 
-                        @if ($shippingData['student_id'])
+                        {{-- @if ($shippingData['student_id'])
                             <div class="flex justify-between items-center">
                                 <button type="button"
                                     wire:click="openEditStudentModal({{ $shippingData['student_id'] }})"
@@ -122,7 +122,7 @@
                                     Data Santri tidak sesuai? ✎ Edit data Santri
                                 </button>
                             </div>
-                        @endif
+                        @endif --}}
 
                         <!-- Dropdown Results -->
                         <div x-show="open" x-transition:enter="transition ease-out duration-200"
@@ -146,18 +146,18 @@
                                     </ul>
                                     <div class="px-4 py-2 text-gray-500">
                                         Tidak ada nama Santri yang sesuai?
-                                        <button type="button" wire:click="openAddStudentModal"
+                                        <a href="https://wa.me/{{ $store->whatsapp }}"
                                             class="text-sm text-blue-600 hover:underline">
-                                            + Tambah Santri
-                                        </button>
+                                            Hubungi Admin
+                                        </a>
                                     </div>
                                 @else
                                     <div class="px-4 py-2 text-gray-500">
                                         Santri tidak ditemukan
-                                        <button type="button" wire:click="openAddStudentModal"
+                                        <a href="https://wa.me/{{ $store->whatsapp }}"
                                             class="text-sm text-blue-600 hover:underline">
-                                            + Tambah Santri
-                                        </button>
+                                            Hubungi Admin
+                                        </a>
                                     </div>
                                 @endif
                             @endif
