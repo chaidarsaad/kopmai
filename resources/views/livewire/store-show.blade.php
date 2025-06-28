@@ -28,13 +28,10 @@
                 @endforeach
             </div>
 
-            <!-- Dots Navigation -->
-            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                @foreach ($carousels as $index => $carousel)
-                    <button class="w-3 h-3 rounded-full"
-                        :class="active === {{ $index }} ? 'bg-white' : 'bg-white/50'"
-                        @click="goTo({{ $index }})"></button>
-                @endforeach
+            <!-- Ultra Small Numeric Slide Indicator -->
+            <div
+                class="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/30 text-white text-[9px] px-1.5 py-[1px] rounded-full leading-none">
+                <span x-text="`${active + 1} / ${total}`"></span>
             </div>
 
             <!-- Navigation Arrows -->
