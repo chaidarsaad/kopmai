@@ -146,7 +146,7 @@
                                     </ul>
                                     <div class="px-4 py-2 text-gray-500">
                                         Tidak ada nama Santri yang sesuai?
-                                        <a href="https://wa.me/{{ $store->whatsapp }}"
+                                        <a href="https://wa.me/{{ $store->whatsapp }}" target="_blank"
                                             class="text-sm text-blue-600 hover:underline">
                                             Hubungi Admin
                                         </a>
@@ -154,7 +154,7 @@
                                 @else
                                     <div class="px-4 py-2 text-gray-500">
                                         Santri tidak ditemukan
-                                        <a href="https://wa.me/{{ $store->whatsapp }}"
+                                        <a href="https://wa.me/{{ $store->whatsapp }}" target="_blank"
                                             class="text-sm text-blue-600 hover:underline">
                                             Hubungi Admin
                                         </a>
