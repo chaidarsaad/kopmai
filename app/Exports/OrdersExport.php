@@ -47,40 +47,86 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                 $data = [];
 
                 $data[] = [
+                    'order_number' => 'No. Pesanan',
                     'created_at' => 'Tanggal',
-                    'kelas' => 'Kelas',
-                    'jumlah' => 'Jumlah',
-                    'nama_barang' => 'Nama Barang',
+                    'email' => 'Email Akun',
+                    'nama_wali' => 'Nama Wali (BIN/BINTI)',
+                    'no_hp_wali' => 'No HP Wali (BIN/BINTI)',
+                    'nama_santri' => 'Nama Santri',
+                    'note' => 'Catatan Tambahan',
+                    'nama_barang' => 'Nama Produk',
+                    'jumlah' => 'Jumlah Produk',
+                    'harga_jual' => 'Harga Jual',
+                    'harga_beli' => 'Harga Beli',
                     'tenant' => 'Tenant',
-                    'harga_satuan' => 'Harga Total',
+                    'tanggal_bayar' => 'Tanggal Bayar',
+                    'nominal_bayar' => 'Nominal Bayar',
+                    // 'harga_satuan' => 'Harga Total',
                 ];
 
                 foreach ($order->items as $item) {
                     $data[] = [
+                        'order_number' => $order->order_number,
                         'created_at' => Carbon::parse($order->created_at)->translatedFormat('l, d F Y H:i:s'),
-                        'jumlah' => $item->quantity,
+                        'email' => $order->user->email,
+                        'nama_wali' => $order->student->nama_wali_santri,
+                        'no_hp_wali' => $order->phone,
+                        'nama_santri' => $order->student->nama_santri,
+                        'note' => $order->note ? $order->note : 'Tidak ada catatan',
                         'nama_barang' => $item->product ? $item->product->name : 'Produk tidak ditemukan',
+                        'jumlah' => $item->quantity,
+                        'harga_jual' => $item->product
+                            ? ($item->product->price == 0
+                                ? 'Harga jual produk ini tidak tersedia, cek data produk'
+                                : 'Rp ' . number_format($item->product->price, 2, ',', '.'))
+                            : 'Produk tidak ditemukan',
+
+                        'harga_beli' => $item->product
+                            ? ($item->product->buying_price == 0
+                                ? 'Harga beli produk ini tidak tersedia, cek data produk'
+                                : 'Rp ' . number_format($item->product->buying_price, 2, ',', '.'))
+                            : 'Produk tidak ditemukan',
                         'tenant' => $item->product ? $item->product->shop->name : 'Tenant tidak ditemukan',
-                        'harga_satuan' => $item->product ? 'Rp ' . number_format(($item->product->price * $item->quantity), 2, ',', '.') : 'Rp 0,00',
+                        'tanggal_bayar' => $order->paid_date ? Carbon::parse($order->paid_at)->translatedFormat('l, d F Y') : 'Tanggal pembayaran tidak tersedia, cek data pesanan',
+                        'nominal_bayar' => $order->nominal_pembayaran ? 'Rp ' . number_format($order->nominal_pembayaran, 2, ',', '.') : 'Nominal pembayaran tidak tersedia, cek data pesanan',
+                        // 'harga_satuan' => $item->product ? 'Rp ' . number_format(($item->product->price * $item->quantity), 2, ',', '.') : 'Rp 0,00',
                     ];
                 }
 
                 $data[] = [
+                    'order_number' => '',
                     'created_at' => '',
-                    'kelas' => '',
+                    'email' => '',
+                    'nama_wali' => '',
+                    'no_hp_wali' => '',
+                    'nama_santri' => '',
+                    'note' => '',
+                    'nama_barang' => '',
                     'jumlah' => '',
-                    'nama_barang' => 'TOTAL ORDER (Tanpa Ongkir):',
+                    'harga_jual' => '',
+                    'harga_beli' => '',
                     'tenant' => '',
-                    'harga_satuan' => 'Rp ' . number_format($order->subtotal, 2, ',', '.'),
+                    'tanggal_bayar' => '',
+                    'nominal_bayar' => '',
+                    // 'harga_satuan' => 'Rp ' . number_format($order->subtotal, 2, ',', '.'),
                 ];
 
                 $data[] = [
+                    'order_number' => null,
                     'created_at' => null,
-                    'kelas' => null,
-                    'jumlah' => null,
+                    'email' => null,
+                    'nama_wali' => null,
+                    'no_hp_wali' => null,
+                    'nama_santri' => null,
+                    'note' => null,
                     'nama_barang' => null,
+                    'jumlah' => null,
+                    'harga_jual' => null,
+                    'harga_beli' => null,
                     'tenant' => null,
-                    'harga_satuan' => null,
+                    'tanggal_bayar' => null,
+                    'nominal_bayar' => null,
+                    // 'harga_satuan' => null,
                 ];
 
                 return $data;
@@ -98,18 +144,27 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
-                foreach (range('A', 'I') as $col) {
+                $highestColumn = $sheet->getHighestColumn();
+                $lastRow = $sheet->getHighestRow();
+
+                // ✅ Atur ukuran kolom otomatis
+                foreach (range('A', $highestColumn) as $col) {
                     $sheet->getColumnDimension($col)->setAutoSize(true);
                 }
 
-                $lastRow = $event->sheet->getHighestRow();
+                // ✅ Format kolom harga
+                $columnsToFormat = ['H', 'J', 'M'];
+                foreach ($columnsToFormat as $col) {
+                    $sheet->getStyle("{$col}2:{$col}{$lastRow}")
+                        ->getNumberFormat()
+                        ->setFormatCode('"Rp" #,##0.00');
+                }
 
-                $sheet->getStyle("G2:I{$lastRow}")->getNumberFormat()->setFormatCode('"Rp" #,##0');
-
+                // ✅ Format semua baris yang merupakan header (cek jika A = 'No. Pesanan')
                 for ($row = 1; $row <= $lastRow; $row++) {
                     $cellValue = $sheet->getCell("A{$row}")->getValue();
-                    if ($cellValue === 'Tanggal') {
-                        $sheet->getStyle("A{$row}:I{$row}")->applyFromArray([
+                    if ($cellValue === 'No. Pesanan') {
+                        $sheet->getStyle("A{$row}:{$highestColumn}{$row}")->applyFromArray([
                             'font' => ['bold' => true],
                             'alignment' => ['horizontal' => 'center'],
                             'fill' => [
@@ -120,26 +175,14 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                     }
                 }
 
-                for ($row = 2; $row <= $lastRow; $row++) {
-                    $cellValue = $sheet->getCell("E{$row}")->getValue();
-                    if ($cellValue === 'TOTAL ORDER (Tanpa Ongkir):') {
-                        foreach (['E', 'G'] as $col) {
-                            $sheet->getStyle("{$col}{$row}")->applyFromArray([
-                                'font' => ['bold' => true],
-                                'alignment' => ['horizontal' => 'center'],
-                                'fill' => [
-                                    'fillType' => Fill::FILL_SOLID,
-                                    'startColor' => ['rgb' => '00FF00'],
-                                ],
-                            ]);
-                        }
-                    }
-                }
-
-                $sheet->getStyle("A2:I{$lastRow}")->applyFromArray([
+                // ✅ Sel lainnya tetap diratakan ke tengah
+                $sheet->getStyle("A2:{$highestColumn}{$lastRow}")->applyFromArray([
                     'alignment' => ['horizontal' => 'center'],
                 ]);
             }
         ];
     }
+
+
+
 }

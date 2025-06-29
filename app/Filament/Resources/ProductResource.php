@@ -204,7 +204,12 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('price')
                     ->money('IDR')
                     ->searchable()
-                    ->label('Harga')
+                    ->label('Harga Jual')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('buying_price')
+                    ->money('IDR')
+                    ->searchable()
+                    ->label('Harga Beli')
                     ->sortable(),
                 // Tables\Columns\TextColumn::make('laba')
                 //     ->money('IDR')
