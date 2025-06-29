@@ -69,11 +69,11 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                         'order_number' => $order->order_number,
                         'created_at' => Carbon::parse($order->created_at)->translatedFormat('l, d F Y H:i:s'),
                         'email' => $order->user->email,
-                        'nama_wali_santri' => $order->student->nama_wali_santri
+                        'nama_wali_santri' => $order->student && $order->student->nama_wali_santri
                             ? $order->student->nama_wali_santri
                             : 'Nama wali santri tidak tersedia',
                         'no_hp_wali' => $order->phone,
-                        'nama_santri' => $order->student->nama_santri
+                        'nama_santri' => $order->student && $order->student->nama_santri
                             ? $order->student->nama_santri
                             : 'Nama santri tidak tersedia',
                         'note' => $order->note ? $order->note : 'Tidak ada catatan',
