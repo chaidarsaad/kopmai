@@ -180,7 +180,7 @@ class ProductResource extends Resource
 
                         if (is_array($images) && !empty($images)) {
                             $reversed = array_reverse($images);
-                            return asset('storage/' . $reversed[0]); // ✅ Pasti aman
+                            return asset('storage/' . $reversed[0]);
                         }
 
                         if (!empty($record->image)) {
@@ -189,8 +189,6 @@ class ProductResource extends Resource
 
                         return asset('image/no-pictures.png');
                     }),
-
-
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama Produk')
                     ->searchable(),

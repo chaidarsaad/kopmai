@@ -50,7 +50,7 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                     'order_number' => 'No. Pesanan',
                     'created_at' => 'Tanggal',
                     'email' => 'Email Akun',
-                    'nama_wali' => 'Nama Wali (BIN/BINTI)',
+                    'nama_wali_santri' => 'Nama Wali (BIN/BINTI)',
                     'no_hp_wali' => 'No HP Wali (BIN/BINTI)',
                     'nama_santri' => 'Nama Santri',
                     'note' => 'Catatan Tambahan',
@@ -69,9 +69,13 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                         'order_number' => $order->order_number,
                         'created_at' => Carbon::parse($order->created_at)->translatedFormat('l, d F Y H:i:s'),
                         'email' => $order->user->email,
-                        'nama_wali' => $order->student->nama_wali_santri,
+                        'nama_wali_santri' => $order->student->nama_wali_santri
+                            ? $order->student->nama_wali_santri
+                            : 'Nama wali santri tidak tersedia',
                         'no_hp_wali' => $order->phone,
-                        'nama_santri' => $order->student->nama_santri,
+                        'nama_santri' => $order->student->nama_santri
+                            ? $order->student->nama_santri
+                            : 'Nama santri tidak tersedia',
                         'note' => $order->note ? $order->note : 'Tidak ada catatan',
                         'nama_barang' => $item->product ? $item->product->name : 'Produk tidak ditemukan',
                         'jumlah' => $item->quantity,
@@ -80,7 +84,6 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                                 ? 'Harga jual produk ini tidak tersedia, cek data produk'
                                 : 'Rp ' . number_format($item->product->price, 2, ',', '.'))
                             : 'Produk tidak ditemukan',
-
                         'harga_beli' => $item->product
                             ? ($item->product->buying_price == 0
                                 ? 'Harga beli produk ini tidak tersedia, cek data produk'
@@ -97,7 +100,7 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                     'order_number' => '',
                     'created_at' => '',
                     'email' => '',
-                    'nama_wali' => '',
+                    'nama_wali_santri' => '',
                     'no_hp_wali' => '',
                     'nama_santri' => '',
                     'note' => '',
@@ -115,7 +118,7 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
                     'order_number' => null,
                     'created_at' => null,
                     'email' => null,
-                    'nama_wali' => null,
+                    'nama_wali_santri' => null,
                     'no_hp_wali' => null,
                     'nama_santri' => null,
                     'note' => null,
