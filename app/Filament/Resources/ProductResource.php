@@ -221,9 +221,8 @@ class ProductResource extends Resource
                     ->label('Stok')
                     ->numeric()
                     ->sortable()
-                    ->visible(fn() => auth()->user()->hasRole('pengelola_web')),
-
-
+                    ->visible(fn() => auth()->user()->hasRole('pengelola_web'))
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('shop_id')
