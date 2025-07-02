@@ -18,7 +18,6 @@ class ProductDetail extends Component
         $this->product = Product::where('slug', $slug)->firstOrFail();
 
         if (!empty($this->product->images)) {
-            $this->product->images = collect($this->product->images)->reverse()->values()->all();
             $this->currentImageIndex = 0;
         }
 

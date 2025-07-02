@@ -185,7 +185,4 @@ class OrdersExport implements FromCollection, WithCustomStartCell, WithEvents
             }
         ];
     }
-
-
-
 }
