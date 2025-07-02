@@ -60,12 +60,17 @@
                 </button>
             @endif
 
-            @if (count($images) > 0)
-                <!-- Image Counter -->
-                <div class="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                    {{ $currentImageIndex + 1 }}/{{ count($images) }}
+            @if (count($images) > 1)
+                <div class="flex overflow-x-auto space-x-2 p-4 bg-white">
+                    @foreach ($images as $index => $image)
+                        <img src="{{ Storage::url($image) }}"
+                            wire:click="$set('currentImageIndex', {{ $index }})"
+                            class="h-16 w-16 object-cover rounded cursor-pointer border
+                    {{ $currentImageIndex === $index ? 'border-primary' : 'border-gray-200' }}">
+                    @endforeach
                 </div>
             @endif
+
         </div>
 
         <!-- Product Info -->
