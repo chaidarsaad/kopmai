@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class ProductDetail extends Component
 {
     public $product;
+    public $images = [];
     public $currentImageIndex = 0;
     public $cartCount = 0;
 
@@ -18,7 +19,7 @@ class ProductDetail extends Component
         $this->product = Product::where('slug', $slug)->firstOrFail();
 
         if (!empty($this->product->images)) {
-            $this->product->images = collect($this->product->images)->reverse()->values()->all();
+            $this->images = collect($this->product->images)->reverse()->values()->all();
             $this->currentImageIndex = 0;
         }
 
@@ -28,6 +29,7 @@ class ProductDetail extends Component
             $this->cartCount = 0;
         }
     }
+
 
     public function updateCartCount()
     {
@@ -91,7 +93,7 @@ class ProductDetail extends Component
 
     public function nextImage()
     {
-        if ($this->currentImageIndex < count($this->product->images) - 1) {
+        if ($this->currentImageIndex < count($this->images) - 1) {
             $this->currentImageIndex++;
         }
     }
@@ -103,12 +105,13 @@ class ProductDetail extends Component
         }
     }
 
+
     public function render()
     {
         return view('livewire.product-detail', [
-            'images' => $this->product->images ?? [],
-            'currentImage' => $this->product->images[$this->currentImageIndex] ?? null
-        ])
-            ->layout('components.layouts.app', ['hideBottomNav' => true]);
+            'images' => $this->images,
+            'currentImage' => $this->images[$this->currentImageIndex] ?? null
+        ])->layout('components.layouts.app', ['hideBottomNav' => true]);
     }
+
 }
