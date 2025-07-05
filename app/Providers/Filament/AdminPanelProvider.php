@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Auth\CostumLogin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -90,6 +91,13 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentPWAPlugin::make(),
                 FilamentShieldPlugin::make(),
+                EasyFooterPlugin::make()
+                    ->withFooterPosition('footer')
+                    ->withSentence('KOPMAI Store - GenZ Project')
+                    ->withLinks([
+                        ['title' => 'Butuh bantuan? Klik di sini', 'url' => 'https://wa.me/6285700480602']
+                    ])
+                    ->withLoadTime(),
             ])
             ->navigationItems([
                 NavigationItem::make('Ubah Profil')

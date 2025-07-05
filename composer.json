@@ -9,6 +9,7 @@
         "php": "^8.2",
         "aymanalhattami/filament-slim-scrollbar": "^2.1",
         "bezhansalleh/filament-shield": "^3.3",
+        "devonab/filament-easy-footer": "2.0",
         "fibtegis/filament-infinite-scroll": "^1.0",
         "filament/filament": "^3.2",
         "laravel-notification-channels/telegram": "^5.0",
