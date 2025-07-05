@@ -97,7 +97,7 @@ class AdminPanelProvider extends PanelProvider
                     ->withLinks([
                         ['title' => 'Butuh bantuan? Klik di sini', 'url' => 'https://wa.me/6285700480602']
                     ])
-                    ->withLoadTime(),
+                    ->withLoadTime('Halaman ini dimuat pada'),
             ])
             ->navigationItems([
                 NavigationItem::make('Ubah Profil')
