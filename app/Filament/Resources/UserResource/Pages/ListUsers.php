@@ -4,7 +4,6 @@ namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
 use App\Models\User;
-use Fibtegis\FilamentInfiniteScroll\Concerns\InteractsWithInfiniteScroll;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
@@ -13,7 +12,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ListUsers extends ListRecords
 {
-    use InteractsWithInfiniteScroll;
     protected static string $resource = UserResource::class;
 
     protected function getHeaderActions(): array
