@@ -76,7 +76,6 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->infinite()
             ->paginationPageOptions([5, 25, 50, 100, 250])
             ->defaultPaginationPageOption(5)
             ->defaultSort('id', direction: 'desc')
