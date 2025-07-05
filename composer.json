@@ -7,7 +7,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "aymanalhattami/filament-slim-scrollbar": "^2.1",
         "bezhansalleh/filament-shield": "^3.3",
         "devonab/filament-easy-footer": "2.0",
         "fibtegis/filament-infinite-scroll": "^1.0",
