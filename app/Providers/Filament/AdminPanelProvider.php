@@ -93,7 +93,7 @@ class AdminPanelProvider extends PanelProvider
                 FilamentShieldPlugin::make(),
                 EasyFooterPlugin::make()
                     ->withFooterPosition('footer')
-                    ->withSentence('KOPMAI Store - GenZ Project')
+                    ->withSentence('KOPMAI Store @ GenZ Project')
                     ->withLinks([
                         ['title' => 'Butuh bantuan? Klik di sini', 'url' => 'https://wa.me/6285700480602']
                     ])
