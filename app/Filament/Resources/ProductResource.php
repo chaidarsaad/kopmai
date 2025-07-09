@@ -110,7 +110,6 @@ class ProductResource extends Resource
                                 //     ->numeric(),
                                 Forms\Components\Toggle::make('is_active')
                                     ->default(true)
-                                    ->required()
                                     ->helperText('Jika tidak diaktifkan maka produk tidak akan tampil di halaman depan')
                                     ->label('Tampilkan produk?'),
                             ]),
@@ -124,7 +123,7 @@ class ProductResource extends Resource
                         Forms\Components\FileUpload::make('images')
                             ->label('Gambar Produk')
                             ->multiple()
-                            ->required()
+                            ->required(fn($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord)
                             ->image()
                             ->downloadable(fn() => !Auth::user()->hasRole('owner_tenant'))
                             ->openable()
